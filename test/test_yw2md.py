@@ -48,7 +48,7 @@ def copy_file(inputFile, outputFile):
 
 
 def remove_all_testfiles():
-    return
+
     try:
         os.remove(TEST_EXEC_PATH + YW7)
     except:
