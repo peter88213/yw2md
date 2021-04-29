@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="yw2md" basedir=".">
-	<property name="release" value="0.2.0" />
+	<property name="release" value="0.2.1" />
 	<property name="src" location="../src" />
 	<property name="test" location="../test" />
 	<property name="build" location="../build" />
@@ -32,6 +32,7 @@
 		<mkdir dir="${build}/yw2md_v${release}" />
 
 		<copy file="${test}/yw2md.pyw" todir="${build}/yw2md_v${release}" />
+		<copy file="${test}/my_yw2md.pyw" todir="${build}/yw2md_v${release}" />
 		<replace encoding="utf-8" file="${build}/yw2md_v${release}/yw2md.pyw" token="@release" value="${release}" />
 
 

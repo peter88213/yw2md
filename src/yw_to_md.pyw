@@ -26,20 +26,19 @@ class MdExport(FileExport):
     EXTENSION = '.md'
     SUFFIX = ''
 
-    fileHeader = '''**$Title**  
+    fileHeader = '''**${Title}**  
   
-*$AuthorName*  
+*${AuthorName}*  
   
 '''
 
-    partTemplate = '\n# $Title  \n'
+    partTemplate = '\n# ${Title}\n\n'
 
-    chapterTemplate = '\n## $Title  \n'
+    chapterTemplate = '\n## ${Title}\n\n'
 
-    sceneTemplate = '$SceneContent  \n'
+    sceneTemplate = '${SceneContent}\n\n'
 
-    sceneDivider = ' \n'
-    #sceneDivider = '\n* * *\n'
+    sceneDivider = '\n\n* * *\n\n'
 
     def get_chapterMapping(self, chId, chapterNumber):
         """Return a mapping dictionary for a chapter section. 
@@ -57,7 +56,7 @@ class MdExport(FileExport):
         """
         MD_REPLACEMENTS = [
             ['  ', ' '],
-            ['\n', '  \n'],
+            ['\n', '\n\n'],
             ['[i]', '*'],
             ['[/i]', '*'],
             ['[b]', '**'],

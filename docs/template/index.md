@@ -15,7 +15,15 @@ The yw2md Python script converts a yWriter 6/7 project to markdown.
 
 ## Usage
 
-See the [usage instructions](usage)
+See the [instructions for use](usage)
+
+## Customize the Markdown export
+
+If you know the  _Python_  programming language, you easily 
+can make your own converter. The zipfile includes a template for 
+modification. The script  *my_yw2md.pyw* uses the original script 
+as a library and defines easy-to-adapt subclasses for Markdown conversion. 
+
 
 ## License
 
