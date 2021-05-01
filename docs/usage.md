@@ -4,7 +4,7 @@
 The yw2md Python script runs through all chapters and scenes of a yWriter 6/7 project and fills markdown templates.
 
 ## Usage
-usage: `yw2md.pyw [-h][--silent] Project`
+usage: `yw2md.py [-h][--silent] Project`
 
 #### positional arguments:
   `Project`          yWriter project file

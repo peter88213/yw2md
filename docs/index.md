@@ -7,9 +7,9 @@ The yw2md Python script converts a yWriter 6/7 project to markdown.
 ## Download and install
 
 
-[Download the latest release (version 0.2.1)](https://raw.githubusercontent.com/peter88213/yw2md/master/dist/yw2md_v0.2.1.zip)
+[Download the latest release (version 0.4.0)](https://raw.githubusercontent.com/peter88213/yw2md/master/dist/yw2md_v0.4.0.zip)
 
-* Unzip the downloaded zipfile "yw2md_v0.2.1.zip" into a new folder and open "README.md" for usage instructions.
+* Unzip the downloaded zipfile "yw2md_v0.4.0.zip" into a new folder and open "README.md" for usage instructions.
 
 [Changelog](changelog)
 

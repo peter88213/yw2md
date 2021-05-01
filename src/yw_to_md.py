@@ -11,7 +11,8 @@ import re
 import os
 import argparse
 
-from pywriter.converter.yw_cnv_tk import YwCnvTk
+from pywriter.converter.yw_cnv_Ui import YwCnvUi
+from pywriter.converter.ui_cmd import UiCmd
 from pywriter.file.file_export import FileExport
 from pywriter.converter.file_factory import FileFactory
 from pywriter.yw.yw6_file import Yw6File
@@ -103,19 +104,22 @@ class MdFileFactory(FileFactory):
         else:
             return 'ERROR: File type is not supported.', None, None
 
-        targetFile = MdExport(fileName + MdExport.SUFFIX + MdExport.EXTENSION)
-        targetFile.SUFFIX = MdExport.SUFFIX
+        targetFile = MdExport(fileName + suffix + MdExport.EXTENSION)
+        targetFile.SUFFIX = suffix
 
         return 'SUCCESS', sourceFile, targetFile
 
 
-class Converter(YwCnvTk):
-    """yWriter converter with a simple tkinter GUI. 
+class Converter(YwCnvUi):
+    """yWriter converter with a command line UI. 
     """
 
     def __init__(self, silentMode):
-        YwCnvTk.__init__(self, silentMode)
+        YwCnvUi.__init__(self)
         self.fileFactory = MdFileFactory()
+
+        if not silentMode:
+            self.userInterface = UiCmd('Export yWriter project to Markdown')
 
 
 def run(sourcePath, silentMode=True):
@@ -124,7 +128,7 @@ def run(sourcePath, silentMode=True):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='Export yWriter project to md.',
+        description='Export yWriter project to Markdown.',
         epilog='')
     parser.add_argument('sourcePath', metavar='Project',
                         help='yWriter project file')
