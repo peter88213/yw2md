@@ -25,8 +25,10 @@ TEMPLATE_PATH = '../../template/'
 # Test data
 YW7 = 'normal.yw7'
 YW7_MD_FORMATTED = 'markdown.yw7'
+YW7_CONVERTED = 'generated.yw7'
 FROM_NORMAL_FORMATTED = 'normal.md'
 FROM_MD_FORMATTED = 'markdown.md'
+PROJECT = 'project'
 
 
 def read_file(inputFile):
@@ -50,19 +52,11 @@ def copy_file(inputFile, outputFile):
 def remove_all_testfiles():
 
     try:
-        os.remove(TEST_EXEC_PATH + YW7)
+        os.remove(TEST_EXEC_PATH + PROJECT + '.yw7')
     except:
         pass
     try:
-        os.remove(TEST_EXEC_PATH + YW7_MD_FORMATTED)
-    except:
-        pass
-    try:
-        os.remove(TEST_EXEC_PATH + FROM_NORMAL_FORMATTED)
-    except:
-        pass
-    try:
-        os.remove(TEST_EXEC_PATH + FROM_MD_FORMATTED)
+        os.remove(TEST_EXEC_PATH + PROJECT + '.md')
     except:
         pass
 
@@ -79,25 +73,34 @@ class NormalOperation(unittest.TestCase):
             pass
 
         remove_all_testfiles()
-        copy_file(TEST_DATA_PATH + YW7, TEST_EXEC_PATH + YW7)
-        copy_file(TEST_DATA_PATH + YW7_MD_FORMATTED,
-                  TEST_EXEC_PATH + YW7_MD_FORMATTED)
 
-    def test_normal_yw7(self):
+    def test_normal_yw7_to_md(self):
+        copy_file(TEST_DATA_PATH + YW7, TEST_EXEC_PATH + PROJECT + '.yw7')
         os.chdir(TEST_EXEC_PATH)
 
-        yw2md.run(TEST_EXEC_PATH + YW7, True)
+        yw2md.run(TEST_EXEC_PATH + PROJECT + '.yw7', True)
 
-        self.assertEqual(read_file(TEST_EXEC_PATH + FROM_NORMAL_FORMATTED),
+        self.assertEqual(read_file(TEST_EXEC_PATH + PROJECT + '.md'),
                          read_file(TEST_DATA_PATH + FROM_NORMAL_FORMATTED))
 
-    def test_markdown_yw7(self):
+    def test_markdown_yw7_to_md(self):
+        copy_file(TEST_DATA_PATH + YW7, TEST_EXEC_PATH + PROJECT + '.yw7')
         os.chdir(TEST_EXEC_PATH)
 
-        yw2md.run(TEST_EXEC_PATH + YW7_MD_FORMATTED, True)
+        yw2md.run(TEST_EXEC_PATH + PROJECT + '.yw7', True)
 
-        self.assertEqual(read_file(TEST_EXEC_PATH + FROM_MD_FORMATTED),
+        self.assertEqual(read_file(TEST_EXEC_PATH + PROJECT + '.md'),
                          read_file(TEST_DATA_PATH + FROM_NORMAL_FORMATTED))
+
+    def test_md_to_yw7(self):
+        copy_file(TEST_DATA_PATH + FROM_NORMAL_FORMATTED,
+                  TEST_EXEC_PATH + PROJECT + '.md')
+        os.chdir(TEST_EXEC_PATH)
+
+        yw2md.run(TEST_EXEC_PATH + PROJECT + '.md', True)
+
+        self.assertEqual(read_file(TEST_EXEC_PATH + PROJECT + '.yw7'),
+                         read_file(TEST_DATA_PATH + YW7_CONVERTED))
 
     def tearDown(self):
         remove_all_testfiles()

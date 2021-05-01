@@ -18,7 +18,7 @@ BUILD = '../test/'
 
 def main():
     os.chdir(SRC)
-    inliner.run('yw_to_md.py', BUILD + 'yw2md.py', 'pywriter')
+    inliner.run('md_yw.py', BUILD + 'yw2md.py', 'pywriter')
     print('Done.')
 
 
