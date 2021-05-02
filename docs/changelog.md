@@ -2,6 +2,14 @@
 
 ## Changelog
 
+### v0.6.0 Add options for yWriter project generation
+
+Add "--md" command line argument to use markdown for the scenes when 
+creating a new yWriter project from a Markdown document.
+
+Based on PyWriter 2.14.4
+
+
 ### v0.5.2 Fix md to yw7 conversion
 
 In v0.5.1, each scene's first line was dropped while parsing a Markdown file 

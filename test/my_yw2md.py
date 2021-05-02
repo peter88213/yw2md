@@ -88,9 +88,11 @@ https://github.com/peter88213/PyWriter/tree/master/src/pywriter/file#readme
 
     def convert_to_yw(self, text):
         """Convert Markdown to yw7 markup.
+
+        *** Customize this for alternaive Markdown dialects ***
         """
 
-        MD_REPLACEMENTS = [['\n\n', '\n'], ]  # to make a difference ...
+        MD_REPLACEMENTS = []
 
         try:
 
@@ -185,4 +187,8 @@ if __name__ == '__main__':
     else:
         silentMode = False
 
-    run(args.sourcePath, silentMode)
+    if os.path.isfile(args.sourcePath):
+        run(args.sourcePath, silentMode)
+
+    else:
+        print('ERROR: File not found.')

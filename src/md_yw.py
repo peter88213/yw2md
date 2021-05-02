@@ -47,6 +47,10 @@ class MdFile(FileExport):
 
     sceneDivider = '\n\n' + SCENE_DIVIDER + '\n\n'
 
+    def __init__(self, filePath, markdownMode=False):
+        FileExport.__init__(self, filePath)
+        self.markdownMode = markdownMode
+
     def get_chapterMapping(self, chId, chapterNumber):
         """Return a mapping dictionary for a chapter section. 
         """
@@ -91,16 +95,43 @@ class MdFile(FileExport):
     def convert_to_yw(self, text):
         """Convert Markdown to yw7 markup.
         """
+        if not self.markdownMode:
+            SAFE_SCENE_DIVIDER = '~ ~ ~'
 
-        MD_REPLACEMENTS = []
+            # Save the scene dividers: they may contain asterisks
+            # TODO: Better find a regex-based solution
 
-        try:
+            text = text.replace(self.SCENE_DIVIDER, SAFE_SCENE_DIVIDER)
 
-            for r in MD_REPLACEMENTS:
-                text = text.replace(r[0], r[1])
+            def set_bold(i):
+                return '[b]' + i.group(1) + '[/b]'
 
-        except AttributeError:
-            text = ''
+            def set_italic(i):
+                return '[i]' + i.group(1) + '[/i]'
+
+            boldMd = re.compile('\*\*(.+?)\*\*')
+            text = boldMd.sub(set_bold, text)
+
+            italicMd = re.compile('\*(.+?)\*')
+            text = italicMd.sub(set_italic, text)
+
+            # Restore the scene dividers
+
+            text = text.replace(SAFE_SCENE_DIVIDER, self.SCENE_DIVIDER)
+
+            MD_REPLACEMENTS = [
+                ['\n\n', '\n'],
+                ['<!---', '/*'],
+                ['--->', '*/'],
+            ]
+
+            try:
+
+                for r in MD_REPLACEMENTS:
+                    text = text.replace(r[0], r[1])
+
+            except AttributeError:
+                text = ''
 
         return(text)
 
@@ -200,6 +231,9 @@ class MdFileFactory(FileFactory):
     and a target file object for conversion.
     """
 
+    def __init__(self, markdownMode=False):
+        self.markdownMode = markdownMode
+
     def get_file_objects(self, sourcePath, suffix):
         """Return a tuple with three elements:
         * A message string starting with 'SUCCESS' or 'ERROR'
@@ -224,7 +258,7 @@ class MdFileFactory(FileFactory):
             targetFile.SUFFIX = suffix
 
         else:
-            sourceFile = MdFile(sourcePath)
+            sourceFile = MdFile(sourcePath, self.markdownMode)
             targetFile = Yw7File(fileName + Yw7File.EXTENSION)
             targetFile.ywTreeBuilder = Yw7TreeCreator()
             targetFile.ywProjectMerger = YwProjectCreator()
@@ -236,16 +270,16 @@ class Converter(YwCnvUi):
     """yWriter converter with a command line UI. 
     """
 
-    def __init__(self, silentMode):
+    def __init__(self, silentMode, markdownMode=False):
         YwCnvUi.__init__(self)
-        self.fileFactory = MdFileFactory()
+        self.fileFactory = MdFileFactory(markdownMode)
 
         if not silentMode:
             self.userInterface = UiCmd('Export yWriter project to Markdown')
 
 
-def run(sourcePath, silentMode=True):
-    Converter(silentMode).run(sourcePath, MdFile.SUFFIX)
+def run(sourcePath, silentMode=True, markdownMode=False):
+    Converter(silentMode, markdownMode).run(sourcePath, MdFile.SUFFIX)
 
 
 if __name__ == '__main__':
@@ -266,6 +300,9 @@ if __name__ == '__main__':
     parser.add_argument('--silent',
                         action="store_true",
                         help='suppress error messages and the request to confirm overwriting')
+    parser.add_argument('--md',
+                        action="store_true",
+                        help='when creating a yWriter project, use markdown for the scenes')
     args = parser.parse_args()
 
     if args.silent:
@@ -274,4 +311,14 @@ if __name__ == '__main__':
     else:
         silentMode = False
 
-    run(args.sourcePath, silentMode)
+    if args.md:
+        markdownMode = True
+
+    else:
+        markdownMode = False
+
+    if os.path.isfile(args.sourcePath):
+        run(args.sourcePath, silentMode, markdownMode)
+
+    else:
+        print('ERROR: File not found.')

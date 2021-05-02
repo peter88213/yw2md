@@ -5,7 +5,7 @@ The yw2md Python script converts yWriter 6/7 projects to Markdown
 and creates new yWriter 7 projects from Markdown formatted text documents.
 
 ## Usage
-usage: `yw2md.py [-h][--silent] Source file`
+usage: `yw2md.py [-h][--silent][--md] Source file`
 
 #### positional arguments:
 
@@ -28,3 +28,5 @@ to be converted to a new yWriter 7 project.
 `-h, --help`  show this help message and exit
 
 `--silent`  suppress error messages and the request to confirm overwriting
+
+`--md`  when creating a yWriter project, use markdown for the scenes
