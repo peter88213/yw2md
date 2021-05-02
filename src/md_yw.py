@@ -113,7 +113,7 @@ class MdFile(FileExport):
         def write_scene_content(scId, lines):
 
             if scId is not None:
-                self.scenes[scId].sceneContent = ''.join(lines)
+                self.scenes[scId].sceneContent = '\n'.join(lines)
 
                 if self.scenes[scId].wordCount < LOW_WORDCOUNT:
                     self.scenes[scId].status = Scene.STATUS.index('Outline')
@@ -129,7 +129,9 @@ class MdFile(FileExport):
 
         try:
             with open(self.filePath, encoding='utf-8') as f:
-                mdLines = f.readlines()
+                mdText = f.read()
+                cnvText = self.convert_to_yw(mdText)
+                mdLines = (cnvText).split('\n')
 
         except(FileNotFoundError):
             return 'ERROR: "' + os.path.normpath(self.filePath) + '" not found.'

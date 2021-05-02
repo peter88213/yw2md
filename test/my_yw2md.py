@@ -90,7 +90,7 @@ https://github.com/peter88213/PyWriter/tree/master/src/pywriter/file#readme
         """Convert Markdown to yw7 markup.
         """
 
-        MD_REPLACEMENTS = []
+        MD_REPLACEMENTS = [['\n\n', '\n'], ]  # to make a difference ...
 
         try:
 

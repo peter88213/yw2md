@@ -8,9 +8,9 @@ and creates new yWriter 7 projects from Markdown formatted text documents.
 ## Download and install
 
 
-[Download the latest release (version 0.5.0)](https://raw.githubusercontent.com/peter88213/yw2md/master/dist/yw2md_v0.5.0.zip)
+[Download the latest release (version 0.5.1)](https://raw.githubusercontent.com/peter88213/yw2md/master/dist/yw2md_v0.5.1.zip)
 
-* Unzip the downloaded zipfile "yw2md_v0.5.0.zip" into a new folder and open "README.md" for usage instructions.
+* Unzip the downloaded zipfile "yw2md_v0.5.1.zip" into a new folder and open "README.md" for usage instructions.
 
 [Changelog](changelog)
 
