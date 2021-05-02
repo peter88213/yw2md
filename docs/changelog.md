@@ -6,6 +6,8 @@
 
 Refactor: Move the MdFile class to the PyWriter library.
 
+Based on PyWriter 2.15.0
+
 
 ### v0.6.0 Add options for yWriter project generation
 
