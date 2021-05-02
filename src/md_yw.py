@@ -69,7 +69,7 @@ class Converter(YwCnvUi):
 
     def __init__(self, silentMode, markdownMode=False, noSceneTitles=False):
         YwCnvUi.__init__(self)
-        self.fileFactory = MdFileFactory(markdownMode)
+        self.fileFactory = MdFileFactory(markdownMode, noSceneTitles)
 
         if not silentMode:
             self.userInterface = UiCmd('Export yWriter project to Markdown')
@@ -84,23 +84,21 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Markdown converter for yWriter projects.',
         epilog='')
-    parser.add_argument('sourcePath', metavar='Source file',
+    parser.add_argument('sourcePath', metavar='Sourcefile',
                         help="The path of the source file for the conversion. "
                         "If it's a yWriter project file with extension 'yw6' or 'yw7', "
-                        "a new Markdoen formatted text document will be created. "
+                        "a new Markdown formatted text document will be created. "
                         "Otherwise, the source file will be considered a Markdown "
                         "formatted file to be converted to a new yWriter 7 project. "
                         "Existing yWriter projects are not overwritten. "
                         "Headings are considered chapter titles. Scenes within "
-                        "chapters are separated by '" + MdFile.SCENE_DIVIDER +
-                        "'. All scenes are Markdown formatted, so do not use "
-                        "yWriter's built-in exporters.")
+                        "chapters are separated by '" + MdFile.SCENE_DIVIDER + "'. ")
     parser.add_argument('--silent',
                         action="store_true",
                         help='suppress error messages and the request to confirm overwriting')
     parser.add_argument('--md',
                         action="store_true",
-                        help='the yWriter project uses markdown for the scenes')
+                        help='the yWriter project uses Markdown for the scenes')
     parser.add_argument('--notitles',
                         action="store_true",
                         help='scene titles are not prefixed as comments')
