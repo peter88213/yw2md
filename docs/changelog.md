@@ -2,6 +2,12 @@
 
 ## Changelog
 
+### v0.5.1 Fix md to yw7 conversion
+
+In v0.5.0 the MdFile.convert_to_yw() method was never called.
+Now it's working on the source document's text as a whole.
+
+
 ### v0.5.0 Add md to yw7 conversion
 
 Markdown formatted text documents can now be converted into yWriter 7 projects.
