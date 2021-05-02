@@ -20,6 +20,8 @@ to be converted to a new yWriter 7 project.
 * Existing yWriter projects are not overwritten.
 * Headings are considered chapter titles. 
 * Scenes within chapters are separated by `* * *`. 
+* In exported md documents, the scene title is prefixed as a comment by default.
+* In generated yWriter projects, comments at scene start are converted to scene titles by default.
 
 
 #### optional arguments:
@@ -28,6 +30,12 @@ to be converted to a new yWriter 7 project.
 
 `--silent`  suppress error messages and the request to confirm overwriting
 
-`--md`  when creating a yWriter project, use Markdown for the scenes
+`--md`  the scenes in the yWriter project are Markdown formatted
 
-`--notitles`  scene titles are not prefixed as comments
+* When converting scenes from yw7 to md, do not double the linefeeds.
+* When converting scenes from md to yw, use Markdown.
+
+`--notitles`  do not associate comments at the beginning of the scene with scene titles
+
+* When converting from yw7 to md, do not prefix scene titles as comments.
+* When converting from md to yw, do not convert comments at scene start to scene titles.

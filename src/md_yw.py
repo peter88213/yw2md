@@ -90,18 +90,17 @@ if __name__ == '__main__':
                         "a new Markdown formatted text document will be created. "
                         "Otherwise, the source file will be considered a Markdown "
                         "formatted file to be converted to a new yWriter 7 project. "
-                        "Existing yWriter projects are not overwritten. "
-                        "Headings are considered chapter titles. Scenes within "
-                        "chapters are separated by '" + MdFile.SCENE_DIVIDER + "'. ")
+                        "Existing yWriter projects are not overwritten.")
+
     parser.add_argument('--silent',
                         action="store_true",
                         help='suppress error messages and the request to confirm overwriting')
     parser.add_argument('--md',
                         action="store_true",
-                        help='the yWriter project uses Markdown for the scenes')
+                        help='the scenes in the yWriter project are Markdown formatted')
     parser.add_argument('--notitles',
                         action="store_true",
-                        help='scene titles are not prefixed as comments')
+                        help='do not associate comments at the beginning of the scene with scene titles')
     args = parser.parse_args()
 
     if args.silent:
