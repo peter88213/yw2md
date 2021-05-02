@@ -4,10 +4,10 @@
 
 ### v1.1.0 New command line options
 
-* In exported md documents, the scene title is prefixed as a comment (can be turned off with --notitles).
-* In generated yWriter projects, comments at scene start are converted to scene titles (can be turned off with --notitles).
-* Convert Markdown to yw Markup when writing scenes to yWriter (can be turned off with --md).
-* Convert double linefeeds to single ones when reading scenes from yWriter (can be turned on with --md).
+* In exported md documents, the scene title is prefixed as a comment (can be turned off with `--notitles`).
+* In generated yWriter projects, comments at scene start are converted to scene titles (can be turned off with `--notitles`).
+* Convert Markdown to yw Markup when writing scenes to yWriter (can be turned off with `--md`).
+* Convert double linefeeds to single ones when reading scenes from yWriter (can be turned on with `--md`).
 
 Based on PyWriter v2.15.2
 
