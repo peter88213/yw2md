@@ -20,7 +20,6 @@ to be converted to a new yWriter 7 project.
 * Existing yWriter projects are not overwritten.
 * Headings are considered chapter titles. 
 * Scenes within chapters are separated by `* * *`. 
-* All scenes are Markdown formatted, so do not use yWriter's built-in exporters. 
 
 
 #### optional arguments:
