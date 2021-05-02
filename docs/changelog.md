@@ -2,6 +2,11 @@
 
 ## Changelog
 
+### v1.0.0 Final release
+
+Refactor: Move the MdFile class to the PyWriter library.
+
+
 ### v0.6.0 Add options for yWriter project generation
 
 Add "--md" command line argument to use markdown for the scenes when 
