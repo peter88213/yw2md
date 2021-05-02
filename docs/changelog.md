@@ -2,9 +2,18 @@
 
 ## Changelog
 
+### v0.5.2 Fix md to yw7 conversion
+
+In v0.5.1, each scene's first line was dropped while parsing a Markdown file 
+for conversion to yWriter. Thus, the first paragraph was lost when having 
+converted double linefeeds to single ones.
+
+Based on PyWriter 2.14.4
+
+
 ### v0.5.1 Fix md to yw7 conversion
 
-In v0.5.0 the MdFile.convert_to_yw() method was never called.
+In v0.5.0, the MdFile.convert_to_yw() method was never called.
 Now it's working on the source document's text as a whole.
 
 

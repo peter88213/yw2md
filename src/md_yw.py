@@ -190,7 +190,7 @@ class MdFile(FileExport):
                 self.scenes[scId].status = '1'
                 self.scenes[scId].title = 'Scene ' + str(scCount)
 
-                lines = []
+                lines = [mdLine]
 
         return 'SUCCESS'
 
