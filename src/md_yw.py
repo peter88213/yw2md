@@ -25,8 +25,9 @@ class MdFileFactory(FileFactory):
     and a target file object for conversion.
     """
 
-    def __init__(self, markdownMode=False):
+    def __init__(self, markdownMode=False, noSceneTitles=False):
         self.markdownMode = markdownMode
+        self.noSceneTitles = noSceneTitles
 
     def get_file_objects(self, sourcePath, suffix):
         """Return a tuple with three elements:
@@ -48,11 +49,13 @@ class MdFileFactory(FileFactory):
             isYwProject = False
 
         if isYwProject:
-            targetFile = MdFile(fileName + suffix + MdFile.EXTENSION)
+            targetFile = MdFile(
+                fileName + suffix + MdFile.EXTENSION, self.markdownMode, self.noSceneTitles)
             targetFile.SUFFIX = suffix
 
         else:
-            sourceFile = MdFile(sourcePath, self.markdownMode)
+            sourceFile = MdFile(
+                sourcePath, self.markdownMode, self.noSceneTitles)
             targetFile = Yw7File(fileName + Yw7File.EXTENSION)
             targetFile.ywTreeBuilder = Yw7TreeCreator()
             targetFile.ywProjectMerger = YwProjectCreator()
@@ -64,7 +67,7 @@ class Converter(YwCnvUi):
     """yWriter converter with a command line UI. 
     """
 
-    def __init__(self, silentMode, markdownMode=False):
+    def __init__(self, silentMode, markdownMode=False, noSceneTitles=False):
         YwCnvUi.__init__(self)
         self.fileFactory = MdFileFactory(markdownMode)
 
@@ -72,8 +75,9 @@ class Converter(YwCnvUi):
             self.userInterface = UiCmd('Export yWriter project to Markdown')
 
 
-def run(sourcePath, silentMode=True, markdownMode=False):
-    Converter(silentMode, markdownMode).run(sourcePath, MdFile.SUFFIX)
+def run(sourcePath, silentMode=True, markdownMode=False, noSceneTitles=False):
+    Converter(silentMode, markdownMode, noSceneTitles).run(
+        sourcePath, MdFile.SUFFIX)
 
 
 if __name__ == '__main__':
@@ -96,7 +100,10 @@ if __name__ == '__main__':
                         help='suppress error messages and the request to confirm overwriting')
     parser.add_argument('--md',
                         action="store_true",
-                        help='when creating a yWriter project, use markdown for the scenes')
+                        help='the yWriter project uses markdown for the scenes')
+    parser.add_argument('--notitles',
+                        action="store_true",
+                        help='scene titles are not prefixed as comments')
     args = parser.parse_args()
 
     if args.silent:
@@ -111,8 +118,14 @@ if __name__ == '__main__':
     else:
         markdownMode = False
 
+    if args.notitles:
+        noSceneTitles = True
+
+    else:
+        noSceneTitles = False
+
     if os.path.isfile(args.sourcePath):
-        run(args.sourcePath, silentMode, markdownMode)
+        run(args.sourcePath, silentMode, markdownMode, noSceneTitles)
 
     else:
         print('ERROR: File not found.')

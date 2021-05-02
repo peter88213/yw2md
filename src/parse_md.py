@@ -13,7 +13,7 @@ if __name__ == '__main__':
     with open(sourceFile, encoding='utf-8') as f:
         mdText = f.read()
 
-    dummy = MdFile('')
+    dummy = MdFile('', False, False)
     text = MdFile.convert_to_yw(dummy, mdText)
     lines = (text).split('\n')
     text = '\n'.join(lines)
