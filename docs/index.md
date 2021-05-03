@@ -14,7 +14,7 @@ and creates new yWriter 7 projects from Markdown formatted text documents.
 
 [Changelog](changelog)
 
-## Usage
+## Instructions for Use, Markdown reference
 
 See the [instructions for use](usage)
 
