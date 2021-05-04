@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export yWriter project to markdown. 
+"""Markdown converter for yWriter projects. 
 
 Version @release
 
@@ -10,6 +10,7 @@ Published under the MIT License (https://opensource.org/licenses/mit-license.php
 import os
 import argparse
 
+from pywriter.converter.ui_tk import UiTk
 from pywriter.md.md_file import MdFile
 from pywriter.converter.yw_cnv_ui import YwCnvUi
 from pywriter.converter.ui_cmd import UiCmd
@@ -29,7 +30,7 @@ class MdFileFactory(FileFactory):
         self.markdownMode = markdownMode
         self.noSceneTitles = noSceneTitles
 
-    def get_file_objects(self, sourcePath, suffix):
+    def get_file_objects(self, sourcePath, suffix=MdFile.SUFFIX):
         """Return a tuple with three elements:
         * A message string starting with 'SUCCESS' or 'ERROR'
         * sourceFile: a Novel subclass instance
