@@ -4,6 +4,12 @@
 The yw2md Python script converts yWriter 6/7 projects to Markdown 
 and creates new yWriter 7 projects from Markdown formatted text documents.
 
+The script is meant to be launched from the command line. However, 
+if you prefer to use the mouse, you can create a link on the Windows 
+desktop, and launch yw2md by dragging the source file and dropping 
+it to the link icon. For optional arguments, edit the link's properties.
+
+
 ## Usage
 usage: `yw2md.py [-h][--silent][--md] Sourcefile`
 
