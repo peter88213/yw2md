@@ -20,82 +20,87 @@ from tkinter import filedialog
 
 
 class MyGui(UiTk):
-    """Implement a Tkinter GUI."""
+	"""Implement a Tkinter GUI."""
 
-    def __init__(self, app):
-        """Prepare the graphical user interface. """
+	def __init__(self, app):
+		"""Prepare the graphical user interface. """
 
-        UiTk.__init__(self, 'yw2md')
+		UiTk.__init__(self, 'yw2md')
 
-        self.root.selectButton = Button(
-            text="Select file", command=app.select_file)
-        self.root.selectButton.config(height=1, width=10)
-        self.root.selectButton.pack(padx=5, pady=5)
+		self.root.selectButton = Button(
+			text="Select file", command=app.select_file)
+		self.root.selectButton.config(height=1, width=10)
+		self.root.selectButton.pack(padx=5, pady=5)
 
-        self.root.runButton = Button(text='Convert', command=app.lift_off)
-        self.root.runButton.config(height=1, width=10)
-        self.root.runButton.pack(padx=5, pady=5)
-        self.root.runButton.config(state='disabled')
+		self.root.runButton = Button(text='Convert', command=app.lift_off)
+		self.root.runButton.config(height=1, width=10)
+		self.root.runButton.pack(padx=5, pady=5)
+		self.root.runButton.config(state='disabled')
 
-        self.root.quitButton = Button(text='Quit', command=quit)
-        self.root.quitButton.config(height=1, width=10)
-        self.root.quitButton.pack(padx=5, pady=5)
+		self.root.quitButton = Button(text='Quit', command=quit)
+		self.root.quitButton.config(height=1, width=10)
+		self.root.quitButton.pack(padx=5, pady=5)
 
-    def finish(self):
-        return
+	def finish(self):
+		return
 
 
 class MyConverter(YwCnvUi):
-    """yWriter desktop with a Tkinter GUI. 
-    """
+	"""yWriter desktop with a Tkinter GUI. 
+	"""
 
-    def __init__(self, silentMode):
-        YwCnvUi.__init__(self)
-        self.fileFactory = MdFileFactory()
+	def __init__(self, silentMode):
+		YwCnvUi.__init__(self)
+		self.fileFactory = MdFileFactory()
 
-        if not silentMode:
-            self.sourcePath = ''
-            self.userInterface = MyGui(self)
-            self.userInterface.root.mainloop()
+		if not silentMode:
+			self.sourcePath = ''
+			self.userInterface = MyGui(self)
+			self.userInterface.root.mainloop()
 
-    def select_file(self):
-        startDir = os.getcwd()
-        file = filedialog.askopenfile(initialdir=startDir)
+	def select_file(self):
+		self.userInterface.processInfo.config(text='')
+		self.userInterface.successInfo.config(bg=self.userInterface.root.cget("background"))
+		startDir = os.getcwd()
+		file = filedialog.askopenfile(initialdir=startDir)
 
-        if file:
-            self.sourcePath = file.name
+		if file:
+			self.sourcePath = file.name
 
-        if self.sourcePath:
-            self.userInterface.set_info_what(
-                'File: ' + os.path.normpath(self.sourcePath))
-            self.userInterface.root.runButton.config(state='normal')
+		if self.sourcePath:
+			self.userInterface.set_info_what(
+				'File: ' + os.path.normpath(self.sourcePath ))
+			self.userInterface.root.runButton.config(state='normal')
 
-        else:
-            self.userInterface.set_info_what('No file selected')
-            self.userInterface.root.runButton.config(state='disabled')
+		else:
+			self.userInterface.set_info_what('No file selected')
+			self.userInterface.root.runButton.config(state='disabled')
 
-    def lift_off(self):
-        if self.sourcePath:
-            self.run(self.sourcePath, '')
+	def lift_off(self):
+		self.userInterface.processInfo.config(text='')
+		self.userInterface.successInfo.config(bg=self.userInterface.root.cget("background"))
+		
+		if self.sourcePath:
+			self.run(self.sourcePath, '')
 
 
 def run(sourcePath):
 
-    if sourcePath is not None:
-        converter = MyConverter(True)
-        converter.run(sourcePath)
+	if sourcePath is not None:
+		converter = MyConverter(True)
+		converter.run(sourcePath)
 
-    else:
-        converter = MyConverter(False)
+	else:
+		converter = MyConverter(False)
 
 
 if __name__ == '__main__':
 
-    try:
-        sourcePath = sys.argv[1]
+	try:
+		sourcePath = sys.argv[1]
 
-        if os.path.isfile(sourcePath):
-            run(sourcePath)
+		if os.path.isfile(sourcePath):
+			run(sourcePath)
 
-    except:
-        run(None)
+	except:
+		run(None)
