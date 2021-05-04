@@ -32,5 +32,5 @@ with a bunch of dependencies that might be quite time-consuming to resolve.
 
 ## License
 
-This extension is distributed under the [MIT
+yw2md is distributed under the [MIT
 License](http://www.opensource.org/licenses/mit-license.php).

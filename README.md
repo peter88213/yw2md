@@ -6,5 +6,5 @@ For more information, see the [project homepage](https://peter88213.github.io/yw
 
 ## License
 
-This extension is distributed under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
+yw2md is distributed under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
 
