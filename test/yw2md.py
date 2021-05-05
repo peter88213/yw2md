@@ -16,10 +16,15 @@ class Ui():
     """Superclass for UI facades, implementing a 'silent mode'."""
 
     def __init__(self, title):
+        """Initialize text buffers for messaging.
+        """
         self.infoWhatText = ''
         self.infoHowText = ''
 
     def ask_yes_no(self, text):
+        """The application may use a subclass  
+        for confirmation requests.    
+        """
         return True
 
     def set_info_what(self, message):
@@ -42,13 +47,17 @@ from tkinter import messagebox
 class UiTk(Ui):
     """UI subclass implementing a Tkinter facade."""
 
-    def __init__(self, title):
+    def __init__(self, title, description=None):
         """Prepare the graphical user interface. """
+
+        if description is None:
+            description = __doc__
+            # Just for legacy compatibility
 
         self.root = Tk()
         self.root.geometry("800x360")
         self.root.title(title)
-        self.header = Label(self.root, text=__doc__)
+        self.header = Label(self.root, text=description)
         self.header.pack(padx=5, pady=5)
         self.appInfo = Label(self.root, text='')
         self.appInfo.pack(padx=5, pady=5)
@@ -1409,7 +1418,7 @@ class YwCnv():
             return 'ERROR: Target "' + os.path.normpath(targetFile.filePath) + '" is not of the supported type.'
 
         if targetFile.file_exists() and not self.confirm_overwrite(targetFile.filePath):
-            return 'Program abort by user.'
+            return 'Canceled by user.'
 
         message = sourceFile.read()
 
