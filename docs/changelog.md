@@ -2,6 +2,12 @@
 
 ## Changelog
 
+### v1.3.2 Add Tk GUI capability
+
+The included UiTk class opens an easy way to create custom variants with graphical user interface.
+A simple example is included with my_yw2md.pyw. 
+
+
 ### v1.2.0 New command line options
 
 * In exported md documents, the scene title is prefixed as a comment (can be turned off with `--notitles`).
