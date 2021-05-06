@@ -40,11 +40,6 @@ class Ui():
         special action to launch the user interaction.
         """
 
-    def finish(self):
-        """To be overwritten by subclasses requiring
-        special action to finish user interaction.
-        """
-
 
 class UiCmd(Ui):
     """UI subclass implementing a console interface."""
@@ -70,9 +65,9 @@ class UiCmd(Ui):
         """How's the converter doing?"""
         self.infoHowText = message
         print(message)
-
 from tkinter import *
 from tkinter import messagebox
+
 
 
 class UiTk(Ui):
@@ -120,11 +115,6 @@ class UiTk(Ui):
 
         else:
             self.successInfo.config(bg='red')
-
-    def show_edit_button(self, edit_cmd):
-        self.root.editButton = Button(text="Edit", command=edit_cmd)
-        self.root.editButton.config(height=1, width=10)
-        self.root.editButton.pack(padx=5, pady=5)
 
     def start(self):
         self.root.quitButton = Button(text="Quit", command=quit)
@@ -1426,6 +1416,7 @@ class MdFile(FileExport):
                     lines = [mdLine]
 
         return 'SUCCESS'
+import sys
 
 
 
@@ -2331,7 +2322,7 @@ class YwCnvUi(YwCnv):
     def __init__(self):
         self.ui = Ui('')
         self.fileFactory = None
-        self.success = False
+        self.newFile = None
 
     def run(self, sourcePath, suffix=None):
         """Create source and target objects and run conversion.
@@ -2355,8 +2346,6 @@ class YwCnvUi(YwCnv):
         else:
             self.import_to_yw(sourceFile, targetFile)
 
-        self.ui.finish()
-
     def export_from_yw(self, sourceFile, targetFile):
         """Template method for conversion from yw to other.
         """
@@ -2366,7 +2355,7 @@ class YwCnvUi(YwCnv):
         self.ui.set_info_how(message)
 
         if message.startswith('SUCCESS'):
-            self.success = True
+            self.newFile = targetFile.filePath
 
     def create_yw7(self, sourceFile, targetFile):
         """Template method for creation of a new yw7 project.
@@ -2383,7 +2372,7 @@ class YwCnvUi(YwCnv):
             self.ui.set_info_how(message)
 
             if message.startswith('SUCCESS'):
-                self.success = True
+                self.newFile = targetFile.filePath
 
     def import_to_yw(self, sourceFile, targetFile):
         """Template method for conversion from other to yw.
@@ -2392,9 +2381,10 @@ class YwCnvUi(YwCnv):
             sourceFile.filePath) + '"\nOutput: ' + targetFile.DESCRIPTION + ' "' + os.path.normpath(targetFile.filePath) + '"')
         message = self.convert(sourceFile, targetFile)
         self.ui.set_info_how(message)
+        self.delete_tempfile(sourceFile.filePath)
 
         if message.startswith('SUCCESS'):
-            self.success = True
+            self.newFile = targetFile.filePath
 
     def confirm_overwrite(self, filePath):
         """ Invoked by the parent if a file already exists.
@@ -2423,6 +2413,10 @@ class YwCnvUi(YwCnv):
 
                 except:
                     pass
+
+    def open_newFile(self):
+        os.startfile(self.newFile)
+        sys.exit(0)
 
 from abc import ABC
 from abc import abstractmethod
