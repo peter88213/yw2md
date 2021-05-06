@@ -7,6 +7,8 @@
 The included UiTk class opens an easy way to create custom variants with graphical user interface.
 A simple example is included with my_yw2md.pyw. 
 
+Based on PyWriter v2.16.1
+
 
 ### v1.2.0 New command line options
 
