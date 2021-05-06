@@ -10,10 +10,11 @@ Published under the MIT License (https://opensource.org/licenses/mit-license.php
 import os
 import argparse
 
-from pywriter.converter.ui_tk import UiTk
+from pywriter.ui.ui import Ui
+from pywriter.ui.ui_cmd import UiCmd
+from pywriter.ui.ui_tk import UiTk
 from pywriter.md.md_file import MdFile
 from pywriter.converter.yw_cnv_ui import YwCnvUi
-from pywriter.converter.ui_cmd import UiCmd
 from pywriter.converter.file_factory import FileFactory
 from pywriter.yw.yw6_file import Yw6File
 from pywriter.yw.yw7_file import Yw7File
@@ -64,21 +65,17 @@ class MdFileFactory(FileFactory):
         return 'SUCCESS', sourceFile, targetFile
 
 
-class Converter(YwCnvUi):
-    """yWriter converter with a command line UI. 
-    """
-
-    def __init__(self, silentMode, markdownMode=False, noSceneTitles=False):
-        YwCnvUi.__init__(self)
-        self.fileFactory = MdFileFactory(markdownMode, noSceneTitles)
-
-        if not silentMode:
-            self.userInterface = UiCmd('Export yWriter project to Markdown')
-
-
 def run(sourcePath, silentMode=True, markdownMode=False, noSceneTitles=False):
-    Converter(silentMode, markdownMode, noSceneTitles).run(
-        sourcePath, MdFile.SUFFIX)
+
+    if silentMode:
+        ui = Ui('')
+    else:
+        ui = UiCmd('yw2md')
+
+    converter = YwCnvUi()
+    converter.ui = ui
+    converter.fileFactory = MdFileFactory(markdownMode, noSceneTitles)
+    converter.run(sourcePath, MdFile.SUFFIX)
 
 
 if __name__ == '__main__':

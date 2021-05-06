@@ -35,10 +35,41 @@ class Ui():
         """How's the converter doing?"""
         self.infoHowText = message
 
+    def start(self):
+        """To be overwritten by subclasses requiring
+        special action to launch the user interaction.
+        """
+
     def finish(self):
         """To be overwritten by subclasses requiring
         special action to finish user interaction.
         """
+
+
+class UiCmd(Ui):
+    """UI subclass implementing a console interface."""
+
+    def __init__(self, title):
+        """initialize UI. """
+        print(title)
+
+    def ask_yes_no(self, text):
+        result = input('WARNING: ' + text + ' (y/n)')
+
+        if result.lower() == 'y':
+            return True
+
+        else:
+            return False
+
+    def set_info_what(self, message):
+        """What's the converter going to do?"""
+        print(message)
+
+    def set_info_how(self, message):
+        """How's the converter doing?"""
+        self.infoHowText = message
+        print(message)
 
 from tkinter import *
 from tkinter import messagebox
@@ -95,7 +126,7 @@ class UiTk(Ui):
         self.root.editButton.config(height=1, width=10)
         self.root.editButton.pack(padx=5, pady=5)
 
-    def finish(self):
+    def start(self):
         self.root.quitButton = Button(text="Quit", command=quit)
         self.root.quitButton.config(height=1, width=10)
         self.root.quitButton.pack(padx=5, pady=5)
@@ -2291,15 +2322,16 @@ class Yw7TreeCreator(YwTreeBuilder):
 
 
 class YwCnvUi(YwCnv):
-    """Standalone yWriter converter with a 'silent' user interface. 
+    """yWriter converter using a user interface facade. 
+    Per default, 'silent mode' is active.
     """
 
     YW_EXTENSIONS = ['.yw5', '.yw6', '.yw7']
 
     def __init__(self):
-        self.userInterface = Ui('')
-        self.success = False
+        self.ui = Ui('')
         self.fileFactory = None
+        self.success = False
 
     def run(self, sourcePath, suffix=None):
         """Create source and target objects and run conversion.
@@ -2308,10 +2340,10 @@ class YwCnvUi(YwCnv):
             sourcePath, suffix)
 
         if not message.startswith('SUCCESS'):
-            self.userInterface.set_info_how(message)
+            self.ui.set_info_how(message)
 
         elif not sourceFile.file_exists():
-            self.userInterface.set_info_how(
+            self.ui.set_info_how(
                 'ERROR: File "' + os.path.normpath(sourceFile.filePath) + '" not found.')
 
         elif sourceFile.EXTENSION in self.YW_EXTENSIONS:
@@ -2323,15 +2355,15 @@ class YwCnvUi(YwCnv):
         else:
             self.import_to_yw(sourceFile, targetFile)
 
-        self.finish(sourcePath)
+        self.ui.finish()
 
     def export_from_yw(self, sourceFile, targetFile):
         """Template method for conversion from yw to other.
         """
-        self.userInterface.set_info_what('Input: ' + sourceFile.DESCRIPTION + ' "' + os.path.normpath(
+        self.ui.set_info_what('Input: ' + sourceFile.DESCRIPTION + ' "' + os.path.normpath(
             sourceFile.filePath) + '"\nOutput: ' + targetFile.DESCRIPTION + ' "' + os.path.normpath(targetFile.filePath) + '"')
         message = self.convert(sourceFile, targetFile)
-        self.userInterface.set_info_how(message)
+        self.ui.set_info_how(message)
 
         if message.startswith('SUCCESS'):
             self.success = True
@@ -2339,16 +2371,16 @@ class YwCnvUi(YwCnv):
     def create_yw7(self, sourceFile, targetFile):
         """Template method for creation of a new yw7 project.
         """
-        self.userInterface.set_info_what(
+        self.ui.set_info_what(
             'Create a yWriter project file from ' + sourceFile.DESCRIPTION + '\nNew project: "' + os.path.normpath(targetFile.filePath) + '"')
 
         if targetFile.file_exists():
-            self.userInterface.set_info_how(
+            self.ui.set_info_how(
                 'ERROR: "' + os.path.normpath(targetFile.filePath) + '" already exists.')
 
         else:
             message = self.convert(sourceFile, targetFile)
-            self.userInterface.set_info_how(message)
+            self.ui.set_info_how(message)
 
             if message.startswith('SUCCESS'):
                 self.success = True
@@ -2356,10 +2388,10 @@ class YwCnvUi(YwCnv):
     def import_to_yw(self, sourceFile, targetFile):
         """Template method for conversion from other to yw.
         """
-        self.userInterface.set_info_what('Input: ' + sourceFile.DESCRIPTION + ' "' + os.path.normpath(
+        self.ui.set_info_what('Input: ' + sourceFile.DESCRIPTION + ' "' + os.path.normpath(
             sourceFile.filePath) + '"\nOutput: ' + targetFile.DESCRIPTION + ' "' + os.path.normpath(targetFile.filePath) + '"')
         message = self.convert(sourceFile, targetFile)
-        self.userInterface.set_info_how(message)
+        self.ui.set_info_how(message)
 
         if message.startswith('SUCCESS'):
             self.success = True
@@ -2367,7 +2399,7 @@ class YwCnvUi(YwCnv):
     def confirm_overwrite(self, filePath):
         """ Invoked by the parent if a file already exists.
         """
-        return self.userInterface.ask_yes_no('Overwrite existing file "' + os.path.normpath(filePath) + '"?')
+        return self.ui.ask_yes_no('Overwrite existing file "' + os.path.normpath(filePath) + '"?')
 
     def delete_tempfile(self, filePath):
         """If an Office file exists, delete the temporary file."""
@@ -2391,35 +2423,6 @@ class YwCnvUi(YwCnv):
 
                 except:
                     pass
-
-    def finish(self, sourcePath):
-        """Hook for actions to take place after the conversion."""
-
-
-class UiCmd(Ui):
-    """UI subclass implementing a console interface."""
-
-    def __init__(self, title):
-        """initialize UI. """
-        print(title)
-
-    def ask_yes_no(self, text):
-        result = input('WARNING: ' + text + ' (y/n)')
-
-        if result.lower() == 'y':
-            return True
-
-        else:
-            return False
-
-    def set_info_what(self, message):
-        """What's the converter going to do?"""
-        print(message)
-
-    def set_info_how(self, message):
-        """How's the converter doing?"""
-        self.infoHowText = message
-        print(message)
 
 from abc import ABC
 from abc import abstractmethod
@@ -3545,21 +3548,17 @@ class MdFileFactory(FileFactory):
         return 'SUCCESS', sourceFile, targetFile
 
 
-class Converter(YwCnvUi):
-    """yWriter converter with a command line UI. 
-    """
-
-    def __init__(self, silentMode, markdownMode=False, noSceneTitles=False):
-        YwCnvUi.__init__(self)
-        self.fileFactory = MdFileFactory(markdownMode, noSceneTitles)
-
-        if not silentMode:
-            self.userInterface = UiCmd('Export yWriter project to Markdown')
-
-
 def run(sourcePath, silentMode=True, markdownMode=False, noSceneTitles=False):
-    Converter(silentMode, markdownMode, noSceneTitles).run(
-        sourcePath, MdFile.SUFFIX)
+
+    if silentMode:
+        ui = Ui('')
+    else:
+        ui = UiCmd('yw2md')
+
+    converter = YwCnvUi()
+    converter.ui = ui
+    converter.fileFactory = MdFileFactory(markdownMode, noSceneTitles)
+    converter.run(sourcePath, MdFile.SUFFIX)
 
 
 if __name__ == '__main__':

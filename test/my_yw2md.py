@@ -17,7 +17,9 @@ import re
 import os
 import argparse
 
-from yw2md import Converter
+from yw2md import Ui
+from yw2md import UiCmd
+from yw2md import YwCnvUi
 from yw2md import MdFile
 from yw2md import FileFactory
 from yw2md import Yw6File
@@ -146,19 +148,17 @@ class MyFileFactory(FileFactory):
         return 'SUCCESS', sourceFile, targetFile
 
 
-class MyConverter(Converter):
-    """This class is needed to instantiate the customized MyFile class. 
+def run(sourcePath, silentMode=True, markdownMode=False, noSceneTitles=False):
 
-    *** Do not edit *** 
-    """
+    if silentMode:
+        ui = Ui('')
+    else:
+        ui = UiCmd('yw2md')
 
-    def __init__(self, silentMode):
-        Converter.__init__(self, silentMode)
-        self.fileFactory = MyFileFactory()
-
-
-def run(sourcePath, silentMode=True):
-    MyConverter(silentMode).run(sourcePath, MyFile.SUFFIX)
+    converter = YwCnvUi()
+    converter.ui = ui
+    converter.fileFactory = MyFileFactory()
+    converter.run(sourcePath, MdFile.SUFFIX)
 
 
 if __name__ == '__main__':

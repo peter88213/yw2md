@@ -2,6 +2,15 @@
 
 ## Changelog
 
+### v1.3.3 Make GUI customization easier
+
+The converter is now even more loosely coupled with its user interface. 
+This should make it easier for application developers to customize user interaction, 
+and use any GUI framework.
+
+Based on PyWriter v2.17.0 (development version)
+
+
 ### v1.3.2 Add Tk GUI capability
 
 The included UiTk class opens an easy way to create custom variants with graphical user interface.

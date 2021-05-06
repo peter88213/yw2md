@@ -10,6 +10,11 @@ Published under the MIT License (https://opensource.org/licenses/mit-license.php
 import sys
 import os
 
+from yw2md import Ui
+from yw2md import UiCmd
+from yw2md import YwCnvUi
+from yw2md import MdFile
+from yw2md import FileFactory
 from yw2md import YwCnvUi
 from yw2md import MdFileFactory
 from yw2md import UiTk
@@ -24,13 +29,13 @@ class MyGui(UiTk):
     and link it to the application.
     """
 
-    def __init__(self, title, converter):
+    def __init__(self, title):
         """Make the converter object visible to the user interface 
         in order to make method calls possible.
         Add the widgets needed to invoke the converter manually.
         """
         UiTk.__init__(self, title)
-        self.converter = converter
+        self.converter = None
 
         self.root.selectButton = Button(
             text="Select file", command=self.select_file)
@@ -96,36 +101,28 @@ class MyGui(UiTk):
         return
 
 
-class MyConverter(YwCnvUi):
-    """yWriter desktop with a Tkinter GUI. 
-    """
+def run():
 
-    def __init__(self, silentMode):
-        YwCnvUi.__init__(self)
-        self.fileFactory = MdFileFactory()
+    ui = MyGui('yw2md')
+    # instantiate a user interface object
 
-        if not silentMode:
-            self.userInterface = MyGui('yw2md', self)
-            self.userInterface.start()
+    converter = YwCnvUi()
+    # instantiate a converter object
 
+    converter.fileFactory = MdFileFactory()
+    # associate a file factory object with the converter
 
-def run(sourcePath):
+    # Create a bidirectional association between the
+    # user interface object and the converter object.
 
-    if sourcePath is not None:
-        converter = MyConverter(True)
-        converter.run(sourcePath)
+    converter.ui = ui
+    # make the user interface's methods visible to the converter
 
-    else:
-        converter = MyConverter(False)
+    ui.converter = converter
+    # make the converter's methods visible to the user interface
+
+    ui.start()
 
 
 if __name__ == '__main__':
-
-    try:
-        sourcePath = sys.argv[1]
-
-        if os.path.isfile(sourcePath):
-            run(sourcePath)
-
-    except:
-        run(None)
+    run()
