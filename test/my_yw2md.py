@@ -52,7 +52,7 @@ https://github.com/peter88213/PyWriter/tree/master/src/pywriter/file#readme
 
     partTemplate = '\n## ${Title}\n\n'  # Make parts look like regular chapters
 
-    chapterTemplate = '\n## ${Title}\n\n'  # Use alternative linefeeds
+    chapterTemplate = '\n## ${Title}\n\n'
 
     sceneTemplate = '${SceneContent}\n\n'
 
@@ -93,16 +93,34 @@ https://github.com/peter88213/PyWriter/tree/master/src/pywriter/file#readme
 
         *** Customize this for alternaive Markdown dialects ***
         """
+        if not self.markdownMode:
+            SAFE_SCENE_DIVIDER = '~ ~ ~'
 
-        MD_REPLACEMENTS = []
+            # Save the scene dividers: they may contain asterisks
+            # TODO: Better find a regex-based solution
 
-        try:
+            text = text.replace(self.SCENE_DIVIDER, SAFE_SCENE_DIVIDER)
 
-            for r in MD_REPLACEMENTS:
-                text = text.replace(r[0], r[1])
+            text = re.sub('\*\*(.+?)\*\*', '[b]\\1[/b]', text)
+            text = re.sub('\*(.+?)\*', '[i]\\1[/i]', text)
 
-        except AttributeError:
-            text = ''
+            # Restore the scene dividers
+
+            text = text.replace(SAFE_SCENE_DIVIDER, self.SCENE_DIVIDER)
+
+            MD_REPLACEMENTS = [
+                ['\n\n', '\n'],
+                ['<!---', '/*'],
+                ['--->', '*/'],
+            ]
+
+            try:
+
+                for r in MD_REPLACEMENTS:
+                    text = text.replace(r[0], r[1])
+
+            except AttributeError:
+                text = ''
 
         return(text)
 
