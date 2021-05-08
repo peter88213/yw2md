@@ -2,6 +2,14 @@
 
 ## Changelog
 
+### v1.3.5 Bugfix
+
+Fix a bug extracting scene titles the wrong way if the first paragraph
+contains more than one comment.
+
+Based on PyWriter v2.17.3
+
+
 ### v1.3.3 Make GUI customization easier
 
 The converter is now even more loosely coupled with its user interface. 
