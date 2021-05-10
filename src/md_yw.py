@@ -13,7 +13,6 @@ import argparse
 from pywriter.ui.ui import Ui
 from pywriter.ui.ui_cmd import UiCmd
 from pywriter.ui.ui_tk import UiTk
-from pywriter.md.md_file import MdFile
 from pywriter.converter.yw_cnv_ui import YwCnvUi
 from pywriter.converter.file_factory import FileFactory
 from pywriter.yw.yw6_file import Yw6File
@@ -21,8 +20,10 @@ from pywriter.yw.yw7_file import Yw7File
 from pywriter.yw.yw7_tree_creator import Yw7TreeCreator
 from pywriter.yw.yw_project_creator import YwProjectCreator
 
+from pywmd.md_file import MdFile
 
-class MdFileFactory(FileFactory):
+
+class MyFileFactory(FileFactory):
     """A factory class that instantiates a source file object
     and a target file object for conversion.
     """
@@ -74,7 +75,7 @@ def run(sourcePath, silentMode=True, markdownMode=False, noSceneTitles=False):
 
     converter = YwCnvUi()
     converter.ui = ui
-    converter.fileFactory = MdFileFactory(markdownMode, noSceneTitles)
+    converter.fileFactory = MyFileFactory(markdownMode, noSceneTitles)
     converter.run(sourcePath, MdFile.SUFFIX)
 
 

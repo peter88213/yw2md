@@ -94,11 +94,12 @@ https://github.com/peter88213/PyWriter/tree/master/src/pywriter/file#readme
         *** Customize this for alternaive Markdown dialects ***
         """
         if not self.markdownMode:
-            SAFE_SCENE_DIVIDER = '~ ~ ~'
 
             # Save the scene dividers: they may contain asterisks
-            # TODO: Better find a regex-based solution
+            # Note: The superclass MdFile implements a regex-based solution
+            # here.
 
+            SAFE_SCENE_DIVIDER = '~ ~ ~'
             text = text.replace(self.SCENE_DIVIDER, SAFE_SCENE_DIVIDER)
 
             text = re.sub('\*\*(.+?)\*\*', '[b]\\1[/b]', text)

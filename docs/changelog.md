@@ -2,6 +2,14 @@
 
 ## Changelog
 
+### v1.3.6 Refactor
+
+* Modify project structure
+* Implement a regex-based solution for scene dividers.
+
+Based on PyWriter v2.17.4 (developmen version)
+
+
 ### v1.3.5 Bugfix
 
 Fix a bug extracting scene titles the wrong way if the first paragraph

@@ -70,6 +70,8 @@ Single blank lines in yWriter scenes are Markdown-encoded by three blank lines.
 #### Italic 
 `*single asterisks*`
 
+__Note__ : A `*` surrounded with spaces will be treated as a literal asterisk.
+
 #### Bold 
 `**double asterisks**`
 

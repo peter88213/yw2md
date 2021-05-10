@@ -16,7 +16,7 @@ from yw2md import YwCnvUi
 from yw2md import MdFile
 from yw2md import FileFactory
 from yw2md import YwCnvUi
-from yw2md import MdFileFactory
+from yw2md import MyFileFactory
 from yw2md import UiTk
 
 from tkinter import *
@@ -109,7 +109,7 @@ def run():
     converter = YwCnvUi()
     # instantiate a converter object
 
-    converter.fileFactory = MdFileFactory()
+    converter.fileFactory = MyFileFactory()
     # associate a file factory object with the converter
 
     # Create a bidirectional association between the

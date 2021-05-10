@@ -121,1285 +121,6 @@ class UiTk(Ui):
         self.root.quitButton.config(height=1, width=10)
         self.root.quitButton.pack(padx=5, pady=5)
         self.root.mainloop()
-import re
-
-from string import Template
-
-
-
-
-class WorldElement():
-    """Story world element representation.
-    # xml: <LOCATIONS><LOCATION> or # xml: <ITEMS><ITEM>
-    """
-
-    def __init__(self):
-        self.title = None
-        # str
-        # xml: <Title>
-
-        self.image = None
-        # str
-        # xml: <ImageFile>
-
-        self.desc = None
-        # str
-        # xml: <Desc>
-
-        self.tags = None
-        # list of str
-        # xml: <Tags>
-
-        self.aka = None
-        # str
-        # xml: <AKA>
-
-
-class Character(WorldElement):
-    """yWriter character representation.
-    # xml: <CHARACTERS><CHARACTER>
-    """
-
-    MAJOR_MARKER = 'Major'
-    MINOR_MARKER = 'Minor'
-
-    def __init__(self):
-        WorldElement.__init__(self)
-
-        self.notes = None
-        # str
-        # xml: <Notes>
-
-        self.bio = None
-        # str
-        # xml: <Bio>
-
-        self.goals = None
-        # str
-        # xml: <Goals>
-
-        self.fullName = None
-        # str
-        # xml: <FullName>
-
-        self.isMajor = None
-        # bool
-        # xml: <Major>
-
-
-
-class Scene():
-    """yWriter scene representation.
-    # xml: <SCENES><SCENE>
-    """
-
-    # Emulate an enumeration for the scene status
-
-    STATUS = [None, 'Outline', 'Draft', '1st Edit', '2nd Edit', 'Done']
-    ACTION_MARKER = 'A'
-    REACTION_MARKER = 'R'
-
-    def __init__(self):
-        self.title = None
-        # str
-        # xml: <Title>
-
-        self.desc = None
-        # str
-        # xml: <Desc>
-
-        self._sceneContent = None
-        # str
-        # xml: <SceneContent>
-        # Scene text with yW7 raw markup.
-
-        self.rtfFile = None
-        # str
-        # xml: <RTFFile>
-        # Name of the file containing the scene in yWriter 5.
-
-        self.wordCount = 0
-        # int # xml: <WordCount>
-        # To be updated by the sceneContent setter
-
-        self.letterCount = 0
-        # int
-        # xml: <LetterCount>
-        # To be updated by the sceneContent setter
-
-        self.isUnused = None
-        # bool
-        # xml: <Unused> -1
-
-        self.isNotesScene = None
-        # bool
-        # xml: <Fields><Field_SceneType> 1
-
-        self.isTodoScene = None
-        # bool
-        # xml: <Fields><Field_SceneType> 2
-
-        self.doNotExport = None
-        # bool
-        # xml: <ExportCondSpecific><ExportWhenRTF>
-
-        self.status = None
-        # int # xml: <Status>
-
-        self.sceneNotes = None
-        # str
-        # xml: <Notes>
-
-        self.tags = None
-        # list of str
-        # xml: <Tags>
-
-        self.field1 = None
-        # str
-        # xml: <Field1>
-
-        self.field2 = None
-        # str
-        # xml: <Field2>
-
-        self.field3 = None
-        # str
-        # xml: <Field3>
-
-        self.field4 = None
-        # str
-        # xml: <Field4>
-
-        self.appendToPrev = None
-        # bool
-        # xml: <AppendToPrev> -1
-
-        self.isReactionScene = None
-        # bool
-        # xml: <ReactionScene> -1
-
-        self.isSubPlot = None
-        # bool
-        # xml: <SubPlot> -1
-
-        self.goal = None
-        # str
-        # xml: <Goal>
-
-        self.conflict = None
-        # str
-        # xml: <Conflict>
-
-        self.outcome = None
-        # str
-        # xml: <Outcome>
-
-        self.characters = None
-        # list of str
-        # xml: <Characters><CharID>
-
-        self.locations = None
-        # list of str
-        # xml: <Locations><LocID>
-
-        self.items = None
-        # list of str
-        # xml: <Items><ItemID>
-
-        self.date = None
-        # str
-        # xml: <SpecificDateMode>-1
-        # xml: <SpecificDateTime>1900-06-01 20:38:00
-
-        self.time = None
-        # str
-        # xml: <SpecificDateMode>-1
-        # xml: <SpecificDateTime>1900-06-01 20:38:00
-
-        self.minute = None
-        # str
-        # xml: <Minute>
-
-        self.hour = None
-        # str
-        # xml: <Hour>
-
-        self.day = None
-        # str
-        # xml: <Day>
-
-        self.lastsMinutes = None
-        # str
-        # xml: <LastsMinutes>
-
-        self.lastsHours = None
-        # str
-        # xml: <LastsHours>
-
-        self.lastsDays = None
-        # str
-        # xml: <LastsDays>
-
-    @property
-    def sceneContent(self):
-        return self._sceneContent
-
-    @sceneContent.setter
-    def sceneContent(self, text):
-        """Set sceneContent updating word count and letter count."""
-        self._sceneContent = text
-        text = re.sub('\[.+?\]|\.|\,| -', '', self._sceneContent)
-        # Remove yWriter raw markup for word count
-
-        wordList = text.split()
-        self.wordCount = len(wordList)
-
-        text = re.sub('\[.+?\]', '', self._sceneContent)
-        # Remove yWriter raw markup for letter count
-
-        text = text.replace('\n', '')
-        text = text.replace('\r', '')
-        self.letterCount = len(text)
-from urllib.parse import quote
-
-
-class Novel():
-    """Abstract yWriter project file representation.
-
-    This class represents a file containing a novel with additional 
-    attributes and structural information (a full set or a subset
-    of the information included in an yWriter project file).
-    """
-
-    DESCRIPTION = 'Novel'
-    EXTENSION = None
-    SUFFIX = None
-    # To be extended by file format specific subclasses.
-
-    def __init__(self, filePath):
-        self.title = None
-        # str
-        # xml: <PROJECT><Title>
-
-        self.desc = None
-        # str
-        # xml: <PROJECT><Desc>
-
-        self.author = None
-        # str
-        # xml: <PROJECT><AuthorName>
-
-        self.fieldTitle1 = None
-        # str
-        # xml: <PROJECT><FieldTitle1>
-
-        self.fieldTitle2 = None
-        # str
-        # xml: <PROJECT><FieldTitle2>
-
-        self.fieldTitle3 = None
-        # str
-        # xml: <PROJECT><FieldTitle3>
-
-        self.fieldTitle4 = None
-        # str
-        # xml: <PROJECT><FieldTitle4>
-
-        self.chapters = {}
-        # dict
-        # xml: <CHAPTERS><CHAPTER><ID>
-        # key = chapter ID, value = Chapter object.
-        # The order of the elements does not matter (the novel's
-        # order of the chapters is defined by srtChapters)
-
-        self.scenes = {}
-        # dict
-        # xml: <SCENES><SCENE><ID>
-        # key = scene ID, value = Scene object.
-        # The order of the elements does not matter (the novel's
-        # order of the scenes is defined by the order of the chapters
-        # and the order of the scenes within the chapters)
-
-        self.srtChapters = []
-        # list of str
-        # The novel's chapter IDs. The order of its elements
-        # corresponds to the novel's order of the chapters.
-
-        self.locations = {}
-        # dict
-        # xml: <LOCATIONS>
-        # key = location ID, value = Object.
-        # The order of the elements does not matter.
-
-        self.srtLocations = []
-        # list of str
-        # The novel's location IDs. The order of its elements
-        # corresponds to the XML project file.
-
-        self.items = {}
-        # dict
-        # xml: <ITEMS>
-        # key = item ID, value = Object.
-        # The order of the elements does not matter.
-
-        self.srtItems = []
-        # list of str
-        # The novel's item IDs. The order of its elements
-        # corresponds to the XML project file.
-
-        self.characters = {}
-        # dict
-        # xml: <CHARACTERS>
-        # key = character ID, value = Character object.
-        # The order of the elements does not matter.
-
-        self.srtCharacters = []
-        # list of str
-        # The novel's character IDs. The order of its elements
-        # corresponds to the XML project file.
-
-        self._filePath = None
-        # str
-        # Path to the file. The setter only accepts files of a
-        # supported type as specified by EXTENSION.
-
-        self._projectName = None
-        # str
-        # URL-coded file name without suffix and extension.
-
-        self._projectPath = None
-        # str
-        # URL-coded path to the project directory.
-
-        self.filePath = filePath
-
-    @property
-    def filePath(self):
-        return self._filePath
-
-    @filePath.setter
-    def filePath(self, filePath):
-        """Accept only filenames with the right extension. """
-
-        if self.SUFFIX is not None:
-            suffix = self.SUFFIX
-
-        else:
-            suffix = ''
-
-        if filePath.lower().endswith(suffix + self.EXTENSION):
-            self._filePath = filePath
-            head, tail = os.path.split(os.path.realpath(filePath))
-            self.projectPath = quote(head.replace('\\', '/'), '/:')
-            self.projectName = quote(tail.replace(
-                suffix + self.EXTENSION, ''))
-
-    def read(self):
-        """Parse the file and store selected properties.
-        To be overwritten by file format specific subclasses.
-        """
-        return 'ERROR: read method is not implemented.'
-
-    def merge(self, novel):
-        """Copy required attributes of the novel object.
-        To be overwritten by file format specific subclasses.
-        """
-        return 'ERROR: merge method is not implemented.'
-
-    def write(self):
-        """Write selected properties to the file.
-        To be overwritten by file format specific subclasses.
-        """
-        return 'ERROR: write method is not implemented.'
-
-    def convert_to_yw(self, text):
-        """Convert source format to yw7 markup.
-        To be overwritten by file format specific subclasses.
-        """
-        return text
-
-    def convert_from_yw(self, text):
-        """Convert yw7 markup to target format.
-        To be overwritten by file format specific subclasses.
-        """
-        return text
-
-    def file_exists(self):
-        """Check whether the file specified by filePath exists. """
-        if os.path.isfile(self.filePath):
-            return True
-
-        else:
-            return False
-
-
-class FileExport(Novel):
-    """Abstract yWriter project file exporter representation.
-    To be overwritten by subclasses providing file type specific 
-    markup converters and templates.
-    """
-    fileHeader = ''
-    partTemplate = ''
-    chapterTemplate = ''
-    notesChapterTemplate = ''
-    todoChapterTemplate = ''
-    unusedChapterTemplate = ''
-    notExportedChapterTemplate = ''
-    sceneTemplate = ''
-    appendedSceneTemplate = ''
-    notesSceneTemplate = ''
-    todoSceneTemplate = ''
-    unusedSceneTemplate = ''
-    notExportedSceneTemplate = ''
-    sceneDivider = ''
-    chapterEndTemplate = ''
-    unusedChapterEndTemplate = ''
-    notExportedChapterEndTemplate = ''
-    notesChapterEndTemplate = ''
-    characterTemplate = ''
-    locationTemplate = ''
-    itemTemplate = ''
-    fileFooter = ''
-
-    def get_string(self, elements):
-        """Return a string which is the concatenation of the 
-        members of the list of strings "elements", separated by 
-        a comma plus a space. The space allows word wrap in 
-        spreadsheet cells.
-        """
-        text = (', ').join(elements)
-        return text
-
-    def get_list(self, text):
-        """Split a sequence of strings into a list of strings
-        using a comma as delimiter. Remove leading and trailing
-        spaces, if any.
-        """
-        elements = []
-        tempList = text.split(',')
-
-        for element in tempList:
-            elements.append(element.lstrip().rstrip())
-
-        return elements
-
-    def convert_from_yw(self, text):
-        """Convert yw7 markup to target format.
-        To be overwritten by file format specific subclasses.
-        """
-
-        if text is None:
-            text = ''
-
-        return(text)
-
-    def merge(self, novel):
-        """Copy required attributes of the novel object.
-        Return a message beginning with SUCCESS or ERROR.
-        """
-
-        if novel.title is not None:
-            self.title = novel.title
-
-        else:
-            self.title = ''
-
-        if novel.desc is not None:
-            self.desc = novel.desc
-
-        else:
-            self.desc = ''
-
-        if novel.author is not None:
-            self.author = novel.author
-
-        else:
-            self.author = ''
-
-        if novel.fieldTitle1 is not None:
-            self.fieldTitle1 = novel.fieldTitle1
-
-        else:
-            self.fieldTitle1 = 'Field 1'
-
-        if novel.fieldTitle2 is not None:
-            self.fieldTitle2 = novel.fieldTitle2
-
-        else:
-            self.fieldTitle2 = 'Field 2'
-
-        if novel.fieldTitle3 is not None:
-            self.fieldTitle3 = novel.fieldTitle3
-
-        else:
-            self.fieldTitle3 = 'Field 3'
-
-        if novel.fieldTitle4 is not None:
-            self.fieldTitle4 = novel.fieldTitle4
-
-        else:
-            self.fieldTitle4 = 'Field 4'
-
-        if novel.srtChapters != []:
-            self.srtChapters = novel.srtChapters
-
-        if novel.scenes is not None:
-            self.scenes = novel.scenes
-
-        if novel.chapters is not None:
-            self.chapters = novel.chapters
-
-        if novel.srtCharacters != []:
-            self.srtCharacters = novel.srtCharacters
-            self.characters = novel.characters
-
-        if novel.srtLocations != []:
-            self.srtLocations = novel.srtLocations
-            self.locations = novel.locations
-
-        if novel.srtItems != []:
-            self.srtItems = novel.srtItems
-            self.items = novel.items
-
-        return 'SUCCESS'
-
-    def get_fileHeaderMapping(self):
-        """Return a mapping dictionary for the project section. 
-        """
-        projectTemplateMapping = dict(
-            Title=self.title,
-            Desc=self.convert_from_yw(self.desc),
-            AuthorName=self.author,
-            FieldTitle1=self.fieldTitle1,
-            FieldTitle2=self.fieldTitle2,
-            FieldTitle3=self.fieldTitle3,
-            FieldTitle4=self.fieldTitle4,
-        )
-        return projectTemplateMapping
-
-    def get_chapterMapping(self, chId, chapterNumber):
-        """Return a mapping dictionary for a chapter section. 
-        """
-        chapterMapping = dict(
-            ID=chId,
-            ChapterNumber=chapterNumber,
-            Title=self.chapters[chId].get_title(),
-            Desc=self.convert_from_yw(self.chapters[chId].desc),
-            ProjectName=self.projectName,
-            ProjectPath=self.projectPath,
-        )
-        return chapterMapping
-
-    def get_sceneMapping(self, scId, sceneNumber, wordsTotal, lettersTotal):
-        """Return a mapping dictionary for a scene section. 
-        """
-
-        if self.scenes[scId].tags is not None:
-            tags = self.get_string(self.scenes[scId].tags)
-
-        else:
-            tags = ''
-
-        try:
-            # Note: Due to a bug, yWriter scenes might hold invalid
-            # viepoint characters
-            sChList = []
-
-            for chId in self.scenes[scId].characters:
-                sChList.append(self.characters[chId].title)
-
-            sceneChars = self.get_string(sChList)
-            viewpointChar = sChList[0]
-
-        except:
-            sceneChars = ''
-            viewpointChar = ''
-
-        if self.scenes[scId].locations is not None:
-            sLcList = []
-
-            for lcId in self.scenes[scId].locations:
-                sLcList.append(self.locations[lcId].title)
-
-            sceneLocs = self.get_string(sLcList)
-
-        else:
-            sceneLocs = ''
-
-        if self.scenes[scId].items is not None:
-            sItList = []
-
-            for itId in self.scenes[scId].items:
-                sItList.append(self.items[itId].title)
-
-            sceneItems = self.get_string(sItList)
-
-        else:
-            sceneItems = ''
-
-        if self.scenes[scId].isReactionScene:
-            reactionScene = Scene.REACTION_MARKER
-
-        else:
-            reactionScene = Scene.ACTION_MARKER
-
-        sceneMapping = dict(
-            ID=scId,
-            SceneNumber=sceneNumber,
-            Title=self.scenes[scId].title,
-            Desc=self.convert_from_yw(self.scenes[scId].desc),
-            WordCount=str(self.scenes[scId].wordCount),
-            WordsTotal=wordsTotal,
-            LetterCount=str(self.scenes[scId].letterCount),
-            LettersTotal=lettersTotal,
-            Status=Scene.STATUS[self.scenes[scId].status],
-            SceneContent=self.convert_from_yw(
-                self.scenes[scId].sceneContent),
-            FieldTitle1=self.fieldTitle1,
-            FieldTitle2=self.fieldTitle2,
-            FieldTitle3=self.fieldTitle3,
-            FieldTitle4=self.fieldTitle4,
-            Field1=self.scenes[scId].field1,
-            Field2=self.scenes[scId].field2,
-            Field3=self.scenes[scId].field3,
-            Field4=self.scenes[scId].field4,
-            Date=self.scenes[scId].date,
-            Time=self.scenes[scId].time,
-            Day=self.scenes[scId].day,
-            Hour=self.scenes[scId].hour,
-            Minute=self.scenes[scId].minute,
-            LastsDays=self.scenes[scId].lastsDays,
-            LastsHours=self.scenes[scId].lastsHours,
-            LastsMinutes=self.scenes[scId].lastsMinutes,
-            ReactionScene=reactionScene,
-            Goal=self.convert_from_yw(self.scenes[scId].goal),
-            Conflict=self.convert_from_yw(self.scenes[scId].conflict),
-            Outcome=self.convert_from_yw(self.scenes[scId].outcome),
-            Tags=tags,
-            Characters=sceneChars,
-            Viewpoint=viewpointChar,
-            Locations=sceneLocs,
-            Items=sceneItems,
-            Notes=self.convert_from_yw(self.scenes[scId].sceneNotes),
-            ProjectName=self.projectName,
-            ProjectPath=self.projectPath,
-        )
-        return sceneMapping
-
-    def get_characterMapping(self, crId):
-        """Return a mapping dictionary for a character section. 
-        """
-
-        if self.characters[crId].tags is not None:
-            tags = self.get_string(self.characters[crId].tags)
-
-        else:
-            tags = ''
-
-        if self.characters[crId].isMajor:
-            characterStatus = Character.MAJOR_MARKER
-
-        else:
-            characterStatus = Character.MINOR_MARKER
-
-        characterMapping = dict(
-            ID=crId,
-            Title=self.characters[crId].title,
-            Desc=self.convert_from_yw(self.characters[crId].desc),
-            Tags=tags,
-            AKA=FileExport.convert_from_yw(self, self.characters[crId].aka),
-            Notes=self.convert_from_yw(self.characters[crId].notes),
-            Bio=self.convert_from_yw(self.characters[crId].bio),
-            Goals=self.convert_from_yw(self.characters[crId].goals),
-            FullName=FileExport.convert_from_yw(
-                self, self.characters[crId].fullName),
-            Status=characterStatus,
-            ProjectName=self.projectName,
-            ProjectPath=self.projectPath,
-        )
-        return characterMapping
-
-    def get_locationMapping(self, lcId):
-        """Return a mapping dictionary for a location section. 
-        """
-
-        if self.locations[lcId].tags is not None:
-            tags = self.get_string(self.locations[lcId].tags)
-
-        else:
-            tags = ''
-
-        locationMapping = dict(
-            ID=lcId,
-            Title=self.locations[lcId].title,
-            Desc=self.convert_from_yw(self.locations[lcId].desc),
-            Tags=tags,
-            AKA=FileExport.convert_from_yw(self, self.locations[lcId].aka),
-            ProjectName=self.projectName,
-            ProjectPath=self.projectPath,
-        )
-        return locationMapping
-
-    def get_itemMapping(self, itId):
-        """Return a mapping dictionary for an item section. 
-        """
-
-        if self.items[itId].tags is not None:
-            tags = self.get_string(self.items[itId].tags)
-
-        else:
-            tags = ''
-
-        itemMapping = dict(
-            ID=itId,
-            Title=self.items[itId].title,
-            Desc=self.convert_from_yw(self.items[itId].desc),
-            Tags=tags,
-            AKA=FileExport.convert_from_yw(self, self.items[itId].aka),
-            ProjectName=self.projectName,
-            ProjectPath=self.projectPath,
-        )
-        return itemMapping
-
-    def get_fileHeader(self):
-        """Process the file header.
-        Return a list of strings.
-        """
-        lines = []
-        template = Template(self.fileHeader)
-        lines.append(template.safe_substitute(
-            self.get_fileHeaderMapping()))
-        return lines
-
-    def get_scenes(self, chId, sceneNumber, wordsTotal, lettersTotal, doNotExport):
-        """Process the scenes.
-        Return a list of strings.
-        """
-        lines = []
-        firstSceneInChapter = True
-
-        for scId in self.chapters[chId].srtScenes:
-            wordsTotal += self.scenes[scId].wordCount
-            lettersTotal += self.scenes[scId].letterCount
-
-            # The order counts; be aware that "Todo" and "Notes" scenes are
-            # always unused.
-
-            if self.scenes[scId].isTodoScene:
-
-                if self.todoSceneTemplate != '':
-                    template = Template(self.todoSceneTemplate)
-
-                else:
-                    continue
-
-            elif self.scenes[scId].isNotesScene or self.chapters[chId].oldType == 1:
-                # Scene is "Notes" (new file format) or "Info" (old file
-                # format) scene.
-
-                if self.notesSceneTemplate != '':
-                    template = Template(self.notesSceneTemplate)
-
-                else:
-                    continue
-
-            elif self.scenes[scId].isUnused or self.chapters[chId].isUnused:
-
-                if self.unusedSceneTemplate != '':
-                    template = Template(self.unusedSceneTemplate)
-
-                else:
-                    continue
-
-            elif self.scenes[scId].doNotExport or doNotExport:
-
-                if self.notExportedSceneTemplate != '':
-                    template = Template(self.notExportedSceneTemplate)
-
-                else:
-                    continue
-
-            else:
-                sceneNumber += 1
-
-                template = Template(self.sceneTemplate)
-
-                if not firstSceneInChapter and self.scenes[scId].appendToPrev and self.appendedSceneTemplate != '':
-                    template = Template(self.appendedSceneTemplate)
-
-            if not (firstSceneInChapter or self.scenes[scId].appendToPrev):
-                lines.append(self.sceneDivider)
-
-            lines.append(template.safe_substitute(self.get_sceneMapping(
-                scId, sceneNumber, wordsTotal, lettersTotal)))
-
-            firstSceneInChapter = False
-
-        return lines, sceneNumber, wordsTotal, lettersTotal
-
-    def get_chapters(self):
-        """Process the chapters and nested scenes.
-        Return a list of strings.
-        """
-        lines = []
-        chapterNumber = 0
-        sceneNumber = 0
-        wordsTotal = 0
-        lettersTotal = 0
-
-        for chId in self.srtChapters:
-
-            # The order counts; be aware that "Todo" and "Notes" chapters are
-            # always unused.
-
-            # Has the chapter only scenes not to be exported?
-
-            sceneCount = 0
-            notExportCount = 0
-            doNotExport = False
-
-            for scId in self.chapters[chId].srtScenes:
-                sceneCount += 1
-
-                if self.scenes[scId].doNotExport:
-                    notExportCount += 1
-
-            if sceneCount > 0 and notExportCount == sceneCount:
-                doNotExport = True
-
-            if self.chapters[chId].chType == 2:
-
-                if self.todoChapterTemplate != '':
-                    template = Template(self.todoChapterTemplate)
-
-                else:
-                    continue
-
-            elif self.chapters[chId].chType == 1 or self.chapters[chId].oldType == 1:
-                # Chapter is "Notes" (new file format) or "Info" (old file
-                # format) chapter.
-
-                if self.notesChapterTemplate != '':
-                    template = Template(self.notesChapterTemplate)
-
-                else:
-                    continue
-
-            elif self.chapters[chId].isUnused:
-
-                if self.unusedChapterTemplate != '':
-                    template = Template(self.unusedChapterTemplate)
-
-                else:
-                    continue
-
-            elif doNotExport:
-
-                if self.notExportedChapterTemplate != '':
-                    template = Template(self.notExportedChapterTemplate)
-
-                else:
-                    continue
-
-            elif self.chapters[chId].chLevel == 1 and self.partTemplate != '':
-                template = Template(self.partTemplate)
-
-            else:
-                template = Template(self.chapterTemplate)
-                chapterNumber += 1
-
-            lines.append(template.safe_substitute(
-                self.get_chapterMapping(chId, chapterNumber)))
-
-            # Process scenes.
-
-            sceneLines, sceneNumber, wordsTotal, lettersTotal = self.get_scenes(
-                chId, sceneNumber, wordsTotal, lettersTotal, doNotExport)
-            lines.extend(sceneLines)
-
-            # Process chapter ending.
-
-            if self.chapters[chId].chType == 2 and self.todoChapterEndTemplate != '':
-                lines.append(self.todoChapterEndTemplate)
-
-            elif self.chapters[chId].chType == 1 or self.chapters[chId].oldType == 1:
-
-                if self.notesChapterEndTemplate != '':
-                    lines.append(self.notesChapterEndTemplate)
-
-            elif self.chapters[chId].isUnused and self.unusedChapterEndTemplate != '':
-                lines.append(self.unusedChapterEndTemplate)
-
-            elif doNotExport and self.notExportedChapterEndTemplate != '':
-                lines.append(self.notExportedChapterEndTemplate)
-
-            elif self.chapterEndTemplate != '':
-                lines.append(self.chapterEndTemplate)
-
-        return lines
-
-    def get_characters(self):
-        """Process the characters.
-        Return a list of strings.
-        """
-        lines = []
-        template = Template(self.characterTemplate)
-
-        for crId in self.srtCharacters:
-            lines.append(template.safe_substitute(
-                self.get_characterMapping(crId)))
-
-        return lines
-
-    def get_locations(self):
-        """Process the locations.
-        Return a list of strings.
-        """
-        lines = []
-        template = Template(self.locationTemplate)
-
-        for lcId in self.srtLocations:
-            lines.append(template.safe_substitute(
-                self.get_locationMapping(lcId)))
-
-        return lines
-
-    def get_items(self):
-        """Process the items.
-        Return a list of strings.
-        """
-        lines = []
-        template = Template(self.itemTemplate)
-
-        for itId in self.srtItems:
-            lines.append(template.safe_substitute(self.get_itemMapping(itId)))
-
-        return lines
-
-    def get_text(self):
-        """Assemple the whole text applying the templates.
-        Return a string to be written to the output file.
-        """
-        lines = self.get_fileHeader()
-        lines.extend(self.get_chapters())
-        lines.extend(self.get_characters())
-        lines.extend(self.get_locations())
-        lines.extend(self.get_items())
-        lines.append(self.fileFooter)
-        return ''.join(lines)
-
-    def write(self):
-        """Create a template-based output file. 
-        Return a message string starting with 'SUCCESS' or 'ERROR'.
-        """
-        text = self.get_text()
-
-        try:
-            with open(self.filePath, 'w', encoding='utf-8') as f:
-                f.write(text)
-
-        except:
-            return 'ERROR: Cannot write "' + os.path.normpath(self.filePath) + '".'
-
-        return 'SUCCESS: "' + os.path.normpath(self.filePath) + '" written.'
-
-
-class Chapter():
-    """yWriter chapter representation.
-    # xml: <CHAPTERS><CHAPTER>
-    """
-
-    chapterTitlePrefix = "Chapter "
-    # str
-    # Can be changed at runtime for non-English projects.
-
-    def __init__(self):
-        self.title = None
-        # str
-        # xml: <Title>
-
-        self.desc = None
-        # str
-        # xml: <Desc>
-
-        self.chLevel = None
-        # int
-        # xml: <SectionStart>
-        # 0 = chapter level
-        # 1 = section level ("this chapter begins a section")
-
-        self.oldType = None
-        # int
-        # xml: <Type>
-        # 0 = chapter type (marked "Chapter")
-        # 1 = other type (marked "Other")
-
-        self.chType = None
-        # int
-        # xml: <ChapterType>
-        # 0 = Normal
-        # 1 = Notes
-        # 2 = Todo
-
-        self.isUnused = None
-        # bool
-        # xml: <Unused> -1
-
-        self.suppressChapterTitle = None
-        # bool
-        # xml: <Fields><Field_SuppressChapterTitle> 1
-        # True: Chapter heading not to be displayed in written document.
-        # False: Chapter heading to be displayed in written document.
-
-        self.isTrash = None
-        # bool
-        # xml: <Fields><Field_IsTrash> 1
-        # True: This chapter is the yw7 project's "trash bin".
-        # False: This chapter is not a "trash bin".
-
-        self.suppressChapterBreak = None
-        # bool
-        # xml: <Fields><Field_SuppressChapterBreak> 0
-
-        self.srtScenes = []
-        # list of str
-        # xml: <Scenes><ScID>
-        # The chapter's scene IDs. The order of its elements
-        # corresponds to the chapter's order of the scenes.
-
-    def get_title(self):
-        """Fix auto-chapter titles if necessary 
-        """
-        text = self.title
-
-        if text:
-            text = text.replace('Chapter ', self.chapterTitlePrefix)
-
-        return text
-
-
-class MdFile(FileExport):
-    """Markdown file representation
-    """
-
-    DESCRIPTION = 'Markdown converter'
-    EXTENSION = '.md'
-    SUFFIX = ''
-
-    SCENE_DIVIDER = '* * *'
-
-    fileHeader = '''**${Title}**  
-  
-*${AuthorName}*  
-  
-'''
-
-    partTemplate = '\n# ${Title}\n\n'
-
-    chapterTemplate = '\n## ${Title}\n\n'
-
-    sceneTemplate = '<!---${Title}--->${SceneContent}\n\n'
-
-    sceneDivider = '\n\n' + SCENE_DIVIDER + '\n\n'
-
-    def __init__(self, filePath, markdownMode=False, noSceneTitles=False):
-        FileExport.__init__(self, filePath)
-        self.markdownMode = markdownMode
-        self.noSceneTitles = noSceneTitles
-
-        if self.noSceneTitles:
-            self.sceneTemplate = self.sceneTemplate.replace(
-                '<!---${Title}--->', '')
-
-    def get_chapterMapping(self, chId, chapterNumber):
-        """Return a mapping dictionary for a chapter section. 
-        """
-        chapterMapping = FileExport.get_chapterMapping(
-            self, chId, chapterNumber)
-
-        if self.chapters[chId].suppressChapterTitle:
-            chapterMapping['Title'] = ''
-
-        return chapterMapping
-
-    def convert_from_yw(self, text):
-        """Convert yw7 markup to Markdown.
-        """
-
-        MD_REPLACEMENTS = [
-            ['[i]', '*'],
-            ['[/i]', '*'],
-            ['[b]', '**'],
-            ['[/b]', '**'],
-            ['/*', '<!---'],
-            ['*/', '--->'],
-            ['  ', ' '],
-        ]
-
-        if not self.markdownMode:
-            MD_REPLACEMENTS[:0] = [['\n', '\n\n']]
-
-        try:
-
-            for r in MD_REPLACEMENTS:
-                text = text.replace(r[0], r[1])
-
-            # Remove highlighting, alignment,
-            # strikethrough, and underline tags.
-
-            text = re.sub('\[\/*[h|c|r|s|u]\d*\]', '', text)
-
-        except AttributeError:
-            text = ''
-
-        return(text)
-
-    def convert_to_yw(self, text):
-        """Convert Markdown to yw7 markup.
-        """
-        if not self.markdownMode:
-            SAFE_SCENE_DIVIDER = '~ ~ ~'
-
-            # Save the scene dividers: they may contain asterisks
-            # TODO: Better find a regex-based solution
-
-            text = text.replace(self.SCENE_DIVIDER, SAFE_SCENE_DIVIDER)
-
-            text = re.sub('\*\*(.+?)\*\*', '[b]\\1[/b]', text)
-            text = re.sub('\*(.+?)\*', '[i]\\1[/i]', text)
-
-            # Restore the scene dividers
-
-            text = text.replace(SAFE_SCENE_DIVIDER, self.SCENE_DIVIDER)
-
-            MD_REPLACEMENTS = [
-                ['\n\n', '\n'],
-                ['<!---', '/*'],
-                ['--->', '*/'],
-            ]
-
-            try:
-
-                for r in MD_REPLACEMENTS:
-                    text = text.replace(r[0], r[1])
-
-            except AttributeError:
-                text = ''
-
-        return(text)
-
-    def read(self):
-        """Parse the Markdown file located at filePath
-        Return a message beginning with SUCCESS or ERROR.
-        """
-        LOW_WORDCOUNT = 10
-
-        def write_scene_content(scId, lines):
-
-            if scId is not None:
-                text = '\n'.join(lines)
-                self.scenes[scId].sceneContent = text
-
-                if self.scenes[scId].wordCount < LOW_WORDCOUNT:
-                    self.scenes[scId].status = Scene.STATUS.index('Outline')
-
-                else:
-                    self.scenes[scId].status = Scene.STATUS.index('Draft')
-
-        chCount = 0
-        scCount = 0
-        lines = []
-        chId = None
-        scId = None
-
-        try:
-            with open(self.filePath, encoding='utf-8') as f:
-                mdText = f.read()
-                cnvText = self.convert_to_yw(mdText)
-                mdLines = (cnvText).split('\n')
-
-        except(FileNotFoundError):
-            return 'ERROR: "' + os.path.normpath(self.filePath) + '" not found.'
-
-        except:
-            return 'ERROR: Can not parse "' + os.path.normpath(self.filePath) + '".'
-
-        if self.markdownMode:
-            commentStart = '<!---'
-            commentEnd = '--->'
-
-        else:
-            commentStart = '/*'
-            commentEnd = '*/'
-
-        for mdLine in mdLines:
-
-            if mdLine.startswith('#'):
-
-                # Write previous scene.
-
-                write_scene_content(scId, lines)
-                scId = None
-
-                # Add a chapter.
-
-                chCount += 1
-                chId = str(chCount)
-                self.chapters[chId] = Chapter()
-
-                title = mdLine.split('# ')[1]
-
-                self.chapters[chId].title = title
-                self.srtChapters.append(chId)
-                self.chapters[chId].oldType = '0'
-
-                if mdLine.startswith('# '):
-                    self.chapters[chId].chLevel = 1
-
-                else:
-                    self.chapters[chId].chLevel = 0
-
-                self.chapters[chId].srtScenes = []
-
-            elif self.SCENE_DIVIDER in mdLine:
-
-                # Write previous scene.
-
-                write_scene_content(scId, lines)
-                scId = None
-
-            elif scId is not None:
-                lines.append(mdLine)
-
-            elif mdLine and chId is not None:
-
-                # Add a scene; drop the first line if empty.
-
-                scCount += 1
-                scId = str(scCount)
-
-                self.scenes[scId] = Scene()
-                self.chapters[chId].srtScenes.append(scId)
-                self.scenes[scId].status = '1'
-                self.scenes[scId].title = 'Scene ' + str(scCount)
-
-                if not self.noSceneTitles and mdLine.startswith(commentStart):
-
-                    # The scene title is prefixed as a comment.
-
-                    try:
-                        scTitle, scContent = mdLine.split(
-                            sep=commentEnd, maxsplit=1)
-                        self.scenes[scId].title = scTitle.lstrip(commentStart)
-                        lines = [scContent]
-
-                    except:
-                        lines = [mdLine]
-
-                else:
-                    lines = [mdLine]
-
-        return 'SUCCESS'
 import sys
 
 
@@ -2422,6 +1143,487 @@ class FileFactory(ABC):
 
 
 
+from urllib.parse import quote
+
+
+class Novel():
+    """Abstract yWriter project file representation.
+
+    This class represents a file containing a novel with additional 
+    attributes and structural information (a full set or a subset
+    of the information included in an yWriter project file).
+    """
+
+    DESCRIPTION = 'Novel'
+    EXTENSION = None
+    SUFFIX = None
+    # To be extended by file format specific subclasses.
+
+    def __init__(self, filePath):
+        self.title = None
+        # str
+        # xml: <PROJECT><Title>
+
+        self.desc = None
+        # str
+        # xml: <PROJECT><Desc>
+
+        self.author = None
+        # str
+        # xml: <PROJECT><AuthorName>
+
+        self.fieldTitle1 = None
+        # str
+        # xml: <PROJECT><FieldTitle1>
+
+        self.fieldTitle2 = None
+        # str
+        # xml: <PROJECT><FieldTitle2>
+
+        self.fieldTitle3 = None
+        # str
+        # xml: <PROJECT><FieldTitle3>
+
+        self.fieldTitle4 = None
+        # str
+        # xml: <PROJECT><FieldTitle4>
+
+        self.chapters = {}
+        # dict
+        # xml: <CHAPTERS><CHAPTER><ID>
+        # key = chapter ID, value = Chapter object.
+        # The order of the elements does not matter (the novel's
+        # order of the chapters is defined by srtChapters)
+
+        self.scenes = {}
+        # dict
+        # xml: <SCENES><SCENE><ID>
+        # key = scene ID, value = Scene object.
+        # The order of the elements does not matter (the novel's
+        # order of the scenes is defined by the order of the chapters
+        # and the order of the scenes within the chapters)
+
+        self.srtChapters = []
+        # list of str
+        # The novel's chapter IDs. The order of its elements
+        # corresponds to the novel's order of the chapters.
+
+        self.locations = {}
+        # dict
+        # xml: <LOCATIONS>
+        # key = location ID, value = Object.
+        # The order of the elements does not matter.
+
+        self.srtLocations = []
+        # list of str
+        # The novel's location IDs. The order of its elements
+        # corresponds to the XML project file.
+
+        self.items = {}
+        # dict
+        # xml: <ITEMS>
+        # key = item ID, value = Object.
+        # The order of the elements does not matter.
+
+        self.srtItems = []
+        # list of str
+        # The novel's item IDs. The order of its elements
+        # corresponds to the XML project file.
+
+        self.characters = {}
+        # dict
+        # xml: <CHARACTERS>
+        # key = character ID, value = Character object.
+        # The order of the elements does not matter.
+
+        self.srtCharacters = []
+        # list of str
+        # The novel's character IDs. The order of its elements
+        # corresponds to the XML project file.
+
+        self._filePath = None
+        # str
+        # Path to the file. The setter only accepts files of a
+        # supported type as specified by EXTENSION.
+
+        self._projectName = None
+        # str
+        # URL-coded file name without suffix and extension.
+
+        self._projectPath = None
+        # str
+        # URL-coded path to the project directory.
+
+        self.filePath = filePath
+
+    @property
+    def filePath(self):
+        return self._filePath
+
+    @filePath.setter
+    def filePath(self, filePath):
+        """Accept only filenames with the right extension. """
+
+        if self.SUFFIX is not None:
+            suffix = self.SUFFIX
+
+        else:
+            suffix = ''
+
+        if filePath.lower().endswith(suffix + self.EXTENSION):
+            self._filePath = filePath
+            head, tail = os.path.split(os.path.realpath(filePath))
+            self.projectPath = quote(head.replace('\\', '/'), '/:')
+            self.projectName = quote(tail.replace(
+                suffix + self.EXTENSION, ''))
+
+    def read(self):
+        """Parse the file and store selected properties.
+        To be overwritten by file format specific subclasses.
+        """
+        return 'ERROR: read method is not implemented.'
+
+    def merge(self, novel):
+        """Copy required attributes of the novel object.
+        To be overwritten by file format specific subclasses.
+        """
+        return 'ERROR: merge method is not implemented.'
+
+    def write(self):
+        """Write selected properties to the file.
+        To be overwritten by file format specific subclasses.
+        """
+        return 'ERROR: write method is not implemented.'
+
+    def convert_to_yw(self, text):
+        """Convert source format to yw7 markup.
+        To be overwritten by file format specific subclasses.
+        """
+        return text
+
+    def convert_from_yw(self, text):
+        """Convert yw7 markup to target format.
+        To be overwritten by file format specific subclasses.
+        """
+        return text
+
+    def file_exists(self):
+        """Check whether the file specified by filePath exists. """
+        if os.path.isfile(self.filePath):
+            return True
+
+        else:
+            return False
+
+
+class Chapter():
+    """yWriter chapter representation.
+    # xml: <CHAPTERS><CHAPTER>
+    """
+
+    chapterTitlePrefix = "Chapter "
+    # str
+    # Can be changed at runtime for non-English projects.
+
+    def __init__(self):
+        self.title = None
+        # str
+        # xml: <Title>
+
+        self.desc = None
+        # str
+        # xml: <Desc>
+
+        self.chLevel = None
+        # int
+        # xml: <SectionStart>
+        # 0 = chapter level
+        # 1 = section level ("this chapter begins a section")
+
+        self.oldType = None
+        # int
+        # xml: <Type>
+        # 0 = chapter type (marked "Chapter")
+        # 1 = other type (marked "Other")
+
+        self.chType = None
+        # int
+        # xml: <ChapterType>
+        # 0 = Normal
+        # 1 = Notes
+        # 2 = Todo
+
+        self.isUnused = None
+        # bool
+        # xml: <Unused> -1
+
+        self.suppressChapterTitle = None
+        # bool
+        # xml: <Fields><Field_SuppressChapterTitle> 1
+        # True: Chapter heading not to be displayed in written document.
+        # False: Chapter heading to be displayed in written document.
+
+        self.isTrash = None
+        # bool
+        # xml: <Fields><Field_IsTrash> 1
+        # True: This chapter is the yw7 project's "trash bin".
+        # False: This chapter is not a "trash bin".
+
+        self.suppressChapterBreak = None
+        # bool
+        # xml: <Fields><Field_SuppressChapterBreak> 0
+
+        self.srtScenes = []
+        # list of str
+        # xml: <Scenes><ScID>
+        # The chapter's scene IDs. The order of its elements
+        # corresponds to the chapter's order of the scenes.
+
+    def get_title(self):
+        """Fix auto-chapter titles if necessary 
+        """
+        text = self.title
+
+        if text:
+            text = text.replace('Chapter ', self.chapterTitlePrefix)
+
+        return text
+
+import re
+
+
+class Scene():
+    """yWriter scene representation.
+    # xml: <SCENES><SCENE>
+    """
+
+    # Emulate an enumeration for the scene status
+
+    STATUS = [None, 'Outline', 'Draft', '1st Edit', '2nd Edit', 'Done']
+    ACTION_MARKER = 'A'
+    REACTION_MARKER = 'R'
+
+    def __init__(self):
+        self.title = None
+        # str
+        # xml: <Title>
+
+        self.desc = None
+        # str
+        # xml: <Desc>
+
+        self._sceneContent = None
+        # str
+        # xml: <SceneContent>
+        # Scene text with yW7 raw markup.
+
+        self.rtfFile = None
+        # str
+        # xml: <RTFFile>
+        # Name of the file containing the scene in yWriter 5.
+
+        self.wordCount = 0
+        # int # xml: <WordCount>
+        # To be updated by the sceneContent setter
+
+        self.letterCount = 0
+        # int
+        # xml: <LetterCount>
+        # To be updated by the sceneContent setter
+
+        self.isUnused = None
+        # bool
+        # xml: <Unused> -1
+
+        self.isNotesScene = None
+        # bool
+        # xml: <Fields><Field_SceneType> 1
+
+        self.isTodoScene = None
+        # bool
+        # xml: <Fields><Field_SceneType> 2
+
+        self.doNotExport = None
+        # bool
+        # xml: <ExportCondSpecific><ExportWhenRTF>
+
+        self.status = None
+        # int # xml: <Status>
+
+        self.sceneNotes = None
+        # str
+        # xml: <Notes>
+
+        self.tags = None
+        # list of str
+        # xml: <Tags>
+
+        self.field1 = None
+        # str
+        # xml: <Field1>
+
+        self.field2 = None
+        # str
+        # xml: <Field2>
+
+        self.field3 = None
+        # str
+        # xml: <Field3>
+
+        self.field4 = None
+        # str
+        # xml: <Field4>
+
+        self.appendToPrev = None
+        # bool
+        # xml: <AppendToPrev> -1
+
+        self.isReactionScene = None
+        # bool
+        # xml: <ReactionScene> -1
+
+        self.isSubPlot = None
+        # bool
+        # xml: <SubPlot> -1
+
+        self.goal = None
+        # str
+        # xml: <Goal>
+
+        self.conflict = None
+        # str
+        # xml: <Conflict>
+
+        self.outcome = None
+        # str
+        # xml: <Outcome>
+
+        self.characters = None
+        # list of str
+        # xml: <Characters><CharID>
+
+        self.locations = None
+        # list of str
+        # xml: <Locations><LocID>
+
+        self.items = None
+        # list of str
+        # xml: <Items><ItemID>
+
+        self.date = None
+        # str
+        # xml: <SpecificDateMode>-1
+        # xml: <SpecificDateTime>1900-06-01 20:38:00
+
+        self.time = None
+        # str
+        # xml: <SpecificDateMode>-1
+        # xml: <SpecificDateTime>1900-06-01 20:38:00
+
+        self.minute = None
+        # str
+        # xml: <Minute>
+
+        self.hour = None
+        # str
+        # xml: <Hour>
+
+        self.day = None
+        # str
+        # xml: <Day>
+
+        self.lastsMinutes = None
+        # str
+        # xml: <LastsMinutes>
+
+        self.lastsHours = None
+        # str
+        # xml: <LastsHours>
+
+        self.lastsDays = None
+        # str
+        # xml: <LastsDays>
+
+    @property
+    def sceneContent(self):
+        return self._sceneContent
+
+    @sceneContent.setter
+    def sceneContent(self, text):
+        """Set sceneContent updating word count and letter count."""
+        self._sceneContent = text
+        text = re.sub('\[.+?\]|\.|\,| -', '', self._sceneContent)
+        # Remove yWriter raw markup for word count
+
+        wordList = text.split()
+        self.wordCount = len(wordList)
+
+        text = re.sub('\[.+?\]', '', self._sceneContent)
+        # Remove yWriter raw markup for letter count
+
+        text = text.replace('\n', '')
+        text = text.replace('\r', '')
+        self.letterCount = len(text)
+
+
+
+class WorldElement():
+    """Story world element representation.
+    # xml: <LOCATIONS><LOCATION> or # xml: <ITEMS><ITEM>
+    """
+
+    def __init__(self):
+        self.title = None
+        # str
+        # xml: <Title>
+
+        self.image = None
+        # str
+        # xml: <ImageFile>
+
+        self.desc = None
+        # str
+        # xml: <Desc>
+
+        self.tags = None
+        # list of str
+        # xml: <Tags>
+
+        self.aka = None
+        # str
+        # xml: <AKA>
+
+
+class Character(WorldElement):
+    """yWriter character representation.
+    # xml: <CHARACTERS><CHARACTER>
+    """
+
+    MAJOR_MARKER = 'Major'
+    MINOR_MARKER = 'Minor'
+
+    def __init__(self):
+        WorldElement.__init__(self)
+
+        self.notes = None
+        # str
+        # xml: <Notes>
+
+        self.bio = None
+        # str
+        # xml: <Bio>
+
+        self.goals = None
+        # str
+        # xml: <Goals>
+
+        self.fullName = None
+        # str
+        # xml: <FullName>
+
+        self.isMajor = None
+        # bool
+        # xml: <Major>
 
 
 class YwFile(Novel):
@@ -2875,6 +2077,8 @@ class Yw6TreeBuilder(YwTreeBuilder):
 
         return YwTreeBuilder.build_element_tree(self, ywProject)
 
+from abc import ABC
+from abc import abstractmethod
 
 
 class YwTreeReader(ABC):
@@ -3295,6 +2499,8 @@ class YwProjectMerger():
         else:
             return 'SUCCESS'
 
+from abc import ABC
+from abc import abstractmethod
 
 
 class YwTreeWriter(ABC):
@@ -3325,6 +2531,8 @@ class Utf8TreeWriter(YwTreeWriter):
 
         return 'SUCCESS'
 
+from abc import ABC
+from abc import abstractmethod
 from html import unescape
 
 
@@ -3483,7 +2691,795 @@ class YwProjectCreator(YwProjectMerger):
         return 'SUCCESS'
 
 
-class MdFileFactory(FileFactory):
+from string import Template
+
+
+
+class FileExport(Novel):
+    """Abstract yWriter project file exporter representation.
+    To be overwritten by subclasses providing file type specific 
+    markup converters and templates.
+    """
+    fileHeader = ''
+    partTemplate = ''
+    chapterTemplate = ''
+    notesChapterTemplate = ''
+    todoChapterTemplate = ''
+    unusedChapterTemplate = ''
+    notExportedChapterTemplate = ''
+    sceneTemplate = ''
+    appendedSceneTemplate = ''
+    notesSceneTemplate = ''
+    todoSceneTemplate = ''
+    unusedSceneTemplate = ''
+    notExportedSceneTemplate = ''
+    sceneDivider = ''
+    chapterEndTemplate = ''
+    unusedChapterEndTemplate = ''
+    notExportedChapterEndTemplate = ''
+    notesChapterEndTemplate = ''
+    characterTemplate = ''
+    locationTemplate = ''
+    itemTemplate = ''
+    fileFooter = ''
+
+    def get_string(self, elements):
+        """Return a string which is the concatenation of the 
+        members of the list of strings "elements", separated by 
+        a comma plus a space. The space allows word wrap in 
+        spreadsheet cells.
+        """
+        text = (', ').join(elements)
+        return text
+
+    def get_list(self, text):
+        """Split a sequence of strings into a list of strings
+        using a comma as delimiter. Remove leading and trailing
+        spaces, if any.
+        """
+        elements = []
+        tempList = text.split(',')
+
+        for element in tempList:
+            elements.append(element.lstrip().rstrip())
+
+        return elements
+
+    def convert_from_yw(self, text):
+        """Convert yw7 markup to target format.
+        To be overwritten by file format specific subclasses.
+        """
+
+        if text is None:
+            text = ''
+
+        return(text)
+
+    def merge(self, novel):
+        """Copy required attributes of the novel object.
+        Return a message beginning with SUCCESS or ERROR.
+        """
+
+        if novel.title is not None:
+            self.title = novel.title
+
+        else:
+            self.title = ''
+
+        if novel.desc is not None:
+            self.desc = novel.desc
+
+        else:
+            self.desc = ''
+
+        if novel.author is not None:
+            self.author = novel.author
+
+        else:
+            self.author = ''
+
+        if novel.fieldTitle1 is not None:
+            self.fieldTitle1 = novel.fieldTitle1
+
+        else:
+            self.fieldTitle1 = 'Field 1'
+
+        if novel.fieldTitle2 is not None:
+            self.fieldTitle2 = novel.fieldTitle2
+
+        else:
+            self.fieldTitle2 = 'Field 2'
+
+        if novel.fieldTitle3 is not None:
+            self.fieldTitle3 = novel.fieldTitle3
+
+        else:
+            self.fieldTitle3 = 'Field 3'
+
+        if novel.fieldTitle4 is not None:
+            self.fieldTitle4 = novel.fieldTitle4
+
+        else:
+            self.fieldTitle4 = 'Field 4'
+
+        if novel.srtChapters != []:
+            self.srtChapters = novel.srtChapters
+
+        if novel.scenes is not None:
+            self.scenes = novel.scenes
+
+        if novel.chapters is not None:
+            self.chapters = novel.chapters
+
+        if novel.srtCharacters != []:
+            self.srtCharacters = novel.srtCharacters
+            self.characters = novel.characters
+
+        if novel.srtLocations != []:
+            self.srtLocations = novel.srtLocations
+            self.locations = novel.locations
+
+        if novel.srtItems != []:
+            self.srtItems = novel.srtItems
+            self.items = novel.items
+
+        return 'SUCCESS'
+
+    def get_fileHeaderMapping(self):
+        """Return a mapping dictionary for the project section. 
+        """
+        projectTemplateMapping = dict(
+            Title=self.title,
+            Desc=self.convert_from_yw(self.desc),
+            AuthorName=self.author,
+            FieldTitle1=self.fieldTitle1,
+            FieldTitle2=self.fieldTitle2,
+            FieldTitle3=self.fieldTitle3,
+            FieldTitle4=self.fieldTitle4,
+        )
+        return projectTemplateMapping
+
+    def get_chapterMapping(self, chId, chapterNumber):
+        """Return a mapping dictionary for a chapter section. 
+        """
+        chapterMapping = dict(
+            ID=chId,
+            ChapterNumber=chapterNumber,
+            Title=self.chapters[chId].get_title(),
+            Desc=self.convert_from_yw(self.chapters[chId].desc),
+            ProjectName=self.projectName,
+            ProjectPath=self.projectPath,
+        )
+        return chapterMapping
+
+    def get_sceneMapping(self, scId, sceneNumber, wordsTotal, lettersTotal):
+        """Return a mapping dictionary for a scene section. 
+        """
+
+        if self.scenes[scId].tags is not None:
+            tags = self.get_string(self.scenes[scId].tags)
+
+        else:
+            tags = ''
+
+        try:
+            # Note: Due to a bug, yWriter scenes might hold invalid
+            # viepoint characters
+            sChList = []
+
+            for chId in self.scenes[scId].characters:
+                sChList.append(self.characters[chId].title)
+
+            sceneChars = self.get_string(sChList)
+            viewpointChar = sChList[0]
+
+        except:
+            sceneChars = ''
+            viewpointChar = ''
+
+        if self.scenes[scId].locations is not None:
+            sLcList = []
+
+            for lcId in self.scenes[scId].locations:
+                sLcList.append(self.locations[lcId].title)
+
+            sceneLocs = self.get_string(sLcList)
+
+        else:
+            sceneLocs = ''
+
+        if self.scenes[scId].items is not None:
+            sItList = []
+
+            for itId in self.scenes[scId].items:
+                sItList.append(self.items[itId].title)
+
+            sceneItems = self.get_string(sItList)
+
+        else:
+            sceneItems = ''
+
+        if self.scenes[scId].isReactionScene:
+            reactionScene = Scene.REACTION_MARKER
+
+        else:
+            reactionScene = Scene.ACTION_MARKER
+
+        sceneMapping = dict(
+            ID=scId,
+            SceneNumber=sceneNumber,
+            Title=self.scenes[scId].title,
+            Desc=self.convert_from_yw(self.scenes[scId].desc),
+            WordCount=str(self.scenes[scId].wordCount),
+            WordsTotal=wordsTotal,
+            LetterCount=str(self.scenes[scId].letterCount),
+            LettersTotal=lettersTotal,
+            Status=Scene.STATUS[self.scenes[scId].status],
+            SceneContent=self.convert_from_yw(
+                self.scenes[scId].sceneContent),
+            FieldTitle1=self.fieldTitle1,
+            FieldTitle2=self.fieldTitle2,
+            FieldTitle3=self.fieldTitle3,
+            FieldTitle4=self.fieldTitle4,
+            Field1=self.scenes[scId].field1,
+            Field2=self.scenes[scId].field2,
+            Field3=self.scenes[scId].field3,
+            Field4=self.scenes[scId].field4,
+            Date=self.scenes[scId].date,
+            Time=self.scenes[scId].time,
+            Day=self.scenes[scId].day,
+            Hour=self.scenes[scId].hour,
+            Minute=self.scenes[scId].minute,
+            LastsDays=self.scenes[scId].lastsDays,
+            LastsHours=self.scenes[scId].lastsHours,
+            LastsMinutes=self.scenes[scId].lastsMinutes,
+            ReactionScene=reactionScene,
+            Goal=self.convert_from_yw(self.scenes[scId].goal),
+            Conflict=self.convert_from_yw(self.scenes[scId].conflict),
+            Outcome=self.convert_from_yw(self.scenes[scId].outcome),
+            Tags=tags,
+            Characters=sceneChars,
+            Viewpoint=viewpointChar,
+            Locations=sceneLocs,
+            Items=sceneItems,
+            Notes=self.convert_from_yw(self.scenes[scId].sceneNotes),
+            ProjectName=self.projectName,
+            ProjectPath=self.projectPath,
+        )
+        return sceneMapping
+
+    def get_characterMapping(self, crId):
+        """Return a mapping dictionary for a character section. 
+        """
+
+        if self.characters[crId].tags is not None:
+            tags = self.get_string(self.characters[crId].tags)
+
+        else:
+            tags = ''
+
+        if self.characters[crId].isMajor:
+            characterStatus = Character.MAJOR_MARKER
+
+        else:
+            characterStatus = Character.MINOR_MARKER
+
+        characterMapping = dict(
+            ID=crId,
+            Title=self.characters[crId].title,
+            Desc=self.convert_from_yw(self.characters[crId].desc),
+            Tags=tags,
+            AKA=FileExport.convert_from_yw(self, self.characters[crId].aka),
+            Notes=self.convert_from_yw(self.characters[crId].notes),
+            Bio=self.convert_from_yw(self.characters[crId].bio),
+            Goals=self.convert_from_yw(self.characters[crId].goals),
+            FullName=FileExport.convert_from_yw(
+                self, self.characters[crId].fullName),
+            Status=characterStatus,
+            ProjectName=self.projectName,
+            ProjectPath=self.projectPath,
+        )
+        return characterMapping
+
+    def get_locationMapping(self, lcId):
+        """Return a mapping dictionary for a location section. 
+        """
+
+        if self.locations[lcId].tags is not None:
+            tags = self.get_string(self.locations[lcId].tags)
+
+        else:
+            tags = ''
+
+        locationMapping = dict(
+            ID=lcId,
+            Title=self.locations[lcId].title,
+            Desc=self.convert_from_yw(self.locations[lcId].desc),
+            Tags=tags,
+            AKA=FileExport.convert_from_yw(self, self.locations[lcId].aka),
+            ProjectName=self.projectName,
+            ProjectPath=self.projectPath,
+        )
+        return locationMapping
+
+    def get_itemMapping(self, itId):
+        """Return a mapping dictionary for an item section. 
+        """
+
+        if self.items[itId].tags is not None:
+            tags = self.get_string(self.items[itId].tags)
+
+        else:
+            tags = ''
+
+        itemMapping = dict(
+            ID=itId,
+            Title=self.items[itId].title,
+            Desc=self.convert_from_yw(self.items[itId].desc),
+            Tags=tags,
+            AKA=FileExport.convert_from_yw(self, self.items[itId].aka),
+            ProjectName=self.projectName,
+            ProjectPath=self.projectPath,
+        )
+        return itemMapping
+
+    def get_fileHeader(self):
+        """Process the file header.
+        Return a list of strings.
+        """
+        lines = []
+        template = Template(self.fileHeader)
+        lines.append(template.safe_substitute(
+            self.get_fileHeaderMapping()))
+        return lines
+
+    def get_scenes(self, chId, sceneNumber, wordsTotal, lettersTotal, doNotExport):
+        """Process the scenes.
+        Return a list of strings.
+        """
+        lines = []
+        firstSceneInChapter = True
+
+        for scId in self.chapters[chId].srtScenes:
+            wordsTotal += self.scenes[scId].wordCount
+            lettersTotal += self.scenes[scId].letterCount
+
+            # The order counts; be aware that "Todo" and "Notes" scenes are
+            # always unused.
+
+            if self.scenes[scId].isTodoScene:
+
+                if self.todoSceneTemplate != '':
+                    template = Template(self.todoSceneTemplate)
+
+                else:
+                    continue
+
+            elif self.scenes[scId].isNotesScene or self.chapters[chId].oldType == 1:
+                # Scene is "Notes" (new file format) or "Info" (old file
+                # format) scene.
+
+                if self.notesSceneTemplate != '':
+                    template = Template(self.notesSceneTemplate)
+
+                else:
+                    continue
+
+            elif self.scenes[scId].isUnused or self.chapters[chId].isUnused:
+
+                if self.unusedSceneTemplate != '':
+                    template = Template(self.unusedSceneTemplate)
+
+                else:
+                    continue
+
+            elif self.scenes[scId].doNotExport or doNotExport:
+
+                if self.notExportedSceneTemplate != '':
+                    template = Template(self.notExportedSceneTemplate)
+
+                else:
+                    continue
+
+            else:
+                sceneNumber += 1
+
+                template = Template(self.sceneTemplate)
+
+                if not firstSceneInChapter and self.scenes[scId].appendToPrev and self.appendedSceneTemplate != '':
+                    template = Template(self.appendedSceneTemplate)
+
+            if not (firstSceneInChapter or self.scenes[scId].appendToPrev):
+                lines.append(self.sceneDivider)
+
+            lines.append(template.safe_substitute(self.get_sceneMapping(
+                scId, sceneNumber, wordsTotal, lettersTotal)))
+
+            firstSceneInChapter = False
+
+        return lines, sceneNumber, wordsTotal, lettersTotal
+
+    def get_chapters(self):
+        """Process the chapters and nested scenes.
+        Return a list of strings.
+        """
+        lines = []
+        chapterNumber = 0
+        sceneNumber = 0
+        wordsTotal = 0
+        lettersTotal = 0
+
+        for chId in self.srtChapters:
+
+            # The order counts; be aware that "Todo" and "Notes" chapters are
+            # always unused.
+
+            # Has the chapter only scenes not to be exported?
+
+            sceneCount = 0
+            notExportCount = 0
+            doNotExport = False
+
+            for scId in self.chapters[chId].srtScenes:
+                sceneCount += 1
+
+                if self.scenes[scId].doNotExport:
+                    notExportCount += 1
+
+            if sceneCount > 0 and notExportCount == sceneCount:
+                doNotExport = True
+
+            if self.chapters[chId].chType == 2:
+
+                if self.todoChapterTemplate != '':
+                    template = Template(self.todoChapterTemplate)
+
+                else:
+                    continue
+
+            elif self.chapters[chId].chType == 1 or self.chapters[chId].oldType == 1:
+                # Chapter is "Notes" (new file format) or "Info" (old file
+                # format) chapter.
+
+                if self.notesChapterTemplate != '':
+                    template = Template(self.notesChapterTemplate)
+
+                else:
+                    continue
+
+            elif self.chapters[chId].isUnused:
+
+                if self.unusedChapterTemplate != '':
+                    template = Template(self.unusedChapterTemplate)
+
+                else:
+                    continue
+
+            elif doNotExport:
+
+                if self.notExportedChapterTemplate != '':
+                    template = Template(self.notExportedChapterTemplate)
+
+                else:
+                    continue
+
+            elif self.chapters[chId].chLevel == 1 and self.partTemplate != '':
+                template = Template(self.partTemplate)
+
+            else:
+                template = Template(self.chapterTemplate)
+                chapterNumber += 1
+
+            lines.append(template.safe_substitute(
+                self.get_chapterMapping(chId, chapterNumber)))
+
+            # Process scenes.
+
+            sceneLines, sceneNumber, wordsTotal, lettersTotal = self.get_scenes(
+                chId, sceneNumber, wordsTotal, lettersTotal, doNotExport)
+            lines.extend(sceneLines)
+
+            # Process chapter ending.
+
+            if self.chapters[chId].chType == 2 and self.todoChapterEndTemplate != '':
+                lines.append(self.todoChapterEndTemplate)
+
+            elif self.chapters[chId].chType == 1 or self.chapters[chId].oldType == 1:
+
+                if self.notesChapterEndTemplate != '':
+                    lines.append(self.notesChapterEndTemplate)
+
+            elif self.chapters[chId].isUnused and self.unusedChapterEndTemplate != '':
+                lines.append(self.unusedChapterEndTemplate)
+
+            elif doNotExport and self.notExportedChapterEndTemplate != '':
+                lines.append(self.notExportedChapterEndTemplate)
+
+            elif self.chapterEndTemplate != '':
+                lines.append(self.chapterEndTemplate)
+
+        return lines
+
+    def get_characters(self):
+        """Process the characters.
+        Return a list of strings.
+        """
+        lines = []
+        template = Template(self.characterTemplate)
+
+        for crId in self.srtCharacters:
+            lines.append(template.safe_substitute(
+                self.get_characterMapping(crId)))
+
+        return lines
+
+    def get_locations(self):
+        """Process the locations.
+        Return a list of strings.
+        """
+        lines = []
+        template = Template(self.locationTemplate)
+
+        for lcId in self.srtLocations:
+            lines.append(template.safe_substitute(
+                self.get_locationMapping(lcId)))
+
+        return lines
+
+    def get_items(self):
+        """Process the items.
+        Return a list of strings.
+        """
+        lines = []
+        template = Template(self.itemTemplate)
+
+        for itId in self.srtItems:
+            lines.append(template.safe_substitute(self.get_itemMapping(itId)))
+
+        return lines
+
+    def get_text(self):
+        """Assemple the whole text applying the templates.
+        Return a string to be written to the output file.
+        """
+        lines = self.get_fileHeader()
+        lines.extend(self.get_chapters())
+        lines.extend(self.get_characters())
+        lines.extend(self.get_locations())
+        lines.extend(self.get_items())
+        lines.append(self.fileFooter)
+        return ''.join(lines)
+
+    def write(self):
+        """Create a template-based output file. 
+        Return a message string starting with 'SUCCESS' or 'ERROR'.
+        """
+        text = self.get_text()
+
+        try:
+            with open(self.filePath, 'w', encoding='utf-8') as f:
+                f.write(text)
+
+        except:
+            return 'ERROR: Cannot write "' + os.path.normpath(self.filePath) + '".'
+
+        return 'SUCCESS: "' + os.path.normpath(self.filePath) + '" written.'
+
+
+class MdFile(FileExport):
+    """Markdown file representation
+    """
+
+    DESCRIPTION = 'Markdown converter'
+    EXTENSION = '.md'
+    SUFFIX = ''
+
+    SCENE_DIVIDER = '* * *'
+
+    fileHeader = '''**${Title}**  
+  
+*${AuthorName}*  
+  
+'''
+
+    partTemplate = '\n# ${Title}\n\n'
+
+    chapterTemplate = '\n## ${Title}\n\n'
+
+    sceneTemplate = '<!---${Title}--->${SceneContent}\n\n'
+
+    sceneDivider = '\n\n' + SCENE_DIVIDER + '\n\n'
+
+    def __init__(self, filePath, markdownMode=False, noSceneTitles=False):
+        FileExport.__init__(self, filePath)
+        self.markdownMode = markdownMode
+        self.noSceneTitles = noSceneTitles
+
+        if self.noSceneTitles:
+            self.sceneTemplate = self.sceneTemplate.replace(
+                '<!---${Title}--->', '')
+
+    def get_chapterMapping(self, chId, chapterNumber):
+        """Return a mapping dictionary for a chapter section. 
+        """
+        chapterMapping = FileExport.get_chapterMapping(
+            self, chId, chapterNumber)
+
+        if self.chapters[chId].suppressChapterTitle:
+            chapterMapping['Title'] = ''
+
+        return chapterMapping
+
+    def convert_from_yw(self, text):
+        """Convert yw7 markup to Markdown.
+        """
+
+        MD_REPLACEMENTS = [
+            ['[i]', '*'],
+            ['[/i]', '*'],
+            ['[b]', '**'],
+            ['[/b]', '**'],
+            ['/*', '<!---'],
+            ['*/', '--->'],
+            ['  ', ' '],
+        ]
+
+        if not self.markdownMode:
+            MD_REPLACEMENTS[:0] = [['\n', '\n\n']]
+
+        try:
+
+            for r in MD_REPLACEMENTS:
+                text = text.replace(r[0], r[1])
+
+            # Remove highlighting, alignment,
+            # strikethrough, and underline tags.
+
+            text = re.sub('\[\/*[h|c|r|s|u]\d*\]', '', text)
+
+        except AttributeError:
+            text = ''
+
+        return(text)
+
+    def convert_to_yw(self, text):
+        """Convert Markdown to yw7 markup.
+        """
+        if not self.markdownMode:
+            text = re.sub('\*\*(.+?)\*\*', '[b]\\1[/b]', text)
+            text = re.sub('\*([^ ].+?[^ ])\*', '[i]\\1[/i]', text)
+
+            MD_REPLACEMENTS = [
+                ['\n\n', '\n'],
+                ['<!---', '/*'],
+                ['--->', '*/'],
+            ]
+
+            try:
+
+                for r in MD_REPLACEMENTS:
+                    text = text.replace(r[0], r[1])
+
+            except AttributeError:
+                text = ''
+
+        return(text)
+
+    def read(self):
+        """Parse the Markdown file located at filePath
+        Return a message beginning with SUCCESS or ERROR.
+        """
+        LOW_WORDCOUNT = 10
+
+        def write_scene_content(scId, lines):
+
+            if scId is not None:
+                text = '\n'.join(lines)
+                self.scenes[scId].sceneContent = text
+
+                if self.scenes[scId].wordCount < LOW_WORDCOUNT:
+                    self.scenes[scId].status = Scene.STATUS.index('Outline')
+
+                else:
+                    self.scenes[scId].status = Scene.STATUS.index('Draft')
+
+        chCount = 0
+        scCount = 0
+        lines = []
+        chId = None
+        scId = None
+
+        try:
+            with open(self.filePath, encoding='utf-8') as f:
+                mdText = f.read()
+                cnvText = self.convert_to_yw(mdText)
+                mdLines = (cnvText).split('\n')
+
+        except(FileNotFoundError):
+            return 'ERROR: "' + os.path.normpath(self.filePath) + '" not found.'
+
+        except:
+            return 'ERROR: Can not parse "' + os.path.normpath(self.filePath) + '".'
+
+        if self.markdownMode:
+            commentStart = '<!---'
+            commentEnd = '--->'
+
+        else:
+            commentStart = '/*'
+            commentEnd = '*/'
+
+        for mdLine in mdLines:
+
+            if mdLine.startswith('#'):
+
+                # Write previous scene.
+
+                write_scene_content(scId, lines)
+                scId = None
+
+                # Add a chapter.
+
+                chCount += 1
+                chId = str(chCount)
+                self.chapters[chId] = Chapter()
+
+                title = mdLine.split('# ')[1]
+
+                self.chapters[chId].title = title
+                self.srtChapters.append(chId)
+                self.chapters[chId].oldType = '0'
+
+                if mdLine.startswith('# '):
+                    self.chapters[chId].chLevel = 1
+
+                else:
+                    self.chapters[chId].chLevel = 0
+
+                self.chapters[chId].srtScenes = []
+
+            elif self.SCENE_DIVIDER in mdLine:
+
+                # Write previous scene.
+
+                write_scene_content(scId, lines)
+                scId = None
+
+            elif scId is not None:
+                lines.append(mdLine)
+
+            elif mdLine and chId is not None:
+
+                # Add a scene; drop the first line if empty.
+
+                scCount += 1
+                scId = str(scCount)
+
+                self.scenes[scId] = Scene()
+                self.chapters[chId].srtScenes.append(scId)
+                self.scenes[scId].status = '1'
+                self.scenes[scId].title = 'Scene ' + str(scCount)
+
+                if not self.noSceneTitles and mdLine.startswith(commentStart):
+
+                    # The scene title is prefixed as a comment.
+
+                    try:
+                        scTitle, scContent = mdLine.split(
+                            sep=commentEnd, maxsplit=1)
+                        self.scenes[scId].title = scTitle.lstrip(commentStart)
+                        lines = [scContent]
+
+                    except:
+                        lines = [mdLine]
+
+                else:
+                    lines = [mdLine]
+
+        return 'SUCCESS'
+
+
+class MyFileFactory(FileFactory):
     """A factory class that instantiates a source file object
     and a target file object for conversion.
     """
@@ -3535,7 +3531,7 @@ def run(sourcePath, silentMode=True, markdownMode=False, noSceneTitles=False):
 
     converter = YwCnvUi()
     converter.ui = ui
-    converter.fileFactory = MdFileFactory(markdownMode, noSceneTitles)
+    converter.fileFactory = MyFileFactory(markdownMode, noSceneTitles)
     converter.run(sourcePath, MdFile.SUFFIX)
 
 
