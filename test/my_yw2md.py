@@ -126,58 +126,24 @@ https://github.com/peter88213/PyWriter/tree/master/src/pywriter/file#readme
         return(text)
 
 
-class MyFileFactory(FileFactory):
-    """A factory class that instantiates a source file object
-    and a target file object for conversion.
-
-    *** This class is needed to instantiate 
-    *** the customized MyFile class.
-    *** Do not edit *** 
-    """
-
-    def get_file_objects(self, sourcePath, suffix):
-        """Return a tuple with three elements:
-        * A message string starting with 'SUCCESS' or 'ERROR'
-        * sourceFile: a Novel subclass instance
-        * targetFile: a Novel subclass instance
-        """
-        fileName, fileExtension = os.path.splitext(sourcePath)
-
-        if fileExtension == Yw7File.EXTENSION:
-            sourceFile = Yw7File(sourcePath)
-            isYwProject = True
-
-        elif fileExtension == Yw6File.EXTENSION:
-            sourceFile = Yw6File(sourcePath)
-            isYwProject = True
-
-        else:
-            isYwProject = False
-
-        if isYwProject:
-            targetFile = MyFile(fileName + suffix + MyFile.EXTENSION)
-            targetFile.SUFFIX = suffix
-
-        else:
-            sourceFile = MyFile(sourcePath)
-            targetFile = Yw7File(fileName + Yw7File.EXTENSION)
-            targetFile.ywTreeBuilder = Yw7TreeCreator()
-            targetFile.ywProjectMerger = YwProjectCreator()
-
-        return 'SUCCESS', sourceFile, targetFile
+class MyConverter(YwCnvUi):
+    """A converter class for html export."""
+    EXPORT_SOURCE_CLASSES = [Yw7File, Yw6File]
+    EXPORT_TARGET_CLASSES = [MyFile]
 
 
-def run(sourcePath, silentMode=True, markdownMode=False, noSceneTitles=False):
+def run(sourcePath, silentMode):
 
     if silentMode:
         ui = Ui('')
     else:
         ui = UiCmd('yw2md')
 
-    converter = YwCnvUi()
+    converter = MyConverter()
     converter.ui = ui
-    converter.fileFactory = MyFileFactory()
-    converter.run(sourcePath, MdFile.SUFFIX)
+    kwargs = {'suffix': MyFile.SUFFIX, 'markdownMode': False,
+              'noSceneTitles': False}
+    converter.run(sourcePath, **kwargs)
 
 
 if __name__ == '__main__':

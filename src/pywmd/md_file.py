@@ -37,10 +37,10 @@ class MdFile(FileExport):
 
     sceneDivider = '\n\n' + SCENE_DIVIDER + '\n\n'
 
-    def __init__(self, filePath, markdownMode=False, noSceneTitles=False):
+    def __init__(self, filePath, **kwargs):
         FileExport.__init__(self, filePath)
-        self.markdownMode = markdownMode
-        self.noSceneTitles = noSceneTitles
+        self.markdownMode = kwargs['markdownMode']
+        self.noSceneTitles = kwargs['noSceneTitles']
 
         if self.noSceneTitles:
             self.sceneTemplate = self.sceneTemplate.replace(

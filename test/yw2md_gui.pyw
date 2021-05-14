@@ -12,11 +12,7 @@ import os
 
 from yw2md import Ui
 from yw2md import UiCmd
-from yw2md import YwCnvUi
-from yw2md import MdFile
-from yw2md import FileFactory
-from yw2md import YwCnvUi
-from yw2md import MyFileFactory
+from yw2md import MdConverter
 from yw2md import UiTk
 
 from tkinter import *
@@ -90,7 +86,9 @@ class MyGui(UiTk):
             bg=self.root.cget("background"))
 
         if self.sourcePath:
-            self.converter.run(self.sourcePath, '')
+            kwargs = {'suffix': '', 'markdownMode': False,
+                      'noSceneTitles': False}
+            self.converter.run(self.sourcePath, **kwargs)
 
     def finish(self):
         """Important: Disable the finish method used by UiTk 
@@ -106,11 +104,8 @@ def run():
     ui = MyGui('yw2md')
     # instantiate a user interface object
 
-    converter = YwCnvUi()
+    converter = MdConverter()
     # instantiate a converter object
-
-    converter.fileFactory = MyFileFactory()
-    # associate a file factory object with the converter
 
     # Create a bidirectional association between the
     # user interface object and the converter object.
