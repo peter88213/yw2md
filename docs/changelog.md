@@ -2,6 +2,13 @@
 
 ## Changelog
 
+### v1.3.8 New API
+
+* Make my_yw2md.py easier to modify.
+
+Based on PyWriter v2.17.4 (developmen version)
+
+
 ### v1.3.6 Refactor
 
 * Modify project structure
