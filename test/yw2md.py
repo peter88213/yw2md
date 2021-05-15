@@ -3003,6 +3003,411 @@ class Yw7NewFile(Yw7File):
         self.ywProjectMerger = YwProjectCreator()
         self.ywTreeBuilder = Yw7TreeCreator()
 
+
+from html.parser import HTMLParser
+
+
+
+
+def read_html_file(filePath):
+    """Open a html file being encoded utf-8 or ANSI.
+    Return a tuple:
+    [0] = Message beginning with SUCCESS or ERROR.
+    [1] = The file content in a single string. 
+    """
+    try:
+        with open(filePath, 'r', encoding='utf-8') as f:
+            text = (f.read())
+    except:
+        # HTML files exported by a word processor may be ANSI encoded.
+        try:
+            with open(filePath, 'r') as f:
+                text = (f.read())
+
+        except(FileNotFoundError):
+            return ('ERROR: "' + os.path.normpath(filePath) + '" not found.', None)
+
+    return ('SUCCESS', text)
+
+
+
+
+class HtmlFile(Novel, HTMLParser):
+    """Abstract HTML file representation.
+    """
+
+    EXTENSION = '.html'
+
+    def __init__(self, filePath, **kwargs):
+        Novel.__init__(self, filePath)
+        HTMLParser.__init__(self)
+        self._lines = []
+        self._scId = None
+        self._chId = None
+
+    def convert_to_yw(self, text):
+        """Convert html tags to yWriter 6/7 raw markup. 
+        Return a yw6/7 markup string.
+        """
+
+        # Clean up polluted HTML code.
+
+        text = re.sub('</*font.*?>', '', text)
+        text = re.sub('</*span.*?>', '', text)
+        text = re.sub('</*FONT.*?>', '', text)
+        text = re.sub('</*SPAN.*?>', '', text)
+
+        # Put everything in one line.
+
+        text = text.replace('\n', ' ')
+        text = text.replace('\r', ' ')
+        text = text.replace('\t', ' ')
+
+        while '  ' in text:
+            text = text.replace('  ', ' ').rstrip().lstrip()
+
+        # Replace HTML tags by yWriter markup.
+
+        text = text.replace('<i>', '[i]')
+        text = text.replace('<I>', '[i]')
+        text = text.replace('</i>', '[/i]')
+        text = text.replace('</I>', '[/i]')
+        text = text.replace('</em>', '[/i]')
+        text = text.replace('</EM>', '[/i]')
+        text = text.replace('<b>', '[b]')
+        text = text.replace('<B>', '[b]')
+        text = text.replace('</b>', '[/b]')
+        text = text.replace('</B>', '[/b]')
+        text = text.replace('</strong>', '[/b]')
+        text = text.replace('</STRONG>', '[/b]')
+        text = re.sub('<em.*?>', '[i]', text)
+        text = re.sub('<EM.*?>', '[i]', text)
+        text = re.sub('<strong.*?>', '[b]', text)
+        text = re.sub('<STRONG.*?>', '[b]', text)
+
+        # Remove orphaned tags.
+
+        text = text.replace('[/b][b]', '')
+        text = text.replace('[/i][i]', '')
+        text = text.replace('[/b][b]', '')
+
+        # Remove scene title annotations.
+
+        text = re.sub('\<\!-- - .*? - -->', '', text)
+
+        # Convert author's comments
+
+        text = text.replace('<!--', '/*')
+        text = text.replace('-->', '*/')
+
+        return text
+
+    def preprocess(self, text):
+        """Clean up the HTML code and strip yWriter 6/7 raw markup. 
+        This prevents accidentally applied formatting from being 
+        transferred to the yWriter metadata. If rich text is 
+        applicable, such as in scenes, overwrite this method 
+        in a subclass) 
+        """
+        text = self.convert_to_yw(text)
+
+        # Remove misplaced formatting tags.
+
+        text = re.sub('\[\/*[b|i]\]', '', text)
+        return text
+
+    def postprocess(self):
+        """Process the plain text after parsing.
+        This is a hook for subclasses.
+        """
+
+    def handle_starttag(self, tag, attrs):
+        """Identify scenes and chapters.
+        Overwrites HTMLparser.handle_starttag().
+        This method is applicable to HTML files that are divided into 
+        chapters and scenes. For differently structured HTML files 
+        overwrite this method in a subclass.
+        """
+        if tag == 'div':
+
+            if attrs[0][0] == 'id':
+
+                if attrs[0][1].startswith('ScID'):
+                    self._scId = re.search('[0-9]+', attrs[0][1]).group()
+                    self.scenes[self._scId] = Scene()
+                    self.chapters[self._chId].srtScenes.append(self._scId)
+
+                elif attrs[0][1].startswith('ChID'):
+                    self._chId = re.search('[0-9]+', attrs[0][1]).group()
+                    self.chapters[self._chId] = Chapter()
+                    self.chapters[self._chId].srtScenes = []
+                    self.srtChapters.append(self._chId)
+
+    def read(self):
+        """Read and parse a html file, fetching the Novel attributes.
+        Return a message beginning with SUCCESS or ERROR.
+        This is a template method for subclasses tailored to the 
+        content of the respective HTML file.
+        """
+        result = read_html_file(self.filePath)
+
+        if result[0].startswith('ERROR'):
+            return (result[0])
+
+        text = self.preprocess(result[1])
+        self.feed(text)
+        self.postprocess()
+
+        return 'SUCCESS'
+
+
+class HtmlImport(HtmlFile):
+    """HTML file representation of a work in progress to be 
+    converted to a new yWriter project yWriter project.
+    """
+
+    DESCRIPTION = 'Work in progress'
+    SUFFIX = ''
+
+    _SCENE_DIVIDER = '* * *'
+    _LOW_WORDCOUNT = 10
+
+    def __init__(self, filePath, **kwargs):
+        HtmlFile.__init__(self, filePath)
+        self._chCount = 0
+        self._scCount = 0
+
+    def preprocess(self, text):
+        """Process the html text before parsing.
+        """
+        return self.convert_to_yw(text)
+
+    def handle_starttag(self, tag, attrs):
+
+        if tag in ('h1', 'h2'):
+            self._scId = None
+            self._lines = []
+            self._chCount += 1
+            self._chId = str(self._chCount)
+            self.chapters[self._chId] = Chapter()
+            self.chapters[self._chId].srtScenes = []
+            self.srtChapters.append(self._chId)
+            self.chapters[self._chId].oldType = '0'
+
+            if tag == 'h1':
+                self.chapters[self._chId].chLevel = 1
+
+            else:
+                self.chapters[self._chId].chLevel = 0
+
+        elif tag == 'p':
+
+            if self._scId is None and self._chId is not None:
+                self._lines = []
+                self._scCount += 1
+                self._scId = str(self._scCount)
+                self.scenes[self._scId] = Scene()
+                self.chapters[self._chId].srtScenes.append(self._scId)
+                self.scenes[self._scId].status = '1'
+                self.scenes[self._scId].title = 'Scene ' + str(self._scCount)
+
+        elif tag == 'div':
+            self._scId = None
+            self._chId = None
+
+        elif tag == 'meta':
+
+            if attrs[0][1].lower() == 'author':
+                self.author = attrs[1][1]
+
+            if attrs[0][1].lower() == 'description':
+                self.desc = attrs[1][1]
+
+        elif tag == 'title':
+            self._lines = []
+
+    def handle_endtag(self, tag):
+
+        if tag == 'p':
+            self._lines.append('\n')
+
+            if self._scId is not None:
+                self.scenes[self._scId].sceneContent = ''.join(self._lines)
+
+                if self.scenes[self._scId].wordCount < self._LOW_WORDCOUNT:
+                    self.scenes[self._scId].status = Scene.STATUS.index(
+                        'Outline')
+
+                else:
+                    self.scenes[self._scId].status = Scene.STATUS.index(
+                        'Draft')
+
+        elif tag in ('h1', 'h2'):
+            self.chapters[self._chId].title = ''.join(self._lines)
+            self._lines = []
+
+        elif tag == 'title':
+            self.title = ''.join(self._lines)
+
+    def handle_data(self, data):
+        """Collect data within scene sections.
+        Overwrites HTMLparser.handle_data().
+        """
+        if self._scId is not None and self._SCENE_DIVIDER in data:
+            self._scId = None
+
+        else:
+            self._lines.append(data.rstrip().lstrip())
+
+
+
+class HtmlOutline(HtmlFile):
+    """HTML file representation of an yWriter project's OfficeFile part.
+
+    Represents a html file without chapter and scene tags 
+    to be written by Open/LibreOffice Writer.
+    """
+
+    DESCRIPTION = 'Novel outline'
+    SUFFIX = ''
+
+    def __init__(self, filePath, **kwargs):
+        HtmlFile.__init__(self, filePath)
+        self._chCount = 0
+        self._scCount = 0
+
+    def handle_starttag(self, tag, attrs):
+
+        if tag in ('h1', 'h2'):
+            self._scId = None
+            self._lines = []
+            self._chCount += 1
+            self._chId = str(self._chCount)
+            self.chapters[self._chId] = Chapter()
+            self.chapters[self._chId].srtScenes = []
+            self.srtChapters.append(self._chId)
+            self.chapters[self._chId].oldType = '0'
+
+            if tag == 'h1':
+                self.chapters[self._chId].chLevel = 1
+
+            else:
+                self.chapters[self._chId].chLevel = 0
+
+        elif tag == 'h3':
+            self._lines = []
+            self._scCount += 1
+            self._scId = str(self._scCount)
+            self.scenes[self._scId] = Scene()
+            self.chapters[self._chId].srtScenes.append(self._scId)
+            self.scenes[self._scId].sceneContent = ''
+            self.scenes[self._scId].status = Scene.STATUS.index('Outline')
+
+        elif tag == 'div':
+            self._scId = None
+            self._chId = None
+
+        elif tag == 'meta':
+
+            if attrs[0][1].lower() == 'author':
+                self.author = attrs[1][1]
+
+            if attrs[0][1].lower() == 'description':
+                self.desc = attrs[1][1]
+
+        elif tag == 'title':
+            self._lines = []
+
+    def handle_endtag(self, tag):
+
+        if tag == 'p':
+            self._lines.append('\n')
+
+            if self._scId is not None:
+                self.scenes[self._scId].desc = ''.join(self._lines)
+
+            elif self._chId is not None:
+                self.chapters[self._chId].desc = ''.join(self._lines)
+
+        elif tag in ('h1', 'h2'):
+            self.chapters[self._chId].title = ''.join(self._lines)
+            self._lines = []
+
+        elif tag == 'h3':
+            self.scenes[self._scId].title = ''.join(self._lines)
+            self._lines = []
+
+        elif tag == 'title':
+            self.title = ''.join(self._lines)
+
+    def handle_data(self, data):
+        """Collect data within scene sections.
+        Overwrites HTMLparser.handle_data().
+        """
+        self._lines.append(data.rstrip().lstrip())
+
+
+
+class NewProjectFactory(FileFactory):
+    """A factory class that instantiates source and target file objects."""
+
+    DO_NOT_IMPORT = ['_xref']
+
+    def make_file_objects(self, sourcePath, **kwargs):
+        """Factory method.
+        Return a tuple with three elements:
+        - A message string starting with 'SUCCESS' or 'ERROR'
+        - sourceFile: a Novel subclass instance
+        - targetFile: a Novel subclass instance
+
+        """
+        if not self.canImport(sourcePath):
+            return 'ERROR: This document is not meant to be written back.', None, None
+
+        fileName, fileExtension = os.path.splitext(sourcePath)
+        targetFile = Yw7NewFile(fileName + Yw7NewFile.EXTENSION, **kwargs)
+
+        if sourcePath.endswith('.html'):
+
+            # The source file might be an outline or a "work in progress".
+
+            result = read_html_file(sourcePath)
+
+            if result[0].startswith('SUCCESS'):
+
+                if "<h3" in result[1].lower():
+                    sourceFile = HtmlOutline(sourcePath, **kwargs)
+
+                else:
+                    sourceFile = HtmlImport(sourcePath, **kwargs)
+
+                return 'SUCCESS', sourceFile, targetFile
+
+            else:
+                return 'ERROR: Cannot read "' + os.path.normpath(sourcePath) + '".', None, None
+
+        else:
+            for fileClass in self.fileClasses:
+
+                if fileClass.SUFFIX is not None:
+
+                    if sourcePath.endswith(fileClass.SUFFIX + fileClass.EXTENSION):
+                        sourceFile = fileClass(sourcePath, **kwargs)
+                        return 'SUCCESS', sourceFile, targetFile
+
+            return 'ERROR: File type of  "' + os.path.normpath(sourcePath) + '" not supported.', None, None
+
+    def canImport(self, sourcePath):
+        fileName, fileExtension = os.path.splitext(sourcePath)
+
+        for suffix in self.DO_NOT_IMPORT:
+
+            if fileName.endswith(suffix):
+                return False
+
+        return True
+
+
 from string import Template
 
 
@@ -3793,49 +4198,15 @@ class MdFile(FileExport):
         return 'SUCCESS'
 
 
-class NewProjectFactory(FileFactory):
-    """A factory class that instantiates source and target file objects."""
-
-    def make_file_objects(self, sourcePath, **kwargs):
-        """Factory method.
-        Return a tuple with three elements:
-        - A message string starting with 'SUCCESS' or 'ERROR'
-        - sourceFile: a Novel subclass instance
-        - targetFile: a Novel subclass instance
-
-        """
-        fileName, fileExtension = os.path.splitext(sourcePath)
-
-        if fileExtension == MdFile.EXTENSION:
-
-            # The source file might be an outline or a "work in progress".
-
-            targetFile = Yw7NewFile(
-                fileName + Yw7NewFile.EXTENSION, **kwargs)
-
-            sourceFile = MdFile(sourcePath, **kwargs)
-
-        else:
-            return 'ERROR: File type of  "' + os.path.normpath(sourcePath) + '" not supported.', None, None
-
-        return 'SUCCESS', sourceFile, targetFile
-
-
-
 class MdConverter(YwCnvUi):
-    """A converter class for html export."""
+    """A converter class for Markdown export."""
     EXPORT_SOURCE_CLASSES = [Yw7File, Yw6File]
     EXPORT_TARGET_CLASSES = [MdFile]
+    CREATE_SOURCE_CLASSES = [MdFile]
 
     def __init__(self):
-        """Extend the superclass constructor.
-
-        Override newProjectFactory by a project
-        specific implementation that accepts the
-        .md file extension. 
-        """
         YwCnvUi.__init__(self)
-        self.newProjectFactory = NewProjectFactory()
+        self.newProjectFactory = NewProjectFactory(self.CREATE_SOURCE_CLASSES)
 
 
 def run(sourcePath, silentMode=True, markdownMode=False, noSceneTitles=False):

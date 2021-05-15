@@ -19,13 +19,10 @@ import argparse
 
 from yw2md import Ui
 from yw2md import UiCmd
-from yw2md import YwCnvUi
+from yw2md import MdConverter
 from yw2md import MdFile
-from yw2md import FileFactory
 from yw2md import Yw6File
 from yw2md import Yw7File
-from yw2md import Yw7TreeCreator
-from yw2md import YwProjectCreator
 
 
 class MyFile(MdFile):
@@ -126,13 +123,13 @@ https://github.com/peter88213/PyWriter/tree/master/src/pywriter/file#readme
         return(text)
 
 
-class MyConverter(YwCnvUi):
-    """A converter class for html export."""
-    EXPORT_SOURCE_CLASSES = [Yw7File, Yw6File]
+class MyConverter(MdConverter):
+    """A converter class for Markdown export."""
     EXPORT_TARGET_CLASSES = [MyFile]
+    CREATE_SOURCE_CLASSES = [MyFile]
 
 
-def run(sourcePath, silentMode):
+def run(sourcePath, silentMode=True, markdownMode=False, noSceneTitles=False):
 
     if silentMode:
         ui = Ui('')
@@ -141,8 +138,8 @@ def run(sourcePath, silentMode):
 
     converter = MyConverter()
     converter.ui = ui
-    kwargs = {'suffix': MyFile.SUFFIX, 'markdownMode': False,
-              'noSceneTitles': False}
+    kwargs = {'suffix': MdFile.SUFFIX, 'markdownMode': markdownMode,
+              'noSceneTitles': noSceneTitles}
     converter.run(sourcePath, **kwargs)
 
 
@@ -150,20 +147,23 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Markdown converter for yWriter projects.',
         epilog='')
-    parser.add_argument('sourcePath', metavar='Source file',
+    parser.add_argument('sourcePath', metavar='Sourcefile',
                         help="The path of the source file for the conversion. "
                         "If it's a yWriter project file with extension 'yw6' or 'yw7', "
-                        "a new Markdoen formatted text document will be created. "
+                        "a new Markdown formatted text document will be created. "
                         "Otherwise, the source file will be considered a Markdown "
                         "formatted file to be converted to a new yWriter 7 project. "
-                        "Existing yWriter projects are not overwritten. "
-                        "Headings are considered chapter titles. Scenes within "
-                        "chapters are separated by '" + MdFile.SCENE_DIVIDER +
-                        "'. All scenes are Markdown formatted, so do not use "
-                        "yWriter's built-in exporters.")
+                        "Existing yWriter projects are not overwritten.")
+
     parser.add_argument('--silent',
                         action="store_true",
                         help='suppress error messages and the request to confirm overwriting')
+    parser.add_argument('--md',
+                        action="store_true",
+                        help='the scenes in the yWriter project are Markdown formatted')
+    parser.add_argument('--notitles',
+                        action="store_true",
+                        help='do not associate comments at the beginning of the scene with scene titles')
     args = parser.parse_args()
 
     if args.silent:
@@ -172,8 +172,20 @@ if __name__ == '__main__':
     else:
         silentMode = False
 
+    if args.md:
+        markdownMode = True
+
+    else:
+        markdownMode = False
+
+    if args.notitles:
+        noSceneTitles = True
+
+    else:
+        noSceneTitles = False
+
     if os.path.isfile(args.sourcePath):
-        run(args.sourcePath, silentMode)
+        run(args.sourcePath, silentMode, markdownMode, noSceneTitles)
 
     else:
         print('ERROR: File not found.')
