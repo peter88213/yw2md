@@ -44,7 +44,7 @@ class MyGui(UiTk):
         # self.root.geometry("800x360")
         self.root.title(title)
 
-        self.header = Label(self.root, text=description)
+        self.header = Label(self.root, text='Options')
         self.appInfo = Label(self.root, text='')
         self.appInfo.config(height=2, width=60)
 
@@ -80,18 +80,20 @@ class MyGui(UiTk):
         self.root.quitButton = Button(text='Quit', command=quit)
         self.root.quitButton.config(height=1, width=10)
 
-        #self.header.grid(row=1, column=2)
+        self.header.grid(row=1, column=1, sticky=W, padx=20, columnspan=3)
         self.root.SceneTitlesCheckbox.grid(
-            row=2, column=2, sticky=W, padx=20)
+            row=2, column=1, sticky=W, padx=20, columnspan=3)
         self.root.markdownModeCheckbox.grid(
-            row=3, column=2, sticky=W, padx=20)
+            row=3, column=1, sticky=W, padx=20, columnspan=3)
+        self.appInfo.grid(row=5, column=1, pady=10, columnspan=3)
+
         self.root.selectButton.grid(
-            row=6, column=2, padx=20, pady=10, sticky=W)
-        self.appInfo.grid(row=5, column=2)
-        self.root.runButton.grid(row=6, column=2, padx=20, pady=10, sticky=E)
-        self.successInfo.grid(row=7, column=2)
-        self.processInfo.grid(row=8, column=2)
-        self.root.quitButton.grid(row=9, column=2, pady=10)
+            row=6, column=1, pady=10)
+        self.root.runButton.grid(row=6, column=2, pady=10)
+        self.root.quitButton.grid(row=6, column=3, pady=10)
+
+        self.successInfo.grid(row=7, column=1, columnspan=3)
+        self.processInfo.grid(row=8, column=1, columnspan=3, pady=10)
 
         self.sourcePath = None
         self.set_info_what('No file selected')
