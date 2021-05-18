@@ -16,7 +16,7 @@ from pywriter.converter.yw_cnv_ui import YwCnvUi
 from pywriter.yw.yw6_file import Yw6File
 from pywriter.yw.yw7_file import Yw7File
 from pywmd.md_file import MdFile
-from pywmd.new_project_factory import NewProjectFactory
+from pywriter.converter.new_project_factory import NewProjectFactory
 
 
 class MdConverter(YwCnvUi):

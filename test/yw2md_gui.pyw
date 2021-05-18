@@ -60,7 +60,8 @@ class MyGui(UiTk):
         self.root.quitButton.config(height=1, width=10)
         self.root.quitButton.pack(padx=5, pady=5)
 
-        self.sourcePath = ''
+        self.sourcePath = None
+        self.set_info_what('No file selected')
         self.startDir = os.getcwd()
 
     def start(self):
@@ -76,6 +77,9 @@ class MyGui(UiTk):
         self.successInfo.config(
             bg=self.root.cget("background"))
 
+        if self.sourcePath is not None:
+            self.startDir = os.path.dirname(self.sourcePath)
+
         file = filedialog.askopenfile(initialdir=self.startDir)
 
         if file:
@@ -85,7 +89,6 @@ class MyGui(UiTk):
             self.set_info_what(
                 'File: ' + os.path.normpath(self.sourcePath))
             self.root.runButton.config(state='normal')
-            self.startDir = os.path.dirname(self.sourcePath)
 
         else:
             self.set_info_what('No file selected')
@@ -114,10 +117,21 @@ class MyGui(UiTk):
         return
 
 
-def run():
+def run(sourcePath):
 
     ui = MyGui('yw2md')
     # instantiate a user interface object
+
+    if sourcePath is not None:
+
+        if os.path.isfile(sourcePath):
+            ui.sourcePath = sourcePath
+            ui.set_info_what(
+                'File: ' + os.path.normpath(sourcePath))
+            ui.root.runButton.config(state='normal')
+
+        else:
+            sourcepath = None
 
     converter = MdConverter()
     # instantiate a converter object
@@ -135,4 +149,11 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+
+    try:
+        sourcePath = sys.argv[1].replace('\\', '/')
+
+    except:
+        sourcePath = None
+
+    run(sourcePath)
