@@ -18,6 +18,7 @@ from yw2md import UiTk
 from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
+from tkinter import ttk
 
 
 class MyGui(UiTk):
@@ -32,6 +33,18 @@ class MyGui(UiTk):
         """
         UiTk.__init__(self, title)
         self.converter = None
+
+        self.root.geometry("800x420")
+
+        self.markdownMode = BooleanVar()
+        self.root.markdownModeCheckbox = ttk.Checkbutton(
+            text='Markdown mode', variable=self.markdownMode, onvalue=True, offvalue=False)
+        self.root.markdownModeCheckbox.pack()
+
+        self.noSceneTitles = BooleanVar()
+        self.root.noSceneTitlesCheckbox = ttk.Checkbutton(
+            text='No scene titles', variable=self.noSceneTitles, onvalue=True, offvalue=False)
+        self.root.noSceneTitlesCheckbox.pack()
 
         self.root.selectButton = Button(
             text="Select file", command=self.select_file)
@@ -85,9 +98,11 @@ class MyGui(UiTk):
         self.successInfo.config(
             bg=self.root.cget("background"))
 
+        options = [False, True]
+
         if self.sourcePath:
-            kwargs = {'suffix': '', 'markdownMode': False,
-                      'noSceneTitles': False}
+            kwargs = {'suffix': '', 'markdownMode': self.markdownMode.get(),
+                      'noSceneTitles': self.noSceneTitles.get()}
             self.converter.run(self.sourcePath, **kwargs)
 
     def finish(self):
