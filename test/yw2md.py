@@ -85,14 +85,18 @@ class UiTk(Ui):
 
         self.root = Tk()
         self.root.geometry("800x360")
+
         self.root.title(title)
         self.header = Label(self.root, text=description)
-        self.header.pack(padx=5, pady=5)
         self.appInfo = Label(self.root, text='')
-        self.appInfo.pack(padx=5, pady=5)
         self.successInfo = Label(self.root)
-        self.successInfo.pack(fill=X, expand=1, padx=50, pady=5)
         self.processInfo = Label(self.root, text='')
+        self.root.quitButton = Button(text="Quit", command=quit)
+        self.root.quitButton.config(height=1, width=10)
+
+        self.header.pack(padx=5, pady=5)
+        self.appInfo.pack(padx=5, pady=5)
+        self.successInfo.pack(fill=X, expand=1, padx=50, pady=5)
         self.processInfo.pack(padx=5, pady=5)
 
         self.infoWhatText = ''
@@ -120,8 +124,6 @@ class UiTk(Ui):
             self.successInfo.config(bg='red')
 
     def start(self):
-        self.root.quitButton = Button(text="Quit", command=quit)
-        self.root.quitButton.config(height=1, width=10)
         self.root.quitButton.pack(padx=5, pady=5)
         self.root.mainloop()
 import sys
@@ -3171,6 +3173,8 @@ class HtmlImport(HtmlFile):
 
     _SCENE_DIVIDER = '* * *'
     _LOW_WORDCOUNT = 10
+    _COMMENT_START = '/*'
+    _COMMENT_END = '*/'
 
     def __init__(self, filePath, **kwargs):
         HtmlFile.__init__(self, filePath)
@@ -3257,7 +3261,23 @@ class HtmlImport(HtmlFile):
             self._scId = None
 
         else:
-            self._lines.append(data.rstrip().lstrip())
+            data = data.rstrip().lstrip()
+            
+            # Convert prefixed comment into scene title.
+
+            if self._lines == [] and data.startswith(self._COMMENT_START):
+
+                try:
+                    scTitle, scText = data.split(
+                        sep=self._COMMENT_END, maxsplit=1)
+                    self.scenes[self._scId].title = scTitle.lstrip(
+                        self._COMMENT_START).lstrip('- ')
+                    data = scText
+
+                except:
+                    pass
+
+            self._lines.append(data)
 
 
 
@@ -3989,7 +4009,7 @@ class MdFile(FileExport):
     """Markdown file representation
     """
 
-    DESCRIPTION = 'Markdown converter'
+    DESCRIPTION = 'Markdown file'
     EXTENSION = '.md'
     SUFFIX = ''
 

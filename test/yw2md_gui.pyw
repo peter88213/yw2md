@@ -29,40 +29,69 @@ class MyGui(UiTk):
     and link it to the application.
     """
 
-    def __init__(self, title):
+    def __init__(self, title, description=None):
         """Make the converter object visible to the user interface 
         in order to make method calls possible.
         Add the widgets needed to invoke the converter manually.
         """
-        UiTk.__init__(self, title)
+        # UiTk.__init__(self, title)
+
+        if description is None:
+            description = __doc__
+            # Just for legacy compatibility
+
+        self.root = Tk()
+        # self.root.geometry("800x360")
+        self.root.title(title)
+
+        self.header = Label(self.root, text=description)
+        self.appInfo = Label(self.root, text='')
+        self.appInfo.config(height=2, width=60)
+
+        self.successInfo = Label(self.root)
+        self.successInfo.config(height=1, width=50)
+
+        self.processInfo = Label(self.root, text='')
+
+        self.infoWhatText = ''
+        self.infoHowText = ''
+
         self.converter = None
 
-        self.root.geometry("800x450")
+        # self.root.geometry("800x450")
 
         self.SceneTitles = BooleanVar()
         self.SceneTitles.set(False)
         self.root.SceneTitlesCheckbox = ttk.Checkbutton(
             text=SCT_DESCRIPTION, variable=self.SceneTitles, onvalue=False, offvalue=True)
-        self.root.SceneTitlesCheckbox.pack()
 
         self.markdownMode = BooleanVar()
         self.root.markdownModeCheckbox = ttk.Checkbutton(
             text=MDM_DESCRIPTION, variable=self.markdownMode, onvalue=True, offvalue=False)
-        self.root.markdownModeCheckbox.pack()
 
         self.root.selectButton = Button(
             text="Select file", command=self.select_file)
         self.root.selectButton.config(height=1, width=10)
-        self.root.selectButton.pack(padx=5, pady=5)
 
         self.root.runButton = Button(text='Convert', command=self.convert_file)
         self.root.runButton.config(height=1, width=10)
-        self.root.runButton.pack(padx=5, pady=5)
         self.root.runButton.config(state='disabled')
 
         self.root.quitButton = Button(text='Quit', command=quit)
         self.root.quitButton.config(height=1, width=10)
-        self.root.quitButton.pack(padx=5, pady=5)
+
+        #self.header.grid(row=1, column=2)
+        self.root.SceneTitlesCheckbox.grid(
+            row=2, column=2, sticky=W, padx=20)
+        self.root.markdownModeCheckbox.grid(
+            row=3, column=2, sticky=W, padx=20)
+        self.root.selectButton.grid(
+            row=6, column=2, padx=20, pady=10, sticky=W)
+        self.appInfo.grid(row=5, column=2)
+        self.root.runButton.grid(row=6, column=2, padx=20, pady=10, sticky=E)
+        self.successInfo.grid(row=7, column=2)
+        self.processInfo.grid(row=8, column=2)
+        self.root.quitButton.grid(row=9, column=2, pady=10)
 
         self.sourcePath = None
         self.set_info_what('No file selected')
@@ -115,7 +144,7 @@ class MyGui(UiTk):
 
 def run(sourcePath):
 
-    ui = MyGui('yw2md')
+    ui = MyGui('Markdown converter for yWriter projects')
     # instantiate a user interface object
 
     if sourcePath is not None:

@@ -17,7 +17,7 @@ class MdFile(FileExport):
     """Markdown file representation
     """
 
-    DESCRIPTION = 'Markdown converter'
+    DESCRIPTION = 'Markdown file'
     EXTENSION = '.md'
     SUFFIX = ''
 
