@@ -20,6 +20,9 @@ from tkinter import messagebox
 from tkinter import filedialog
 from tkinter import ttk
 
+SCT_DESCRIPTION = 'Comments at the beginning of a scene are scene titles.'
+MDM_DESCRIPTION = 'The scenes in the yWriter project are Markdown formatted.'
+
 
 class MyGui(UiTk):
     """Extend the Tkinter GUI, 
@@ -34,17 +37,18 @@ class MyGui(UiTk):
         UiTk.__init__(self, title)
         self.converter = None
 
-        self.root.geometry("800x420")
+        self.root.geometry("800x450")
+
+        self.SceneTitles = BooleanVar()
+        self.SceneTitles.set(False)
+        self.root.SceneTitlesCheckbox = ttk.Checkbutton(
+            text=SCT_DESCRIPTION, variable=self.SceneTitles, onvalue=False, offvalue=True)
+        self.root.SceneTitlesCheckbox.pack()
 
         self.markdownMode = BooleanVar()
         self.root.markdownModeCheckbox = ttk.Checkbutton(
-            text='Markdown mode', variable=self.markdownMode, onvalue=True, offvalue=False)
+            text=MDM_DESCRIPTION, variable=self.markdownMode, onvalue=True, offvalue=False)
         self.root.markdownModeCheckbox.pack()
-
-        self.noSceneTitles = BooleanVar()
-        self.root.noSceneTitlesCheckbox = ttk.Checkbutton(
-            text='No scene titles', variable=self.noSceneTitles, onvalue=True, offvalue=False)
-        self.root.noSceneTitlesCheckbox.pack()
 
         self.root.selectButton = Button(
             text="Select file", command=self.select_file)
@@ -105,7 +109,7 @@ class MyGui(UiTk):
 
         if self.sourcePath:
             kwargs = {'suffix': '', 'markdownMode': self.markdownMode.get(),
-                      'noSceneTitles': self.noSceneTitles.get()}
+                      'noSceneTitles': self.SceneTitles.get()}
             self.converter.run(self.sourcePath, **kwargs)
 
     def finish(self):
