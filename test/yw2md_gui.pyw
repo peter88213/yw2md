@@ -112,14 +112,6 @@ class MyGui(UiTk):
                       'noSceneTitles': self.SceneTitles.get()}
             self.converter.run(self.sourcePath, **kwargs)
 
-    def finish(self):
-        """Important: Disable the finish method used by UiTk 
-        to start the main loop.
-        This is because UiTk uses the main loop only for awaiting
-        the exit command after having finished the conversion. 
-        """
-        return
-
 
 def run(sourcePath):
 
