@@ -34,14 +34,12 @@ class MyGui(UiTk):
         in order to make method calls possible.
         Add the widgets needed to invoke the converter manually.
         """
+        self.converter = None
+        self.infoWhatText = ''
+        self.infoHowText = ''
         # UiTk.__init__(self, title)
 
-        if description is None:
-            description = __doc__
-            # Just for legacy compatibility
-
         self.root = Tk()
-        # self.root.geometry("800x360")
         self.root.title(title)
 
         self.header = Label(self.root, text='Options')
@@ -52,13 +50,6 @@ class MyGui(UiTk):
         self.successInfo.config(height=1, width=50)
 
         self.processInfo = Label(self.root, text='')
-
-        self.infoWhatText = ''
-        self.infoHowText = ''
-
-        self.converter = None
-
-        # self.root.geometry("800x450")
 
         self.SceneTitles = BooleanVar()
         self.SceneTitles.set(False)

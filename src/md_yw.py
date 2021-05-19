@@ -13,23 +13,9 @@ import argparse
 from pywriter.ui.ui import Ui
 from pywriter.ui.ui_cmd import UiCmd
 from pywriter.ui.ui_tk import UiTk
-from pywriter.converter.yw_cnv_ui import YwCnvUi
-from pywriter.yw.yw6_file import Yw6File
-from pywriter.yw.yw7_file import Yw7File
-from pywriter.converter.new_project_factory import NewProjectFactory
 
 from pywmd.md_file import MdFile
-
-
-class MdConverter(YwCnvUi):
-    """A converter class for Markdown export."""
-    EXPORT_SOURCE_CLASSES = [Yw7File, Yw6File]
-    EXPORT_TARGET_CLASSES = [MdFile]
-    CREATE_SOURCE_CLASSES = [MdFile]
-
-    def __init__(self):
-        YwCnvUi.__init__(self)
-        self.newProjectFactory = NewProjectFactory(self.CREATE_SOURCE_CLASSES)
+from pywmd.md_converter import MdConverter
 
 
 def run(sourcePath, silentMode=True, markdownMode=False, noSceneTitles=False):
@@ -37,7 +23,7 @@ def run(sourcePath, silentMode=True, markdownMode=False, noSceneTitles=False):
     if silentMode:
         ui = Ui('')
     else:
-        ui = UiCmd('yw2md')
+        ui = UiCmd('Markdown converter for yWriter projects')
 
     converter = MdConverter()
     converter.ui = ui
