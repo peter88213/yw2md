@@ -14,23 +14,35 @@ import inliner
 
 SRC = '../src/'
 BUILD = '../test/'
-SOURCE_FILE = 'md_yw.py'
-TARGET_FILE = BUILD + 'yw2md.py'
+SOURCE_FILE_GUI = 'yw_md.pyw'
+TARGET_FILE_GUI = BUILD + 'yw2md.pyw'
+SOURCE_FILE_CMD = 'md_yw.py'
+TARGET_FILE_CMD = BUILD + 'yw2md.py'
 
 
 def main():
     os.chdir(SRC)
 
     try:
-        os.remove(TARGET_FILE)
+        os.remove(TARGET_FILE_GUI)
 
     except:
         pass
 
-    inliner.run(SOURCE_FILE,
-                TARGET_FILE, 'pywmd', '../src/')
-    inliner.run(TARGET_FILE,
-                TARGET_FILE, 'pywriter', '../../PyWriter/src/')
+    try:
+        os.remove(TARGET_FILE_CMD)
+
+    except:
+        pass
+
+    inliner.run(SOURCE_FILE_GUI,
+                TARGET_FILE_GUI, 'pywmd', '../src/')
+    inliner.run(TARGET_FILE_GUI,
+                TARGET_FILE_GUI, 'pywriter', '../../PyWriter/src/')
+    inliner.run(SOURCE_FILE_CMD,
+                TARGET_FILE_CMD, 'pywmd', '../src/')
+    inliner.run(TARGET_FILE_CMD,
+                TARGET_FILE_CMD, 'pywriter', '../../PyWriter/src/')
     print('Done.')
 
 

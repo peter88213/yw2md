@@ -12,7 +12,6 @@ import argparse
 
 from pywriter.ui.ui import Ui
 from pywriter.ui.ui_cmd import UiCmd
-from pywriter.ui.ui_tk import UiTk
 
 from pywmd.md_file import MdFile
 from pywmd.md_converter import MdConverter

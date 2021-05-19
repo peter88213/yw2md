@@ -7,13 +7,10 @@ Copyright (c) 2021 Peter Triesberger
 For further information see https://github.com/peter88213/yw2md
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
-import sys
 import os
 
-from yw2md import Ui
-from yw2md import UiCmd
-from yw2md import MdConverter
-from yw2md import UiTk
+from pywmd.md_converter import MdConverter
+from pywriter.ui.ui_tk import UiTk
 
 from tkinter import *
 from tkinter import messagebox
