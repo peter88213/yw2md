@@ -146,7 +146,7 @@ def run(sourcePath):
             ui.root.runButton.config(state='normal')
 
         else:
-            sourcepath = None
+            sourcePath = None
 
     converter = MdConverter()
     # instantiate a converter object
