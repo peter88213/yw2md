@@ -2,17 +2,26 @@
 
 ## Changelog
 
+### v1.4.0 GUI and command line variant
+
+-    Now there are two variants, which are distinguished by the file extension: 
+     _yw2md.pyw_  has a graphical user interface, and  _yw2md.py_  is for the command line. 
+-    Update the underlying class library with changed API for better maintainability.
+-    Remove the custom script from the distribution.
+
+Based on PyWriter v3.0.0
+
 ### v1.3.8 New API
 
-* Make my_yw2md.py easier to modify.
+- Make my_yw2md.py easier to modify.
 
 Based on PyWriter v2.17.4 (developmen version)
 
 
 ### v1.3.6 Refactor
 
-* Modify project structure
-* Implement a regex-based solution for scene dividers.
+- Modify project structure
+- Implement a regex-based solution for scene dividers.
 
 Based on PyWriter v2.17.4 (developmen version)
 
@@ -44,10 +53,10 @@ Based on PyWriter v2.16.1
 
 ### v1.2.0 New command line options
 
-* In exported md documents, the scene title is prefixed as a comment (can be turned off with `--notitles`).
-* In generated yWriter projects, comments at scene start are converted to scene titles (can be turned off with `--notitles`).
-* Convert Markdown to yw Markup when writing scenes to yWriter (can be turned off with `--md`).
-* Convert double linefeeds to single ones when reading scenes from yWriter (can be turned on with `--md`).
+- In exported md documents, the scene title is prefixed as a comment (can be turned off with `--notitles`).
+- In generated yWriter projects, comments at scene start are converted to scene titles (can be turned off with `--notitles`).
+- Convert Markdown to yw Markup when writing scenes to yWriter (can be turned off with `--md`).
+- Convert double linefeeds to single ones when reading scenes from yWriter (can be turned on with `--md`).
 
 Based on PyWriter v2.16.0
 
@@ -94,10 +103,10 @@ Based on PyWriter 2.14.4
 
 ### v0.2.1 Service release
 
-* Change the Markdown linefeeds.
-* Add a customization template
+- Change the Markdown linefeeds.
+- Add a customization template
 
 
 ### v0.2.0
-* First public release based on PyWriter v2.14.3.
+- First public release based on PyWriter v2.14.3.
 
