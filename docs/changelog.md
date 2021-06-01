@@ -20,7 +20,9 @@ Based on PyWriter v3.0.0
 Based on PyWriter v2.17.4 (developmen version)
 
 
-### v1.3.6 Refactor
+### v1.3.6 Optional update
+
+Refactor
 
 - Modify project structure
 - Implement a regex-based solution for scene dividers.
@@ -63,7 +65,7 @@ Based on PyWriter v2.16.1
 Based on PyWriter v2.16.0
 
 
-### v1.0.0 Final release
+### v1.0.0 Official release
 
 Refactor: Move the MdFile class to the PyWriter library.
 
