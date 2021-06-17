@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v1.4.1 Optional update
+
+- Major refactoring of the yw7 file processing.
+
+Based on PyWriter v3.8.0
+
 ### v1.4.0 GUI and command line variant
 
 -    Now there are two variants, which are distinguished by the file extension: 

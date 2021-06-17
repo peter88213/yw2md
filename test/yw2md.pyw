@@ -10,13 +10,12 @@ Published under the MIT License (https://opensource.org/licenses/mit-license.php
 import os
 
 import sys
+import webbrowser
 
 
 
 class Ui():
     """Base class for UI facades, implementing a 'silent mode'.
-
-    All UI facades inherit from this class. 
     """
 
     def __init__(self, title):
@@ -40,7 +39,7 @@ class Ui():
         self.infoHowText = message
 
     def start(self):
-        """To be overwritten by subclasses requiring
+        """To be overridden by subclasses requiring
         special action to launch the user interaction.
         """
 
@@ -49,15 +48,14 @@ class YwCnv():
     """Base class for Novel file conversion.
 
     Public methods:
-    convert(sourceFile, targetFile) -- Convert sourceFile into targetFile and return a message.
-
-    All converters inherit from this class. 
+        convert(sourceFile, targetFile) -- Convert sourceFile into targetFile.
     """
 
     def convert(self, sourceFile, targetFile):
         """Convert sourceFile into targetFile and return a message.
 
-        sourceFile, targetFile -- Novel subclass instances.
+        Positional arguments:
+            sourceFile, targetFile -- Novel subclass instances.
 
         1. Make the source object read the source file.
         2. Make the target object merge the source object's instance variables.
@@ -104,7 +102,9 @@ class YwCnv():
         return targetFile.write()
 
     def confirm_overwrite(self, fileName):
-        """Return boolean permission to overwrite the target file."""
+        """Return boolean permission to overwrite the target file.
+        This is a stub to be overridden by subclass methods.
+        """
         return True
 
 
@@ -112,22 +112,36 @@ class YwCnv():
 class FileFactory:
     """Base class for conversion object factory classes.
 
+    Public methods:
+        make_file_objects(self, sourcePath, **kwargs) -- return conversion objects.
+
     This class emulates a "FileFactory" Interface.
     Instances can be used as stubs for factories instantiated at runtime.
     """
 
     def __init__(self, fileClasses=[]):
+        """Write the parameter to a private instance variable.
+
+        Positional arguments:
+            fileClasses -- list of classes from which an instance can be returned.
+        """
         self.fileClasses = fileClasses
 
     def make_file_objects(self, sourcePath, **kwargs):
         """A factory method stub.
+
+        Positional arguments:
+            sourcePath -- string; path to the source file to convert.
+
+        Optional arguments:
+            suffix -- string; an indicator for the target file type.
 
         Return a tuple with three elements:
         - A message string starting with 'ERROR'
         - sourceFile: None
         - targetFile: None
 
-        Factory method to be overwritten by subclasses.
+        Factory method to be overridden by subclasses.
         Subclasses return a tuple with three elements:
         - A message string starting with 'SUCCESS' or 'ERROR'
         - sourceFile: a Novel subclass instance
@@ -138,10 +152,14 @@ class FileFactory:
 
 
 class ExportSourceFactory(FileFactory):
-    """A factory class that instantiates an export source file object."""
+    """A factory class that instantiates a yWriter object to read."""
 
     def make_file_objects(self, sourcePath, **kwargs):
-        """Instantiate a source object for conversion from a yWriter format.
+        """Instantiate a source object for conversion from a yWriter project.
+        Override the superclass method.
+
+        Positional arguments:
+            sourcePath -- string; path to the source file to convert.
 
         Return a tuple with three elements:
         - A message string starting with 'SUCCESS' or 'ERROR'
@@ -161,10 +179,17 @@ class ExportSourceFactory(FileFactory):
 
 
 class ExportTargetFactory(FileFactory):
-    """A factory class that instantiates an export target file object."""
+    """A factory class that instantiates a document object to write."""
 
     def make_file_objects(self, sourcePath, **kwargs):
-        """Instantiate a target object for conversion to any format.
+        """Instantiate a target object for conversion from a yWriter project.
+        Override the superclass method.
+
+        Positional arguments:
+            sourcePath -- string; path to the source file to convert.
+
+        Optional arguments:
+            suffix -- string; an indicator for the target file type.
 
         Return a tuple with three elements:
         - A message string starting with 'SUCCESS' or 'ERROR'
@@ -189,10 +214,14 @@ class ExportTargetFactory(FileFactory):
 
 
 class ImportSourceFactory(FileFactory):
-    """A factory class that instantiates an import source file object."""
+    """A factory class that instantiates a documente object to read."""
 
     def make_file_objects(self, sourcePath, **kwargs):
-        """Instantiate a source object for conversion to a yWriter format.
+        """Instantiate a source object for conversion to a yWriter project.       
+        Override the superclass method.
+
+        Positional arguments:
+            sourcePath -- string; path to the source file to convert.
 
         Return a tuple with three elements:
         - A message string starting with 'SUCCESS' or 'ERROR'
@@ -213,10 +242,18 @@ class ImportSourceFactory(FileFactory):
 
 
 class ImportTargetFactory(FileFactory):
-    """A factory class that instantiates an import target file object."""
+    """A factory class that instantiates a yWriter object to write."""
 
     def make_file_objects(self, sourcePath, **kwargs):
-        """Factory method.
+        """Instantiate a target object for conversion to a yWriter project.
+        Override the superclass method.
+
+        Positional arguments:
+            sourcePath -- string; path to the source file to convert.
+
+        Optional arguments:
+            suffix -- string; an indicator for the source file type.
+
         Return a tuple with three elements:
         - A message string starting with 'SUCCESS' or 'ERROR'
         - sourceFile: None
@@ -245,12 +282,27 @@ class ImportTargetFactory(FileFactory):
 
 
 class YwCnvUi(YwCnv):
-    """Class for Novel file conversion with user interface.
+    """Base class for Novel file conversion with user interface.
 
     Public methods:
-    run(sourcePath, suffix) -- Create source and target objects and run conversion.
+        run(sourcePath, suffix) -- Create source and target objects and run conversion.
 
-    All converters with a user interface inherit from this class. 
+    Class constants:
+        EXPORT_SOURCE_CLASSES -- List of YwFile subclasses from which can be exported.
+        EXPORT_TARGET_CLASSES -- List of FileExport subclasses to which export is possible.
+        IMPORT_SOURCE_CLASSES -- List of Novel subclasses from which can be imported.
+        IMPORT_TARGET_CLASSES -- List of YwFile subclasses to which import is possible.
+
+    All lists are empty and meant to be overridden by subclasses.
+
+    Instance variables:
+        ui -- Ui (can be overridden e.g. by subclasses).
+        exportSourceFactory -- ExportSourceFactory.
+        exportTargetFactory -- ExportTargetFactory.
+        importSourceFactory -- ImportSourceFactory.
+        importTargetFactory -- ImportTargetFactory.
+        newProjectFactory -- FileFactory (a stub to be overridden by subclasses).
+        newFile -- string; path to the target file in case of success.   
     """
 
     EXPORT_SOURCE_CLASSES = []
@@ -259,12 +311,7 @@ class YwCnvUi(YwCnv):
     IMPORT_TARGET_CLASSES = []
 
     def __init__(self):
-        """Define instance variables.
-
-        ui -- user interface object; instance of Ui or a Ui subclass.
-        fileFactory -- file factory object; instance of a FileFactory subclass.
-        """
-
+        """Define instance variables."""
         self.ui = Ui('')
         # Per default, 'silent mode' is active.
 
@@ -497,10 +544,8 @@ class YwCnvUi(YwCnv):
 
     def open_newFile(self):
         """Open the converted file for editing and exit the converter script."""
-        os.startfile(self.newFile)
+        webbrowser.open(self.newFile)
         sys.exit(0)
-
-
 
 
 
@@ -514,14 +559,46 @@ class Novel():
     This class represents a file containing a novel with additional 
     attributes and structural information (a full set or a subset
     of the information included in an yWriter project file).
+
+    Public methods: 
+        read() -- Parse the file and store selected properties.
+        merge(novel) -- Copy required attributes of the novel object.
+        write() -- Write selected properties to the file.
+        convert_to_yw(text) -- Return text, converted from source format to yw7 markup.
+        convert_from_yw(text) -- Return text, converted from yw7 markup to target format.
+        file_exists() -- Return True, if the file specified by filePath exists.
+
+    Instance variables:
+        title -- str; title
+        desc -- str; description
+        author -- str; author name
+        fieldTitle1 -- str; field title 1
+        fieldTitle2 -- str; field title 2
+        fieldTitle3 -- str; field title 3
+        fieldTitle4 -- str; field title 4
+        chapters -- dict; key = chapter ID, value = Chapter instance.
+        scenes -- dict; key = scene ID, value = Scene instance.
+        srtChapters -- list of str; The novel's sorted chapter IDs. 
+        locations -- dict; key = location ID, value = WorldElement instance.
+        srtLocations -- list of str; The novel's sorted location IDs. 
+        items -- dict; key = item ID, value = WorldElement instance.
+        srtItems -- list of str; The novel's sorted item IDs. 
+        characters -- dict; key = character ID, value = Character instance.
+        srtCharacters -- list of str The novel's sorted character IDs.
+        filePath -- str; path to the file represented by the class.   
     """
 
     DESCRIPTION = 'Novel'
     EXTENSION = None
     SUFFIX = None
-    # To be extended by file format specific subclasses.
+    # To be extended by subclass methods.
 
     def __init__(self, filePath, **kwargs):
+        """Define instance variables.
+
+        Positional argument:
+            filePath -- string; path to the file represented by the class.
+        """
         self.title = None
         # str
         # xml: <PROJECT><Title>
@@ -553,14 +630,14 @@ class Novel():
         self.chapters = {}
         # dict
         # xml: <CHAPTERS><CHAPTER><ID>
-        # key = chapter ID, value = Chapter object.
+        # key = chapter ID, value = Chapter instance.
         # The order of the elements does not matter (the novel's
         # order of the chapters is defined by srtChapters)
 
         self.scenes = {}
         # dict
         # xml: <SCENES><SCENE><ID>
-        # key = scene ID, value = Scene object.
+        # key = scene ID, value = Scene instance.
         # The order of the elements does not matter (the novel's
         # order of the scenes is defined by the order of the chapters
         # and the order of the scenes within the chapters)
@@ -573,7 +650,7 @@ class Novel():
         self.locations = {}
         # dict
         # xml: <LOCATIONS>
-        # key = location ID, value = Object.
+        # key = location ID, value = WorldElement instance.
         # The order of the elements does not matter.
 
         self.srtLocations = []
@@ -584,7 +661,7 @@ class Novel():
         self.items = {}
         # dict
         # xml: <ITEMS>
-        # key = item ID, value = Object.
+        # key = item ID, value = WorldElement instance.
         # The order of the elements does not matter.
 
         self.srtItems = []
@@ -595,7 +672,7 @@ class Novel():
         self.characters = {}
         # dict
         # xml: <CHARACTERS>
-        # key = character ID, value = Character object.
+        # key = character ID, value = Character instance.
         # The order of the elements does not matter.
 
         self.srtCharacters = []
@@ -624,7 +701,10 @@ class Novel():
 
     @filePath.setter
     def filePath(self, filePath):
-        """Accept only filenames with the right extension. """
+        """Setter for the filePath instance variable.        
+        - Format the path string according to Python's requirements. 
+        - Accept only filenames with the right suffix and extension.
+        """
 
         if self.SUFFIX is not None:
             suffix = self.SUFFIX
@@ -641,36 +721,41 @@ class Novel():
 
     def read(self):
         """Parse the file and store selected properties.
-        To be overwritten by file format specific subclasses.
+        Return a message beginning with SUCCESS or ERROR.
+        This is a stub to be overridden by subclass methods.
         """
         return 'ERROR: read method is not implemented.'
 
-    def merge(self, novel):
-        """Copy required attributes of the novel object.
-        To be overwritten by file format specific subclasses.
+    def merge(self, source):
+        """Copy required attributes of the source object.
+        Return a message beginning with SUCCESS or ERROR.
+        This is a stub to be overridden by subclass methods.
         """
         return 'ERROR: merge method is not implemented.'
 
     def write(self):
         """Write selected properties to the file.
-        To be overwritten by file format specific subclasses.
+        Return a message beginning with SUCCESS or ERROR.
+        This is a stub to be overridden by subclass methods.
         """
         return 'ERROR: write method is not implemented.'
 
     def convert_to_yw(self, text):
-        """Convert source format to yw7 markup.
-        To be overwritten by file format specific subclasses.
+        """Return text, converted from source format to yw7 markup.
+        This is a stub to be overridden by subclass methods.
         """
         return text
 
     def convert_from_yw(self, text):
-        """Convert yw7 markup to target format.
-        To be overwritten by file format specific subclasses.
+        """Return text, converted from yw7 markup to target format.
+        This is a stub to be overridden by subclass methods.
         """
         return text
 
     def file_exists(self):
-        """Check whether the file specified by filePath exists. """
+        """Return True, if the file specified by filePath exists. 
+        Otherwise, return False.
+        """
         if os.path.isfile(self.filePath):
             return True
 
@@ -987,25 +1072,852 @@ class Character(WorldElement):
         # xml: <Major>
 
 
-class YwFile(Novel):
-    """Abstract yWriter xml project file representation.
-    To be overwritten by yWriter-version-specific subclasses. 
+import xml.etree.ElementTree as ET
+
+
+class Yw7TreeBuilder():
+    """Build yWriter 7 project xml tree."""
+
+    TAG = 'YWRITER7'
+    VER = '7'
+
+    def build_element_tree(self, ywProject):
+        """Modify the yWriter project attributes of an existing xml element tree.
+        Return a message beginning with SUCCESS or ERROR.
+        """
+
+        def build_scene_subtree(xmlScn, prjScn):
+
+            if prjScn.title is not None:
+
+                try:
+                    xmlScn.find('Title').text = prjScn.title
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'Title').text = prjScn.title
+
+            if xmlScn.find('BelongsToChID') is None:
+
+                for chId in ywProject.chapters:
+
+                    if scId in ywProject.chapters[chId].srtScenes:
+                        ET.SubElement(xmlScn, 'BelongsToChID').text = chId
+                        break
+
+            if prjScn.desc is not None:
+
+                try:
+                    xmlScn.find('Desc').text = prjScn.desc
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'Desc').text = prjScn.desc
+
+            # Scene content is overwritten in subclasses.
+
+            if xmlScn.find('SceneContent') is None:
+                ET.SubElement(
+                    xmlScn, 'SceneContent').text = prjScn.sceneContent
+
+            if xmlScn.find('WordCount') is None:
+                ET.SubElement(xmlScn, 'WordCount').text = str(
+                    prjScn.wordCount)
+
+            if xmlScn.find('LetterCount') is None:
+                ET.SubElement(xmlScn, 'LetterCount').text = str(
+                    prjScn.letterCount)
+
+            if prjScn.isUnused:
+
+                if xmlScn.find('Unused') is None:
+                    ET.SubElement(xmlScn, 'Unused').text = '-1'
+
+            elif xmlScn.find('Unused') is not None:
+                xmlScn.remove(xmlScn.find('Unused'))
+
+            if prjScn.isNotesScene:
+
+                try:
+                    scFields = xmlScn.find('Fields')
+
+                except(AttributeError):
+                    scFields = ET.SubElement(xmlScn, 'Fields')
+
+                if scFields.find('Field_SceneType') is None:
+                    ET.SubElement(scFields, 'Field_SceneType').text = '1'
+
+            elif xmlScn.find('Fields') is not None:
+                scFields = xmlScn.find('Fields')
+
+                if scFields.find('Field_SceneType') is not None:
+
+                    if scFields.find('Field_SceneType').text == '1':
+                        scFields.remove(scFields.find('Field_SceneType'))
+
+            if prjScn.isTodoScene:
+
+                try:
+                    scFields = xmlScn.find('Fields')
+
+                except(AttributeError):
+                    scFields = ET.SubElement(xmlScn, 'Fields')
+
+                if scFields.find('Field_SceneType') is None:
+                    ET.SubElement(scFields, 'Field_SceneType').text = '2'
+
+            elif xmlScn.find('Fields') is not None:
+                scFields = xmlScn.find('Fields')
+
+                if scFields.find('Field_SceneType') is not None:
+
+                    if scFields.find('Field_SceneType').text == '2':
+                        scFields.remove(scFields.find('Field_SceneType'))
+
+            if prjScn.status is not None:
+                try:
+                    xmlScn.find('Status').text = str(prjScn.status)
+
+                except:
+                    ET.SubElement(xmlScn, 'Status').text = str(prjScn.status)
+
+            if prjScn.sceneNotes is not None:
+
+                try:
+                    xmlScn.find('Notes').text = prjScn.sceneNotes
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'Notes').text = prjScn.sceneNotes
+
+            if prjScn.tags is not None:
+
+                try:
+                    xmlScn.find('Tags').text = ';'.join(prjScn.tags)
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'Tags').text = ';'.join(prjScn.tags)
+
+            if prjScn.field1 is not None:
+
+                try:
+                    xmlScn.find('Field1').text = prjScn.field1
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'Field1').text = prjScn.field1
+
+            if prjScn.field2 is not None:
+
+                try:
+                    xmlScn.find('Field2').text = prjScn.field2
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'Field2').text = prjScn.field2
+
+            if prjScn.field3 is not None:
+
+                try:
+                    xmlScn.find('Field3').text = prjScn.field3
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'Field3').text = prjScn.field3
+
+            if prjScn.field4 is not None:
+
+                try:
+                    xmlScn.find('Field4').text = prjScn.field4
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'Field4').text = prjScn.field4
+
+            if prjScn.appendToPrev:
+
+                if xmlScn.find('AppendToPrev') is None:
+                    ET.SubElement(xmlScn, 'AppendToPrev').text = '-1'
+
+            elif xmlScn.find('AppendToPrev') is not None:
+                xmlScn.remove(xmlScn.find('AppendToPrev'))
+
+            # Date/time information
+
+            if (prjScn.date is not None) and (prjScn.time is not None):
+                dateTime = prjScn.date + ' ' + prjScn.time
+
+                if xmlScn.find('SpecificDateTime') is not None:
+                    xmlScn.find('SpecificDateTime').text = dateTime
+
+                else:
+                    ET.SubElement(xmlScn, 'SpecificDateTime').text = dateTime
+                    ET.SubElement(xmlScn, 'SpecificDateMode').text = '-1'
+
+                    if xmlScn.find('Day') is not None:
+                        xmlScn.remove(xmlScn.find('Day'))
+
+                    if xmlScn.find('Hour') is not None:
+                        xmlScn.remove(xmlScn.find('Hour'))
+
+                    if xmlScn.find('Minute') is not None:
+                        xmlScn.remove(xmlScn.find('Minute'))
+
+            elif (prjScn.day is not None) or (prjScn.hour is not None) or (prjScn.minute is not None):
+
+                if xmlScn.find('SpecificDateTime') is not None:
+                    xmlScn.remove(xmlScn.find('SpecificDateTime'))
+
+                if xmlScn.find('SpecificDateMode') is not None:
+                    xmlScn.remove(xmlScn.find('SpecificDateMode'))
+
+                if prjScn.day is not None:
+
+                    try:
+                        xmlScn.find('Day').text = prjScn.day
+
+                    except(AttributeError):
+                        ET.SubElement(xmlScn, 'Day').text = prjScn.day
+
+                if prjScn.hour is not None:
+
+                    try:
+                        xmlScn.find('Hour').text = prjScn.hour
+
+                    except(AttributeError):
+                        ET.SubElement(xmlScn, 'Hour').text = prjScn.hour
+
+                if prjScn.minute is not None:
+
+                    try:
+                        xmlScn.find('Minute').text = prjScn.minute
+
+                    except(AttributeError):
+                        ET.SubElement(xmlScn, 'Minute').text = prjScn.minute
+
+            if prjScn.lastsDays is not None:
+
+                try:
+                    xmlScn.find('LastsDays').text = prjScn.lastsDays
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'LastsDays').text = prjScn.lastsDays
+
+            if prjScn.lastsHours is not None:
+
+                try:
+                    xmlScn.find('LastsHours').text = prjScn.lastsHours
+
+                except(AttributeError):
+                    ET.SubElement(
+                        xmlScn, 'LastsHours').text = prjScn.lastsHours
+
+            if prjScn.lastsMinutes is not None:
+
+                try:
+                    xmlScn.find('LastsMinutes').text = prjScn.lastsMinutes
+
+                except(AttributeError):
+                    ET.SubElement(
+                        xmlScn, 'LastsMinutes').text = prjScn.lastsMinutes
+
+            # Plot related information
+
+            if prjScn.isReactionScene:
+
+                if xmlScn.find('ReactionScene') is None:
+                    ET.SubElement(xmlScn, 'ReactionScene').text = '-1'
+
+            elif xmlScn.find('ReactionScene') is not None:
+                xmlScn.remove(xmlScn.find('ReactionScene'))
+
+            if prjScn.isSubPlot:
+
+                if xmlScn.find('SubPlot') is None:
+                    ET.SubElement(xmlScn, 'SubPlot').text = '-1'
+
+            elif xmlScn.find('SubPlot') is not None:
+                xmlScn.remove(xmlScn.find('SubPlot'))
+
+            if prjScn.goal is not None:
+
+                try:
+                    xmlScn.find('Goal').text = prjScn.goal
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'Goal').text = prjScn.goal
+
+            if prjScn.conflict is not None:
+
+                try:
+                    xmlScn.find('Conflict').text = prjScn.conflict
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'Conflict').text = prjScn.conflict
+
+            if prjScn.outcome is not None:
+
+                try:
+                    xmlScn.find('Outcome').text = prjScn.outcome
+
+                except(AttributeError):
+                    ET.SubElement(xmlScn, 'Outcome').text = prjScn.outcome
+
+            if prjScn.characters is not None:
+                characters = xmlScn.find('Characters')
+
+                for oldCrId in characters.findall('CharID'):
+                    characters.remove(oldCrId)
+
+                for crId in prjScn.characters:
+                    ET.SubElement(characters, 'CharID').text = crId
+
+            if prjScn.locations is not None:
+                locations = xmlScn.find('Locations')
+
+                for oldLcId in locations.findall('LocID'):
+                    locations.remove(oldLcId)
+
+                for lcId in prjScn.locations:
+                    ET.SubElement(locations, 'LocID').text = lcId
+
+            if prjScn.items is not None:
+                items = xmlScn.find('Items')
+
+                for oldItId in items.findall('ItemID'):
+                    items.remove(oldItId)
+
+                for itId in prjScn.items:
+                    ET.SubElement(items, 'ItemID').text = itId
+
+        def build_chapter_subtree(xmlChp, prjChp, sortOrder):
+
+            try:
+                xmlChp.find('SortOrder').text = str(sortOrder)
+
+            except(AttributeError):
+                ET.SubElement(xmlChp, 'SortOrder').text = str(sortOrder)
+
+            try:
+                xmlChp.find('Title').text = prjChp.title
+
+            except(AttributeError):
+                ET.SubElement(xmlChp, 'Title').text = prjChp.title
+
+            if prjChp.desc is not None:
+
+                try:
+                    xmlChp.find('Desc').text = prjChp.desc
+
+                except(AttributeError):
+                    ET.SubElement(xmlChp, 'Desc').text = prjChp.desc
+
+            if xmlChp.find('SectionStart') is not None:
+
+                if prjChp.chLevel == 0:
+                    xmlChp.remove(xmlChp.find('SectionStart'))
+
+            elif prjChp.chLevel == 1:
+                ET.SubElement(xmlChp, 'SectionStart').text = '-1'
+
+            if prjChp.oldType is not None:
+
+                try:
+                    xmlChp.find('Type').text = str(prjChp.oldType)
+
+                except(AttributeError):
+                    ET.SubElement(xmlChp, 'Type').text = str(prjChp.oldType)
+
+            if prjChp.chType is not None:
+
+                try:
+                    xmlChp.find('ChapterType').text = str(prjChp.chType)
+
+                except(AttributeError):
+                    ET.SubElement(xmlChp, 'ChapterType').text = str(
+                        prjChp.chType)
+
+            if prjChp.isUnused:
+
+                if xmlChp.find('Unused') is None:
+                    ET.SubElement(xmlChp, 'Unused').text = '-1'
+
+            elif xmlChp.find('Unused') is not None:
+                xmlChp.remove(xmlChp.find('Unused'))
+
+            if prjChp.srtScenes:
+
+                if xmlChp.find('Scenes') is None:
+                    sortSc = ET.SubElement(xmlChp, 'Scenes')
+
+                    for scId in prjChp.srtScenes:
+                        ET.SubElement(sortSc, 'ScID').text = scId
+
+        def build_location_subtree(xmlLoc, prjLoc, sortOrder):
+            ET.SubElement(xmlLoc, 'ID').text = lcId
+
+            if prjLoc.title is not None:
+                ET.SubElement(xmlLoc, 'Title').text = prjLoc.title
+
+            if prjLoc.image is not None:
+                ET.SubElement(xmlLoc, 'ImageFile').text = prjLoc.image
+
+            if prjLoc.desc is not None:
+                ET.SubElement(xmlLoc, 'Desc').text = prjLoc.desc
+
+            if prjLoc.aka is not None:
+                ET.SubElement(xmlLoc, 'AKA').text = prjLoc.aka
+
+            if prjLoc.tags is not None:
+                ET.SubElement(xmlLoc, 'Tags').text = ';'.join(prjLoc.tags)
+
+            ET.SubElement(xmlLoc, 'SortOrder').text = str(sortOrder)
+
+        def build_item_subtree(xmlItm, prjItm, sortOrder):
+            ET.SubElement(xmlItm, 'ID').text = itId
+
+            if prjItm.title is not None:
+                ET.SubElement(xmlItm, 'Title').text = prjItm.title
+
+            if prjItm.image is not None:
+                ET.SubElement(xmlItm, 'ImageFile').text = prjItm.image
+
+            if prjItm.desc is not None:
+                ET.SubElement(xmlItm, 'Desc').text = prjItm.desc
+
+            if prjItm.aka is not None:
+                ET.SubElement(xmlItm, 'AKA').text = prjItm.aka
+
+            if prjItm.tags is not None:
+                ET.SubElement(xmlItm, 'Tags').text = ';'.join(prjItm.tags)
+
+            ET.SubElement(xmlItm, 'SortOrder').text = str(sortOrder)
+
+        def build_character_subtree(xmlCrt, prjCrt, sortOrder):
+            ET.SubElement(xmlCrt, 'ID').text = crId
+
+            if prjCrt.title is not None:
+                ET.SubElement(xmlCrt, 'Title').text = prjCrt.title
+
+            if prjCrt.desc is not None:
+                ET.SubElement(xmlCrt, 'Desc').text = prjCrt.desc
+
+            if prjCrt.image is not None:
+                ET.SubElement(xmlCrt, 'ImageFile').text = prjCrt.image
+
+            ET.SubElement(xmlCrt, 'SortOrder').text = str(sortOrder)
+
+            if prjCrt.notes is not None:
+                ET.SubElement(xmlCrt, 'Notes').text = prjCrt.notes
+
+            if prjCrt.aka is not None:
+                ET.SubElement(xmlCrt, 'AKA').text = prjCrt.aka
+
+            if prjCrt.tags is not None:
+                ET.SubElement(xmlCrt, 'Tags').text = ';'.join(
+                    prjCrt.tags)
+
+            if prjCrt.bio is not None:
+                ET.SubElement(xmlCrt, 'Bio').text = prjCrt.bio
+
+            if prjCrt.goals is not None:
+                ET.SubElement(xmlCrt, 'Goals').text = prjCrt.goals
+
+            if prjCrt.fullName is not None:
+                ET.SubElement(xmlCrt, 'FullName').text = prjCrt.fullName
+
+            if prjCrt.isMajor:
+                ET.SubElement(xmlCrt, 'Major').text = '-1'
+
+        def build_project_subtree(xmlPrj, ywProject):
+
+            try:
+                xmlPrj.find('Ver').text = self.VER
+
+            except(AttributeError):
+                ET.SubElement(xmlPrj, 'Ver').text = self.VER
+
+            if ywProject.title is not None:
+
+                try:
+                    xmlPrj.find('Title').text = ywProject.title
+
+                except(AttributeError):
+                    ET.SubElement(xmlPrj, 'Title').text = ywProject.title
+
+            if ywProject.desc is not None:
+
+                try:
+                    xmlPrj.find('Desc').text = ywProject.desc
+
+                except(AttributeError):
+                    ET.SubElement(xmlPrj, 'Desc').text = ywProject.desc
+
+            if ywProject.author is not None:
+
+                try:
+                    xmlPrj.find('AuthorName').text = ywProject.author
+
+                except(AttributeError):
+                    ET.SubElement(xmlPrj, 'AuthorName').text = ywProject.author
+
+            if ywProject.fieldTitle1 is not None:
+
+                try:
+                    xmlPrj.find('FieldTitle1').text = ywProject.fieldTitle1
+
+                except(AttributeError):
+                    ET.SubElement(
+                        xmlPrj, 'FieldTitle1').text = ywProject.fieldTitle1
+
+            if ywProject.fieldTitle2 is not None:
+
+                try:
+                    xmlPrj.find('FieldTitle2').text = ywProject.fieldTitle2
+
+                except(AttributeError):
+                    ET.SubElement(
+                        xmlPrj, 'FieldTitle2').text = ywProject.fieldTitle2
+
+            if ywProject.fieldTitle3 is not None:
+
+                try:
+                    xmlPrj.find('FieldTitle3').text = ywProject.fieldTitle3
+
+                except(AttributeError):
+                    ET.SubElement(
+                        xmlPrj, 'FieldTitle3').text = ywProject.fieldTitle3
+
+            if ywProject.fieldTitle4 is not None:
+
+                try:
+                    xmlPrj.find('FieldTitle4').text = ywProject.fieldTitle4
+
+                except(AttributeError):
+                    ET.SubElement(
+                        xmlPrj, 'FieldTitle4').text = ywProject.fieldTitle4
+
+        xmlScenes = {}
+        xmlChapters = {}
+
+        try:
+            root = ywProject.tree.getroot()
+            xmlPrj = root.find('PROJECT')
+            locations = root.find('LOCATIONS')
+            items = root.find('ITEMS')
+            characters = root.find('CHARACTERS')
+            scenes = root.find('SCENES')
+            chapters = root.find('CHAPTERS')
+
+        except(AttributeError):
+            root = ET.Element(self.TAG)
+            xmlPrj = ET.SubElement(root, 'PROJECT')
+            locations = ET.SubElement(root, 'LOCATIONS')
+            items = ET.SubElement(root, 'ITEMS')
+            characters = ET.SubElement(root, 'CHARACTERS')
+            scenes = ET.SubElement(root, 'SCENES')
+            chapters = ET.SubElement(root, 'CHAPTERS')
+
+        #--- Process project attributes.
+
+        build_project_subtree(xmlPrj, ywProject)
+
+        #--- Process locations.
+        # Remove LOCATION entries in order to rewrite
+        # the LOCATIONS section in a modified sort order.
+
+        for xmlLoc in locations.findall('LOCATION'):
+            locations.remove(xmlLoc)
+
+        # Add the new XML location subtrees to the project tree.
+
+        sortOrder = 0
+
+        for lcId in ywProject.srtLocations:
+            sortOrder += 1
+            xmlLoc = ET.SubElement(locations, 'LOCATION')
+            build_location_subtree(
+                xmlLoc, ywProject.locations[lcId], sortOrder)
+
+        #--- Process items.
+        # Remove ITEM entries in order to rewrite
+        # the ITEMS section in a modified sort order.
+
+        for xmlItm in items.findall('ITEM'):
+            items.remove(xmlItm)
+
+        # Add the new XML item subtrees to the project tree.
+
+        sortOrder = 0
+
+        for itId in ywProject.srtItems:
+            sortOrder += 1
+            xmlItm = ET.SubElement(items, 'ITEM')
+            build_item_subtree(xmlItm, ywProject.items[itId], sortOrder)
+
+        #--- Process characters.
+        # Remove CHARACTER entries in order to rewrite
+        # the CHARACTERS section in a modified sort order.
+
+        for xmlCrt in characters.findall('CHARACTER'):
+            characters.remove(xmlCrt)
+
+        # Add the new XML character subtrees to the project tree.
+
+        sortOrder = 0
+
+        for crId in ywProject.srtCharacters:
+            sortOrder += 1
+            xmlCrt = ET.SubElement(characters, 'CHARACTER')
+            build_character_subtree(
+                xmlCrt, ywProject.characters[crId], sortOrder)
+
+        #--- Process scenes.
+        # Save the original XML scene subtrees
+        # and remove them from the project tree.
+
+        for xmlScn in scenes.findall('SCENE'):
+            scId = xmlScn.find('ID').text
+            xmlScenes[scId] = xmlScn
+            scenes.remove(xmlScn)
+
+        # Add the new XML scene subtrees to the project tree.
+
+        for scId in ywProject.scenes:
+
+            if not scId in xmlScenes:
+                xmlScenes[scId] = ET.Element('SCENE')
+                ET.SubElement(xmlScenes[scId], 'ID').text = scId
+
+            build_scene_subtree(xmlScenes[scId], ywProject.scenes[scId])
+            scenes.append(xmlScenes[scId])
+
+        #--- Process chapters.
+        # Save the original XML chapter subtree
+        # and remove it from the project tree.
+
+        for xmlChp in chapters.findall('CHAPTER'):
+            chId = xmlChp.find('ID').text
+            xmlChapters[chId] = xmlChp
+            chapters.remove(xmlChp)
+
+        # Add the new XML chapter subtrees to the project tree.
+
+        sortOrder = 0
+
+        for chId in ywProject.srtChapters:
+            sortOrder += 1
+
+            if not chId in xmlChapters:
+                xmlChapters[chId] = ET.Element('CHAPTER')
+                ET.SubElement(xmlChapters[chId], 'ID').text = chId
+
+            build_chapter_subtree(
+                xmlChapters[chId], ywProject.chapters[chId], sortOrder)
+
+            chapters.append(xmlChapters[chId])
+
+        self.indent_xml(root)
+        ywProject.tree = ET.ElementTree(root)
+
+        # Write version-dependent scene contents to the xml element tree.
+
+        return self.put_scene_contents(ywProject)
+
+    def put_scene_contents(self, ywProject):
+        """Modify the scene contents of an existing xml element tree.
+        Return a message beginning with SUCCESS or ERROR.
+        Strategy method for the yw7 file format variant.
+        """
+
+        root = ywProject.tree.getroot()
+
+        for scn in root.iter('SCENE'):
+            scId = scn.find('ID').text
+
+            if ywProject.scenes[scId].sceneContent is not None:
+                scn.find(
+                    'SceneContent').text = ywProject.scenes[scId].sceneContent
+                scn.find('WordCount').text = str(
+                    ywProject.scenes[scId].wordCount)
+                scn.find('LetterCount').text = str(
+                    ywProject.scenes[scId].letterCount)
+
+            try:
+                scn.remove(scn.find('RTFFile'))
+
+            except:
+                pass
+
+        return 'SUCCESS'
+
+    def indent_xml(self, elem, level=0):
+        """xml pretty printer
+
+        Kudos to to Fredrik Lundh. 
+        Source: http://effbot.org/zone/element-lib.htm#prettyprint
+        """
+        i = "\n" + level * "  "
+
+        if len(elem):
+
+            if not elem.text or not elem.text.strip():
+                elem.text = i + "  "
+
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+
+            for elem in elem:
+                self.indent_xml(elem, level + 1)
+
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+
+        else:
+            if level and (not elem.tail or not elem.tail.strip()):
+                elem.tail = i
+
+
+
+class Utf8TreeReader():
+    """Read utf-8 encoded yWriter xml project file."""
+
+    def read_element_tree(self, ywProject):
+        """Parse the yWriter xml file located at filePath, fetching the Novel attributes.
+        Return a message beginning with SUCCESS or ERROR.
+        """
+
+        try:
+            ywProject.tree = ET.parse(ywProject.filePath)
+
+        except:
+            return 'ERROR: Can not process "' + os.path.normpath(ywProject.filePath) + '".'
+
+        return 'SUCCESS: XML element tree read in.'
+
+
+
+class Utf8TreeWriter():
+    """Write utf-8 encoded yWriter project file."""
+
+    def write_element_tree(self, ywProject):
+        """Write back the xml element tree to a yWriter xml file located at filePath.
+        Return a message beginning with SUCCESS or ERROR.
+        """
+
+        try:
+            ywProject.tree.write(
+                ywProject.filePath, xml_declaration=False, encoding='utf-8')
+
+        except(PermissionError):
+            return 'ERROR: "' + os.path.normpath(ywProject.filePath) + '" is write protected.'
+
+        return 'SUCCESS'
+
+from html import unescape
+
+
+class Utf8Postprocessor():
+    """Postprocess ANSI encoded yWriter project."""
+
+    def format_xml(self, text):
+        '''Postprocess the xml file created by ElementTree:
+           Insert the missing CDATA tags,
+           and replace xml entities by plain text.
+        '''
+
+        cdataTags = ['Title', 'AuthorName', 'Bio', 'Desc',
+                     'FieldTitle1', 'FieldTitle2', 'FieldTitle3',
+                     'FieldTitle4', 'LaTeXHeaderFile', 'Tags',
+                     'AKA', 'ImageFile', 'FullName', 'Goals',
+                     'Notes', 'RTFFile', 'SceneContent',
+                     'Outcome', 'Goal', 'Conflict']
+        # Names of yWriter xml elements containing CDATA.
+        # ElementTree.write omits CDATA tags, so they have to be inserted
+        # afterwards.
+
+        lines = text.split('\n')
+        newlines = []
+
+        for line in lines:
+
+            for tag in cdataTags:
+                line = re.sub('\<' + tag + '\>', '<' +
+                              tag + '><![CDATA[', line)
+                line = re.sub('\<\/' + tag + '\>',
+                              ']]></' + tag + '>', line)
+
+            newlines.append(line)
+
+        text = '\n'.join(newlines)
+        text = text.replace('[CDATA[ \n', '[CDATA[')
+        text = text.replace('\n]]', ']]')
+        text = unescape(text)
+
+        return text
+
+    def postprocess_xml_file(self, filePath):
+        '''Postprocess the xml file created by ElementTree:
+        Put a header on top, insert the missing CDATA tags,
+        and replace xml entities by plain text.
+        Return a message beginning with SUCCESS or ERROR.
+        '''
+
+        with open(filePath, 'r', encoding='utf-8') as f:
+            text = f.read()
+
+        text = self.format_xml(text)
+        text = '<?xml version="1.0" encoding="utf-8"?>\n' + text
+
+        try:
+
+            with open(filePath, 'w', encoding='utf-8') as f:
+                f.write(text)
+
+        except:
+            return 'ERROR: Can not write "' + os.path.normpath(filePath) + '".'
+
+        return 'SUCCESS: "' + os.path.normpath(filePath) + '" written.'
+
+
+class Yw7File(Novel):
+    """yWriter 7 project file representation.
+
+    Additional attributes:
+        ywTreeReader -- strategy class to read yWriter project files.
+        ywTreeBuilder -- strategy class to build an xml tree.
+        ywTreeWriter -- strategy class to write yWriter project files.
+        ywPostprocessor -- strategy class to postprocess yWriter project files.
+        tree -- xml element tree of the yWriter project
     """
 
-    def strip_spaces(self, elements):
-        """remove leading and trailing spaces from the elements
-        of a list of strings.
+    DESCRIPTION = 'yWriter 7 project'
+    EXTENSION = '.yw7'
+
+    def __init__(self, filePath, **kwargs):
+        """Initialize instance variables:
+        Extend the superclass constructor by adding.
+        """
+        Novel.__init__(self, filePath)
+
+        self.ywTreeReader = Utf8TreeReader()
+        self.ywTreeBuilder = Yw7TreeBuilder()
+        self.ywTreeWriter = Utf8TreeWriter()
+        self.ywPostprocessor = Utf8Postprocessor()
+        self.tree = None
+
+    def _strip_spaces(self, lines):
+        """Local helper method.
+
+        Positional argument:
+            lines -- list of strings
+
+        Return lines with leading and trailing spaces removed.
         """
         stripped = []
 
-        for element in elements:
-            stripped.append(element.lstrip().rstrip())
+        for line in lines:
+            stripped.append(line.lstrip().rstrip())
 
         return stripped
 
     def read(self):
-        """Parse the yWriter xml file located at filePath, fetching the Novel attributes.
+        """Parse the yWriter xml file, fetching the Novel attributes.
         Return a message beginning with SUCCESS or ERROR.
+        Override the superclass method.
         """
 
         if self.is_locked():
@@ -1016,9 +1928,9 @@ class YwFile(Novel):
         if message.startswith('ERROR'):
             return message
 
-        root = self._tree.getroot()
+        root = self.tree.getroot()
 
-        # Read locations from the xml element tree.
+        #--- Read locations from the xml element tree.
 
         for loc in root.iter('LOCATION'):
             lcId = loc.find('ID').text
@@ -1041,9 +1953,9 @@ class YwFile(Novel):
 
                 if loc.find('Tags').text is not None:
                     tags = loc.find('Tags').text.split(';')
-                    self.locations[lcId].tags = self.strip_spaces(tags)
+                    self.locations[lcId].tags = self._strip_spaces(tags)
 
-        # Read items from the xml element tree.
+        #--- Read items from the xml element tree.
 
         for itm in root.iter('ITEM'):
             itId = itm.find('ID').text
@@ -1066,9 +1978,9 @@ class YwFile(Novel):
 
                 if itm.find('Tags').text is not None:
                     tags = itm.find('Tags').text.split(';')
-                    self.items[itId].tags = self.strip_spaces(tags)
+                    self.items[itId].tags = self._strip_spaces(tags)
 
-        # Read characters from the xml element tree.
+        #--- Read characters from the xml element tree.
 
         for crt in root.iter('CHARACTER'):
             crId = crt.find('ID').text
@@ -1091,7 +2003,7 @@ class YwFile(Novel):
 
                 if crt.find('Tags').text is not None:
                     tags = crt.find('Tags').text.split(';')
-                    self.characters[crId].tags = self.strip_spaces(tags)
+                    self.characters[crId].tags = self._strip_spaces(tags)
 
             if crt.find('Notes') is not None:
                 self.characters[crId].notes = crt.find('Notes').text
@@ -1111,7 +2023,7 @@ class YwFile(Novel):
             else:
                 self.characters[crId].isMajor = False
 
-        # Read attributes at novel level from the xml element tree.
+        #--- Read attributes at novel level from the xml element tree.
 
         prj = root.find('PROJECT')
 
@@ -1136,7 +2048,7 @@ class YwFile(Novel):
         if prj.find('FieldTitle4') is not None:
             self.fieldTitle4 = prj.find('FieldTitle4').text
 
-        # Read attributes at chapter level from the xml element tree.
+        #--- Read attributes at chapter level from the xml element tree.
 
         for chp in root.iter('CHAPTER'):
             chId = chp.find('ID').text
@@ -1210,7 +2122,7 @@ class YwFile(Novel):
                         scId = scn.text
                         self.chapters[chId].srtScenes.append(scId)
 
-        # Read attributes at scene level from the xml element tree.
+        #--- Read attributes at scene level from the xml element tree.
 
         for scn in root.iter('SCENE'):
             scId = scn.find('ID').text
@@ -1276,7 +2188,7 @@ class YwFile(Novel):
 
                 if scn.find('Tags').text is not None:
                     tags = scn.find('Tags').text.split(';')
-                    self.scenes[scId].tags = self.strip_spaces(tags)
+                    self.scenes[scId].tags = self._strip_spaces(tags)
 
             if scn.find('Field1') is not None:
                 self.scenes[scId].field1 = scn.find('Field1').text
@@ -1373,9 +2285,10 @@ class YwFile(Novel):
 
         return 'SUCCESS: ' + str(len(self.scenes)) + ' Scenes read from "' + os.path.normpath(self.filePath) + '".'
 
-    def merge(self, novel):
-        """Copy required attributes of the novel object.
+    def merge(self, source):
+        """Copy required attributes of the source object.
         Return a message beginning with SUCCESS or ERROR.
+        Override the superclass method.
         """
 
         if self.file_exists():
@@ -1385,12 +2298,391 @@ class YwFile(Novel):
             if message.startswith('ERROR'):
                 return message
 
-        return self.ywProjectMerger.merge_projects(self, novel)
+        #--- Merge and re-order locations.
+
+        if source.srtLocations != []:
+            self.srtLocations = source.srtLocations
+            temploc = self.locations
+            self.locations = {}
+
+            for lcId in source.srtLocations:
+
+                # Build a new self.locations dictionary sorted like the
+                # source
+
+                self.locations[lcId] = WorldElement()
+
+                if not lcId in temploc:
+                    # A new location has been added
+                    temploc[lcId] = WorldElement()
+
+                if source.locations[lcId].title:
+                    # avoids deleting the title, if it is empty by accident
+                    self.locations[lcId].title = source.locations[lcId].title
+
+                else:
+                    self.locations[lcId].title = temploc[lcId].title
+
+                if source.locations[lcId].image is not None:
+                    self.locations[lcId].image = source.locations[lcId].image
+
+                else:
+                    self.locations[lcId].desc = temploc[lcId].desc
+
+                if source.locations[lcId].desc is not None:
+                    self.locations[lcId].desc = source.locations[lcId].desc
+
+                else:
+                    self.locations[lcId].desc = temploc[lcId].desc
+
+                if source.locations[lcId].aka is not None:
+                    self.locations[lcId].aka = source.locations[lcId].aka
+
+                else:
+                    self.locations[lcId].aka = temploc[lcId].aka
+
+                if source.locations[lcId].tags is not None:
+                    self.locations[lcId].tags = source.locations[lcId].tags
+
+                else:
+                    self.locations[lcId].tags = temploc[lcId].tags
+
+        #--- Merge and re-order items.
+
+        if source.srtItems != []:
+            self.srtItems = source.srtItems
+            tempitm = self.items
+            self.items = {}
+
+            for itId in source.srtItems:
+
+                # Build a new self.items dictionary sorted like the
+                # source
+
+                self.items[itId] = WorldElement()
+
+                if not itId in tempitm:
+                    # A new item has been added
+                    tempitm[itId] = WorldElement()
+
+                if source.items[itId].title:
+                    # avoids deleting the title, if it is empty by accident
+                    self.items[itId].title = source.items[itId].title
+
+                else:
+                    self.items[itId].title = tempitm[itId].title
+
+                if source.items[itId].image is not None:
+                    self.items[itId].image = source.items[itId].image
+
+                else:
+                    self.items[itId].image = tempitm[itId].image
+
+                if source.items[itId].desc is not None:
+                    self.items[itId].desc = source.items[itId].desc
+
+                else:
+                    self.items[itId].desc = tempitm[itId].desc
+
+                if source.items[itId].aka is not None:
+                    self.items[itId].aka = source.items[itId].aka
+
+                else:
+                    self.items[itId].aka = tempitm[itId].aka
+
+                if source.items[itId].tags is not None:
+                    self.items[itId].tags = source.items[itId].tags
+
+                else:
+                    self.items[itId].tags = tempitm[itId].tags
+
+        #--- Merge and re-order characters.
+
+        if source.srtCharacters != []:
+            self.srtCharacters = source.srtCharacters
+            tempchr = self.characters
+            self.characters = {}
+
+            for crId in source.srtCharacters:
+
+                # Build a new self.characters dictionary sorted like the
+                # source
+
+                self.characters[crId] = Character()
+
+                if not crId in tempchr:
+                    # A new character has been added
+                    tempchr[crId] = Character()
+
+                if source.characters[crId].title:
+                    # avoids deleting the title, if it is empty by accident
+                    self.characters[crId].title = source.characters[crId].title
+
+                else:
+                    self.characters[crId].title = tempchr[crId].title
+
+                if source.characters[crId].image is not None:
+                    self.characters[crId].image = source.characters[crId].image
+
+                else:
+                    self.characters[crId].image = tempchr[crId].image
+
+                if source.characters[crId].desc is not None:
+                    self.characters[crId].desc = source.characters[crId].desc
+
+                else:
+                    self.characters[crId].desc = tempchr[crId].desc
+
+                if source.characters[crId].aka is not None:
+                    self.characters[crId].aka = source.characters[crId].aka
+
+                else:
+                    self.characters[crId].aka = tempchr[crId].aka
+
+                if source.characters[crId].tags is not None:
+                    self.characters[crId].tags = source.characters[crId].tags
+
+                else:
+                    self.characters[crId].tags = tempchr[crId].tags
+
+                if source.characters[crId].notes is not None:
+                    self.characters[crId].notes = source.characters[crId].notes
+
+                else:
+                    self.characters[crId].notes = tempchr[crId].notes
+
+                if source.characters[crId].bio is not None:
+                    self.characters[crId].bio = source.characters[crId].bio
+
+                else:
+                    self.characters[crId].bio = tempchr[crId].bio
+
+                if source.characters[crId].goals is not None:
+                    self.characters[crId].goals = source.characters[crId].goals
+
+                else:
+                    self.characters[crId].goals = tempchr[crId].goals
+
+                if source.characters[crId].fullName is not None:
+                    self.characters[crId].fullName = source.characters[crId].fullName
+
+                else:
+                    self.characters[crId].fullName = tempchr[crId].fullName
+
+                if source.characters[crId].isMajor is not None:
+                    self.characters[crId].isMajor = source.characters[crId].isMajor
+
+                else:
+                    self.characters[crId].isMajor = tempchr[crId].isMajor
+
+        #--- Merge scenes.
+
+        mismatchCount = 0
+
+        for scId in source.scenes:
+
+            if not scId in self.scenes:
+                self.scenes[scId] = Scene()
+                mismatchCount += 1
+
+            if source.scenes[scId].title:
+                # avoids deleting the title, if it is empty by accident
+                self.scenes[scId].title = source.scenes[scId].title
+
+            if source.scenes[scId].desc is not None:
+                self.scenes[scId].desc = source.scenes[scId].desc
+
+            if source.scenes[scId].sceneContent is not None:
+                self.scenes[scId].sceneContent = source.scenes[scId].sceneContent
+
+            if source.scenes[scId].isUnused is not None:
+                self.scenes[scId].isUnused = source.scenes[scId].isUnused
+
+            if source.scenes[scId].isNotesScene is not None:
+                self.scenes[scId].isNotesScene = source.scenes[scId].isNotesScene
+
+            if source.scenes[scId].isTodoScene is not None:
+                self.scenes[scId].isTodoScene = source.scenes[scId].isTodoScene
+
+            if source.scenes[scId].status is not None:
+                self.scenes[scId].status = source.scenes[scId].status
+
+            if source.scenes[scId].sceneNotes is not None:
+                self.scenes[scId].sceneNotes = source.scenes[scId].sceneNotes
+
+            if source.scenes[scId].tags is not None:
+                self.scenes[scId].tags = source.scenes[scId].tags
+
+            if source.scenes[scId].field1 is not None:
+                self.scenes[scId].field1 = source.scenes[scId].field1
+
+            if source.scenes[scId].field2 is not None:
+                self.scenes[scId].field2 = source.scenes[scId].field2
+
+            if source.scenes[scId].field3 is not None:
+                self.scenes[scId].field3 = source.scenes[scId].field3
+
+            if source.scenes[scId].field4 is not None:
+                self.scenes[scId].field4 = source.scenes[scId].field4
+
+            if source.scenes[scId].appendToPrev is not None:
+                self.scenes[scId].appendToPrev = source.scenes[scId].appendToPrev
+
+            if source.scenes[scId].date is not None:
+                self.scenes[scId].date = source.scenes[scId].date
+
+            if source.scenes[scId].time is not None:
+                self.scenes[scId].time = source.scenes[scId].time
+
+            if source.scenes[scId].minute is not None:
+                self.scenes[scId].minute = source.scenes[scId].minute
+
+            if source.scenes[scId].hour is not None:
+                self.scenes[scId].hour = source.scenes[scId].hour
+
+            if source.scenes[scId].day is not None:
+                self.scenes[scId].day = source.scenes[scId].day
+
+            if source.scenes[scId].lastsMinutes is not None:
+                self.scenes[scId].lastsMinutes = source.scenes[scId].lastsMinutes
+
+            if source.scenes[scId].lastsHours is not None:
+                self.scenes[scId].lastsHours = source.scenes[scId].lastsHours
+
+            if source.scenes[scId].lastsDays is not None:
+                self.scenes[scId].lastsDays = source.scenes[scId].lastsDays
+
+            if source.scenes[scId].isReactionScene is not None:
+                self.scenes[scId].isReactionScene = source.scenes[scId].isReactionScene
+
+            if source.scenes[scId].isSubPlot is not None:
+                self.scenes[scId].isSubPlot = source.scenes[scId].isSubPlot
+
+            if source.scenes[scId].goal is not None:
+                self.scenes[scId].goal = source.scenes[scId].goal
+
+            if source.scenes[scId].conflict is not None:
+                self.scenes[scId].conflict = source.scenes[scId].conflict
+
+            if source.scenes[scId].outcome is not None:
+                self.scenes[scId].outcome = source.scenes[scId].outcome
+
+            if source.scenes[scId].characters is not None:
+                self.scenes[scId].characters = []
+
+                for crId in source.scenes[scId].characters:
+
+                    if crId in self.characters:
+                        self.scenes[scId].characters.append(crId)
+
+            if source.scenes[scId].locations is not None:
+                self.scenes[scId].locations = []
+
+                for lcId in source.scenes[scId].locations:
+
+                    if lcId in self.locations:
+                        self.scenes[scId].locations.append(lcId)
+
+            if source.scenes[scId].items is not None:
+                self.scenes[scId].items = []
+
+                for itId in source.scenes[scId].items:
+
+                    if itId in self.items:
+                        self.scenes[scId].append(itId)
+
+        #--- Merge chapters.
+
+        scenesAssigned = []
+
+        for chId in source.chapters:
+
+            if not chId in self.chapters:
+                self.chapters[chId] = Chapter()
+                mismatchCount += 1
+
+            if source.chapters[chId].title:
+                # avoids deleting the title, if it is empty by accident
+                self.chapters[chId].title = source.chapters[chId].title
+
+            if source.chapters[chId].desc is not None:
+                self.chapters[chId].desc = source.chapters[chId].desc
+
+            if source.chapters[chId].chLevel is not None:
+                self.chapters[chId].chLevel = source.chapters[chId].chLevel
+
+            if source.chapters[chId].oldType is not None:
+                self.chapters[chId].oldType = source.chapters[chId].oldType
+
+            if source.chapters[chId].chType is not None:
+                self.chapters[chId].chType = source.chapters[chId].chType
+
+            if source.chapters[chId].isUnused is not None:
+                self.chapters[chId].isUnused = source.chapters[chId].isUnused
+
+            if source.chapters[chId].suppressChapterTitle is not None:
+                self.chapters[chId].suppressChapterTitle = source.chapters[chId].suppressChapterTitle
+
+            if source.chapters[chId].suppressChapterBreak is not None:
+                self.chapters[chId].suppressChapterBreak = source.chapters[chId].suppressChapterBreak
+
+            if source.chapters[chId].isTrash is not None:
+                self.chapters[chId].isTrash = source.chapters[chId].isTrash
+
+            if source.chapters[chId].srtScenes is not None:
+                self.chapters[chId].srtScenes = []
+
+                for scId in source.chapters[chId].srtScenes:
+
+                    if (scId in self.scenes) and not (scId in scenesAssigned):
+                        self.chapters[chId].srtScenes.append(scId)
+                        scenesAssigned.append(scId)
+
+        #--- Merge project attributes.
+
+        if source.title:
+            # avoids deleting the title, if it is empty by accident
+            self.title = source.title
+
+        if source.desc is not None:
+            self.desc = source.desc
+
+        if source.author is not None:
+            self.author = source.author
+
+        if source.fieldTitle1 is not None:
+            self.fieldTitle1 = source.fieldTitle1
+
+        if source.fieldTitle2 is not None:
+            self.fieldTitle2 = source.fieldTitle2
+
+        if source.fieldTitle3 is not None:
+            self.fieldTitle3 = source.fieldTitle3
+
+        if source.fieldTitle4 is not None:
+            self.fieldTitle4 = source.fieldTitle4
+
+        # if source.srtChapters != []:
+        if self.srtChapters == []:
+            self.srtChapters = []
+
+            for chId in source.srtChapters:
+                self.srtChapters.append(chId)
+
+        if self.tree is not None:
+
+            # The project structure must match the target.
+
+            if mismatchCount != 0:
+                return 'ERROR: Project structure mismatch.'
+
+        return 'SUCCESS'
 
     def write(self):
         """Open the yWriter xml file located at filePath and 
         replace a set of attributes not being None.
         Return a message beginning with SUCCESS or ERROR.
+        Override the superclass method.
         """
 
         if self.is_locked():
@@ -1409,1470 +2701,14 @@ class YwFile(Novel):
         return self.ywPostprocessor.postprocess_xml_file(self.filePath)
 
     def is_locked(self):
-        """Test whether a .lock file placed by yWriter exists.
+        """Return True if a .lock file placed by yWriter exists.
+        Otherwise, return False. 
         """
         if os.path.isfile(self.filePath + '.lock'):
             return True
 
         else:
             return False
-
-import xml.etree.ElementTree as ET
-
-
-class YwTreeBuilder():
-    """Build yWriter project xml tree."""
-
-    def build_element_tree(self, ywProject):
-        """Modify the yWriter project attributes of an existing xml element tree.
-        Return a message beginning with SUCCESS or ERROR.
-        To be overwritten by file format specific subclasses.
-        """
-        root = ywProject._tree.getroot()
-
-        # Write locations to the xml element tree.
-
-        locations = root.find('LOCATIONS')
-        sortOrder = 0
-
-        # Remove LOCATION entries in order to rewrite
-        # the LOCATIONS section in a modified sort order.
-
-        for loc in locations.findall('LOCATION'):
-            locations.remove(loc)
-
-        for lcId in ywProject.srtLocations:
-            loc = ET.SubElement(locations, 'LOCATION')
-            ET.SubElement(loc, 'ID').text = lcId
-
-            if ywProject.locations[lcId].title is not None:
-                ET.SubElement(
-                    loc, 'Title').text = ywProject.locations[lcId].title
-
-            if ywProject.locations[lcId].image is not None:
-                ET.SubElement(
-                    loc, 'ImageFile').text = ywProject.locations[lcId].image
-
-            if ywProject.locations[lcId].desc is not None:
-                ET.SubElement(
-                    loc, 'Desc').text = ywProject.locations[lcId].desc
-
-            if ywProject.locations[lcId].aka is not None:
-                ET.SubElement(loc, 'AKA').text = ywProject.locations[lcId].aka
-
-            if ywProject.locations[lcId].tags is not None:
-                ET.SubElement(loc, 'Tags').text = ';'.join(
-                    ywProject.locations[lcId].tags)
-
-            sortOrder += 1
-            ET.SubElement(loc, 'SortOrder').text = str(sortOrder)
-
-        # Write items to the xml element tree.
-
-        items = root.find('ITEMS')
-        sortOrder = 0
-
-        # Remove ITEM entries in order to rewrite
-        # the ITEMS section in a modified sort order.
-
-        for itm in items.findall('ITEM'):
-            items.remove(itm)
-
-        for itId in ywProject.srtItems:
-            itm = ET.SubElement(items, 'ITEM')
-            ET.SubElement(itm, 'ID').text = itId
-
-            if ywProject.items[itId].title is not None:
-                ET.SubElement(itm, 'Title').text = ywProject.items[itId].title
-
-            if ywProject.items[itId].image is not None:
-                ET.SubElement(
-                    itm, 'ImageFile').text = ywProject.items[itId].image
-
-            if ywProject.items[itId].desc is not None:
-                ET.SubElement(itm, 'Desc').text = ywProject.items[itId].desc
-
-            if ywProject.items[itId].aka is not None:
-                ET.SubElement(itm, 'AKA').text = ywProject.items[itId].aka
-
-            if ywProject.items[itId].tags is not None:
-                ET.SubElement(itm, 'Tags').text = ';'.join(
-                    ywProject.items[itId].tags)
-
-            sortOrder += 1
-            ET.SubElement(itm, 'SortOrder').text = str(sortOrder)
-
-        # Write characters to the xml element tree.
-
-        characters = root.find('CHARACTERS')
-        sortOrder = 0
-
-        # Remove CHARACTER entries in order to rewrite
-        # the CHARACTERS section in a modified sort order.
-
-        for crt in characters.findall('CHARACTER'):
-            characters.remove(crt)
-
-        for crId in ywProject.srtCharacters:
-            crt = ET.SubElement(characters, 'CHARACTER')
-            ET.SubElement(crt, 'ID').text = crId
-
-            if ywProject.characters[crId].title is not None:
-                ET.SubElement(
-                    crt, 'Title').text = ywProject.characters[crId].title
-
-            if ywProject.characters[crId].desc is not None:
-                ET.SubElement(
-                    crt, 'Desc').text = ywProject.characters[crId].desc
-
-            if ywProject.characters[crId].image is not None:
-                ET.SubElement(
-                    crt, 'ImageFile').text = ywProject.characters[crId].image
-
-            sortOrder += 1
-            ET.SubElement(crt, 'SortOrder').text = str(sortOrder)
-
-            if ywProject.characters[crId].notes is not None:
-                ET.SubElement(
-                    crt, 'Notes').text = ywProject.characters[crId].notes
-
-            if ywProject.characters[crId].aka is not None:
-                ET.SubElement(crt, 'AKA').text = ywProject.characters[crId].aka
-
-            if ywProject.characters[crId].tags is not None:
-                ET.SubElement(crt, 'Tags').text = ';'.join(
-                    ywProject.characters[crId].tags)
-
-            if ywProject.characters[crId].bio is not None:
-                ET.SubElement(crt, 'Bio').text = ywProject.characters[crId].bio
-
-            if ywProject.characters[crId].goals is not None:
-                ET.SubElement(
-                    crt, 'Goals').text = ywProject.characters[crId].goals
-
-            if ywProject.characters[crId].fullName is not None:
-                ET.SubElement(
-                    crt, 'FullName').text = ywProject.characters[crId].fullName
-
-            if ywProject.characters[crId].isMajor:
-                ET.SubElement(crt, 'Major').text = '-1'
-
-        # Write attributes at novel level to the xml element tree.
-
-        prj = root.find('PROJECT')
-        prj.find('Title').text = ywProject.title
-
-        if ywProject.desc is not None:
-
-            if prj.find('Desc') is None:
-                ET.SubElement(prj, 'Desc').text = ywProject.desc
-
-            else:
-                prj.find('Desc').text = ywProject.desc
-
-        if ywProject.author is not None:
-
-            if prj.find('AuthorName') is None:
-                ET.SubElement(prj, 'AuthorName').text = ywProject.author
-
-            else:
-                prj.find('AuthorName').text = ywProject.author
-
-        prj.find('FieldTitle1').text = ywProject.fieldTitle1
-        prj.find('FieldTitle2').text = ywProject.fieldTitle2
-        prj.find('FieldTitle3').text = ywProject.fieldTitle3
-        prj.find('FieldTitle4').text = ywProject.fieldTitle4
-
-        # Write attributes at chapter level to the xml element tree.
-
-        for chp in root.iter('CHAPTER'):
-            chId = chp.find('ID').text
-
-            if chId in ywProject.chapters:
-                chp.find('Title').text = ywProject.chapters[chId].title
-
-                if ywProject.chapters[chId].desc is not None:
-
-                    if chp.find('Desc') is None:
-                        ET.SubElement(
-                            chp, 'Desc').text = ywProject.chapters[chId].desc
-
-                    else:
-                        chp.find('Desc').text = ywProject.chapters[chId].desc
-
-                levelInfo = chp.find('SectionStart')
-
-                if levelInfo is not None:
-
-                    if ywProject.chapters[chId].chLevel == 0:
-                        chp.remove(levelInfo)
-
-                chp.find('Type').text = str(ywProject.chapters[chId].oldType)
-
-                if ywProject.chapters[chId].chType is not None:
-
-                    if chp.find('ChapterType') is not None:
-                        chp.find('ChapterType').text = str(
-                            ywProject.chapters[chId].chType)
-                    else:
-                        ET.SubElement(chp, 'ChapterType').text = str(
-                            ywProject.chapters[chId].chType)
-
-                if ywProject.chapters[chId].isUnused:
-
-                    if chp.find('Unused') is None:
-                        ET.SubElement(chp, 'Unused').text = '-1'
-
-                elif chp.find('Unused') is not None:
-                    chp.remove(chp.find('Unused'))
-
-        # Write attributes at scene level to the xml element tree.
-
-        for scn in root.iter('SCENE'):
-            scId = scn.find('ID').text
-
-            if scId in ywProject.scenes:
-
-                if ywProject.scenes[scId].title is not None:
-                    scn.find('Title').text = ywProject.scenes[scId].title
-
-                if ywProject.scenes[scId].desc is not None:
-
-                    if scn.find('Desc') is None:
-                        ET.SubElement(
-                            scn, 'Desc').text = ywProject.scenes[scId].desc
-
-                    else:
-                        scn.find('Desc').text = ywProject.scenes[scId].desc
-
-                # Scene content is written in subclasses.
-
-                if ywProject.scenes[scId].isUnused:
-
-                    if scn.find('Unused') is None:
-                        ET.SubElement(scn, 'Unused').text = '-1'
-
-                elif scn.find('Unused') is not None:
-                    scn.remove(scn.find('Unused'))
-
-                if ywProject.scenes[scId].isNotesScene:
-
-                    if scn.find('Fields') is None:
-                        scFields = ET.SubElement(scn, 'Fields')
-
-                    else:
-                        scFields = scn.find('Fields')
-
-                    if scFields.find('Field_SceneType') is None:
-                        ET.SubElement(scFields, 'Field_SceneType').text = '1'
-
-                elif scn.find('Fields') is not None:
-                    scFields = scn.find('Fields')
-
-                    if scFields.find('Field_SceneType') is not None:
-
-                        if scFields.find('Field_SceneType').text == '1':
-                            scFields.remove(scFields.find('Field_SceneType'))
-
-                if ywProject.scenes[scId].isTodoScene:
-
-                    if scn.find('Fields') is None:
-                        scFields = ET.SubElement(scn, 'Fields')
-
-                    else:
-                        scFields = scn.find('Fields')
-
-                    if scFields.find('Field_SceneType') is None:
-                        ET.SubElement(scFields, 'Field_SceneType').text = '2'
-
-                elif scn.find('Fields') is not None:
-                    scFields = scn.find('Fields')
-
-                    if scFields.find('Field_SceneType') is not None:
-
-                        if scFields.find('Field_SceneType').text == '2':
-                            scFields.remove(scFields.find('Field_SceneType'))
-
-                if ywProject.scenes[scId].status is not None:
-                    scn.find('Status').text = str(
-                        ywProject.scenes[scId].status)
-
-                if ywProject.scenes[scId].sceneNotes is not None:
-
-                    if scn.find('Notes') is None:
-                        ET.SubElement(
-                            scn, 'Notes').text = ywProject.scenes[scId].sceneNotes
-
-                    else:
-                        scn.find(
-                            'Notes').text = ywProject.scenes[scId].sceneNotes
-
-                if ywProject.scenes[scId].tags is not None:
-
-                    if scn.find('Tags') is None:
-                        ET.SubElement(scn, 'Tags').text = ';'.join(
-                            ywProject.scenes[scId].tags)
-
-                    else:
-                        scn.find('Tags').text = ';'.join(
-                            ywProject.scenes[scId].tags)
-
-                if ywProject.scenes[scId].field1 is not None:
-
-                    if scn.find('Field1') is None:
-                        ET.SubElement(
-                            scn, 'Field1').text = ywProject.scenes[scId].field1
-
-                    else:
-                        scn.find('Field1').text = ywProject.scenes[scId].field1
-
-                if ywProject.scenes[scId].field2 is not None:
-
-                    if scn.find('Field2') is None:
-                        ET.SubElement(
-                            scn, 'Field2').text = ywProject.scenes[scId].field2
-
-                    else:
-                        scn.find('Field2').text = ywProject.scenes[scId].field2
-
-                if ywProject.scenes[scId].field3 is not None:
-
-                    if scn.find('Field3') is None:
-                        ET.SubElement(
-                            scn, 'Field3').text = ywProject.scenes[scId].field3
-
-                    else:
-                        scn.find('Field3').text = ywProject.scenes[scId].field3
-
-                if ywProject.scenes[scId].field4 is not None:
-
-                    if scn.find('Field4') is None:
-                        ET.SubElement(
-                            scn, 'Field4').text = ywProject.scenes[scId].field4
-
-                    else:
-                        scn.find('Field4').text = ywProject.scenes[scId].field4
-
-                if ywProject.scenes[scId].appendToPrev:
-
-                    if scn.find('AppendToPrev') is None:
-                        ET.SubElement(scn, 'AppendToPrev').text = '-1'
-
-                elif scn.find('AppendToPrev') is not None:
-                    scn.remove(scn.find('AppendToPrev'))
-
-                # Date/time information
-
-                if (ywProject.scenes[scId].date is not None) and (ywProject.scenes[scId].time is not None):
-                    dateTime = ywProject.scenes[scId].date + \
-                        ' ' + ywProject.scenes[scId].time
-
-                    if scn.find('SpecificDateTime') is not None:
-                        scn.find('SpecificDateTime').text = dateTime
-
-                    else:
-                        ET.SubElement(scn, 'SpecificDateTime').text = dateTime
-                        ET.SubElement(scn, 'SpecificDateMode').text = '-1'
-
-                        if scn.find('Day') is not None:
-                            scn.remove(scn.find('Day'))
-
-                        if scn.find('Hour') is not None:
-                            scn.remove(scn.find('Hour'))
-
-                        if scn.find('Minute') is not None:
-                            scn.remove(scn.find('Minute'))
-
-                elif (ywProject.scenes[scId].day is not None) or (ywProject.scenes[scId].hour is not None) or (ywProject.scenes[scId].minute is not None):
-
-                    if scn.find('SpecificDateTime') is not None:
-                        scn.remove(scn.find('SpecificDateTime'))
-
-                    if scn.find('SpecificDateMode') is not None:
-                        scn.remove(scn.find('SpecificDateMode'))
-
-                    if ywProject.scenes[scId].day is not None:
-
-                        if scn.find('Day') is not None:
-                            scn.find('Day').text = ywProject.scenes[scId].day
-
-                        else:
-                            ET.SubElement(
-                                scn, 'Day').text = ywProject.scenes[scId].day
-
-                    if ywProject.scenes[scId].hour is not None:
-
-                        if scn.find('Hour') is not None:
-                            scn.find('Hour').text = ywProject.scenes[scId].hour
-
-                        else:
-                            ET.SubElement(
-                                scn, 'Hour').text = ywProject.scenes[scId].hour
-
-                    if ywProject.scenes[scId].minute is not None:
-
-                        if scn.find('Minute') is not None:
-                            scn.find(
-                                'Minute').text = ywProject.scenes[scId].minute
-
-                        else:
-                            ET.SubElement(
-                                scn, 'Minute').text = ywProject.scenes[scId].minute
-
-                if ywProject.scenes[scId].lastsDays is not None:
-
-                    if scn.find('LastsDays') is not None:
-                        scn.find(
-                            'LastsDays').text = ywProject.scenes[scId].lastsDays
-
-                    else:
-                        ET.SubElement(
-                            scn, 'LastsDays').text = ywProject.scenes[scId].lastsDays
-
-                if ywProject.scenes[scId].lastsHours is not None:
-
-                    if scn.find('LastsHours') is not None:
-                        scn.find(
-                            'LastsHours').text = ywProject.scenes[scId].lastsHours
-
-                    else:
-                        ET.SubElement(
-                            scn, 'LastsHours').text = ywProject.scenes[scId].lastsHours
-
-                if ywProject.scenes[scId].lastsMinutes is not None:
-
-                    if scn.find('LastsMinutes') is not None:
-                        scn.find(
-                            'LastsMinutes').text = ywProject.scenes[scId].lastsMinutes
-
-                    else:
-                        ET.SubElement(
-                            scn, 'LastsMinutes').text = ywProject.scenes[scId].lastsMinutes
-
-                # Plot related information
-
-                if ywProject.scenes[scId].isReactionScene:
-
-                    if scn.find('ReactionScene') is None:
-                        ET.SubElement(scn, 'ReactionScene').text = '-1'
-
-                elif scn.find('ReactionScene') is not None:
-                    scn.remove(scn.find('ReactionScene'))
-
-                if ywProject.scenes[scId].isSubPlot:
-
-                    if scn.find('SubPlot') is None:
-                        ET.SubElement(scn, 'SubPlot').text = '-1'
-
-                elif scn.find('SubPlot') is not None:
-                    scn.remove(scn.find('SubPlot'))
-
-                if ywProject.scenes[scId].goal is not None:
-
-                    if scn.find('Goal') is None:
-                        ET.SubElement(
-                            scn, 'Goal').text = ywProject.scenes[scId].goal
-
-                    else:
-                        scn.find('Goal').text = ywProject.scenes[scId].goal
-
-                if ywProject.scenes[scId].conflict is not None:
-
-                    if scn.find('Conflict') is None:
-                        ET.SubElement(
-                            scn, 'Conflict').text = ywProject.scenes[scId].conflict
-
-                    else:
-                        scn.find(
-                            'Conflict').text = ywProject.scenes[scId].conflict
-
-                if ywProject.scenes[scId].outcome is not None:
-
-                    if scn.find('Outcome') is None:
-                        ET.SubElement(
-                            scn, 'Outcome').text = ywProject.scenes[scId].outcome
-
-                    else:
-                        scn.find(
-                            'Outcome').text = ywProject.scenes[scId].outcome
-
-                if ywProject.scenes[scId].characters is not None:
-                    characters = scn.find('Characters')
-
-                    for oldCrId in characters.findall('CharID'):
-                        characters.remove(oldCrId)
-
-                    for crId in ywProject.scenes[scId].characters:
-                        ET.SubElement(characters, 'CharID').text = crId
-
-                if ywProject.scenes[scId].locations is not None:
-                    locations = scn.find('Locations')
-
-                    for oldLcId in locations.findall('LocID'):
-                        locations.remove(oldLcId)
-
-                    for lcId in ywProject.scenes[scId].locations:
-                        ET.SubElement(locations, 'LocID').text = lcId
-
-                if ywProject.scenes[scId].items is not None:
-                    items = scn.find('Items')
-
-                    for oldItId in items.findall('ItemID'):
-                        items.remove(oldItId)
-
-                    for itId in ywProject.scenes[scId].items:
-                        ET.SubElement(items, 'ItemID').text = itId
-
-        self.indent_xml(root)
-        ywProject._tree = ET.ElementTree(root)
-
-        return 'SUCCESS'
-
-    def indent_xml(self, elem, level=0):
-        """xml pretty printer
-
-        Kudos to to Fredrik Lundh. 
-        Source: http://effbot.org/zone/element-lib.htm#prettyprint
-        """
-        i = "\n" + level * "  "
-
-        if len(elem):
-
-            if not elem.text or not elem.text.strip():
-                elem.text = i + "  "
-
-            if not elem.tail or not elem.tail.strip():
-                elem.tail = i
-
-            for elem in elem:
-                self.indent_xml(elem, level + 1)
-
-            if not elem.tail or not elem.tail.strip():
-                elem.tail = i
-
-        else:
-            if level and (not elem.tail or not elem.tail.strip()):
-                elem.tail = i
-
-
-class Yw7TreeBuilder(YwTreeBuilder):
-    """Build yWriter 7 project xml tree."""
-
-    def build_element_tree(self, ywProject):
-        """Modify the yWriter project attributes of an existing xml element tree.
-        Return a message beginning with SUCCESS or ERROR.
-        """
-
-        root = ywProject._tree.getroot()
-
-        for scn in root.iter('SCENE'):
-            scId = scn.find('ID').text
-
-            if ywProject.scenes[scId].sceneContent is not None:
-                scn.find(
-                    'SceneContent').text = ywProject.scenes[scId].sceneContent
-                scn.find('WordCount').text = str(
-                    ywProject.scenes[scId].wordCount)
-                scn.find('LetterCount').text = str(
-                    ywProject.scenes[scId].letterCount)
-
-            try:
-                scn.remove(scn.find('RTFFile'))
-
-            except:
-                pass
-
-        root.tag = 'YWRITER7'
-        root.find('PROJECT').find('Ver').text = '7'
-        ywProject._tree = ET.ElementTree(root)
-
-        return YwTreeBuilder.build_element_tree(self, ywProject)
-
-from abc import ABC
-from abc import abstractmethod
-
-
-class YwTreeReader(ABC):
-    """Read yWriter xml project file."""
-
-    @abstractmethod
-    def read_element_tree(self, ywFile):
-        """Parse the yWriter xml file located at filePath, fetching the Novel attributes.
-        Return a message beginning with SUCCESS or ERROR.
-        To be overwritten by file format specific subclasses.
-        """
-
-
-class Utf8TreeReader(YwTreeReader):
-    """Read utf-8 encoded yWriter xml project file."""
-
-    def read_element_tree(self, ywFile):
-        """Parse the yWriter xml file located at filePath, fetching the Novel attributes.
-        Return a message beginning with SUCCESS or ERROR.
-        """
-
-        try:
-            ywFile._tree = ET.parse(ywFile.filePath)
-
-        except:
-            return 'ERROR: Can not process "' + os.path.normpath(ywFile.filePath) + '".'
-
-        return 'SUCCESS: XML element tree read in.'
-
-
-
-class YwProjectMerger():
-    """Merge the attributes of two yWriter project structures."""
-
-    def merge_projects(self, target, source):
-        """Overwrite existing target attributes with source attributes.
-        Return a message beginning with SUCCESS or ERROR.
-        Create target attributes, if not existing, but return ERROR.
-        """
-
-        # Merge and re-order locations.
-
-        if source.srtLocations != []:
-            target.srtLocations = source.srtLocations
-            temploc = target.locations
-            target.locations = {}
-
-            for lcId in source.srtLocations:
-
-                # Build a new target.locations dictionary sorted like the
-                # source
-
-                target.locations[lcId] = WorldElement()
-
-                if not lcId in temploc:
-                    # A new location has been added
-                    temploc[lcId] = WorldElement()
-
-                if source.locations[lcId].title:
-                    # avoids deleting the title, if it is empty by accident
-                    target.locations[lcId].title = source.locations[lcId].title
-
-                else:
-                    target.locations[lcId].title = temploc[lcId].title
-
-                if source.locations[lcId].image is not None:
-                    target.locations[lcId].image = source.locations[lcId].image
-
-                else:
-                    target.locations[lcId].desc = temploc[lcId].desc
-
-                if source.locations[lcId].desc is not None:
-                    target.locations[lcId].desc = source.locations[lcId].desc
-
-                else:
-                    target.locations[lcId].desc = temploc[lcId].desc
-
-                if source.locations[lcId].aka is not None:
-                    target.locations[lcId].aka = source.locations[lcId].aka
-
-                else:
-                    target.locations[lcId].aka = temploc[lcId].aka
-
-                if source.locations[lcId].tags is not None:
-                    target.locations[lcId].tags = source.locations[lcId].tags
-
-                else:
-                    target.locations[lcId].tags = temploc[lcId].tags
-
-        # Merge and re-order items.
-
-        if source.srtItems != []:
-            target.srtItems = source.srtItems
-            tempitm = target.items
-            target.items = {}
-
-            for itId in source.srtItems:
-
-                # Build a new target.items dictionary sorted like the
-                # source
-
-                target.items[itId] = WorldElement()
-
-                if not itId in tempitm:
-                    # A new item has been added
-                    tempitm[itId] = WorldElement()
-
-                if source.items[itId].title:
-                    # avoids deleting the title, if it is empty by accident
-                    target.items[itId].title = source.items[itId].title
-
-                else:
-                    target.items[itId].title = tempitm[itId].title
-
-                if source.items[itId].image is not None:
-                    target.items[itId].image = source.items[itId].image
-
-                else:
-                    target.items[itId].image = tempitm[itId].image
-
-                if source.items[itId].desc is not None:
-                    target.items[itId].desc = source.items[itId].desc
-
-                else:
-                    target.items[itId].desc = tempitm[itId].desc
-
-                if source.items[itId].aka is not None:
-                    target.items[itId].aka = source.items[itId].aka
-
-                else:
-                    target.items[itId].aka = tempitm[itId].aka
-
-                if source.items[itId].tags is not None:
-                    target.items[itId].tags = source.items[itId].tags
-
-                else:
-                    target.items[itId].tags = tempitm[itId].tags
-
-        # Merge and re-order characters.
-
-        if source.srtCharacters != []:
-            target.srtCharacters = source.srtCharacters
-            tempchr = target.characters
-            target.characters = {}
-
-            for crId in source.srtCharacters:
-
-                # Build a new target.characters dictionary sorted like the
-                # source
-
-                target.characters[crId] = Character()
-
-                if not crId in tempchr:
-                    # A new character has been added
-                    tempchr[crId] = Character()
-
-                if source.characters[crId].title:
-                    # avoids deleting the title, if it is empty by accident
-                    target.characters[crId].title = source.characters[crId].title
-
-                else:
-                    target.characters[crId].title = tempchr[crId].title
-
-                if source.characters[crId].image is not None:
-                    target.characters[crId].image = source.characters[crId].image
-
-                else:
-                    target.characters[crId].image = tempchr[crId].image
-
-                if source.characters[crId].desc is not None:
-                    target.characters[crId].desc = source.characters[crId].desc
-
-                else:
-                    target.characters[crId].desc = tempchr[crId].desc
-
-                if source.characters[crId].aka is not None:
-                    target.characters[crId].aka = source.characters[crId].aka
-
-                else:
-                    target.characters[crId].aka = tempchr[crId].aka
-
-                if source.characters[crId].tags is not None:
-                    target.characters[crId].tags = source.characters[crId].tags
-
-                else:
-                    target.characters[crId].tags = tempchr[crId].tags
-
-                if source.characters[crId].notes is not None:
-                    target.characters[crId].notes = source.characters[crId].notes
-
-                else:
-                    target.characters[crId].notes = tempchr[crId].notes
-
-                if source.characters[crId].bio is not None:
-                    target.characters[crId].bio = source.characters[crId].bio
-
-                else:
-                    target.characters[crId].bio = tempchr[crId].bio
-
-                if source.characters[crId].goals is not None:
-                    target.characters[crId].goals = source.characters[crId].goals
-
-                else:
-                    target.characters[crId].goals = tempchr[crId].goals
-
-                if source.characters[crId].fullName is not None:
-                    target.characters[crId].fullName = source.characters[crId].fullName
-
-                else:
-                    target.characters[crId].fullName = tempchr[crId].fullName
-
-                if source.characters[crId].isMajor is not None:
-                    target.characters[crId].isMajor = source.characters[crId].isMajor
-
-                else:
-                    target.characters[crId].isMajor = tempchr[crId].isMajor
-
-        # Merge scenes.
-
-        mismatchCount = 0
-
-        for scId in source.scenes:
-
-            if not scId in target.scenes:
-                target.scenes[scId] = Scene()
-                mismatchCount += 1
-
-            if source.scenes[scId].title:
-                # avoids deleting the title, if it is empty by accident
-                target.scenes[scId].title = source.scenes[scId].title
-
-            if source.scenes[scId].desc is not None:
-                target.scenes[scId].desc = source.scenes[scId].desc
-
-            if source.scenes[scId].sceneContent is not None:
-                target.scenes[scId].sceneContent = source.scenes[scId].sceneContent
-
-            if source.scenes[scId].isUnused is not None:
-                target.scenes[scId].isUnused = source.scenes[scId].isUnused
-
-            if source.scenes[scId].isNotesScene is not None:
-                target.scenes[scId].isNotesScene = source.scenes[scId].isNotesScene
-
-            if source.scenes[scId].isTodoScene is not None:
-                target.scenes[scId].isTodoScene = source.scenes[scId].isTodoScene
-
-            if source.scenes[scId].status is not None:
-                target.scenes[scId].status = source.scenes[scId].status
-
-            if source.scenes[scId].sceneNotes is not None:
-                target.scenes[scId].sceneNotes = source.scenes[scId].sceneNotes
-
-            if source.scenes[scId].tags is not None:
-                target.scenes[scId].tags = source.scenes[scId].tags
-
-            if source.scenes[scId].field1 is not None:
-                target.scenes[scId].field1 = source.scenes[scId].field1
-
-            if source.scenes[scId].field2 is not None:
-                target.scenes[scId].field2 = source.scenes[scId].field2
-
-            if source.scenes[scId].field3 is not None:
-                target.scenes[scId].field3 = source.scenes[scId].field3
-
-            if source.scenes[scId].field4 is not None:
-                target.scenes[scId].field4 = source.scenes[scId].field4
-
-            if source.scenes[scId].appendToPrev is not None:
-                target.scenes[scId].appendToPrev = source.scenes[scId].appendToPrev
-
-            if source.scenes[scId].date is not None:
-                target.scenes[scId].date = source.scenes[scId].date
-
-            if source.scenes[scId].time is not None:
-                target.scenes[scId].time = source.scenes[scId].time
-
-            if source.scenes[scId].minute is not None:
-                target.scenes[scId].minute = source.scenes[scId].minute
-
-            if source.scenes[scId].hour is not None:
-                target.scenes[scId].hour = source.scenes[scId].hour
-
-            if source.scenes[scId].day is not None:
-                target.scenes[scId].day = source.scenes[scId].day
-
-            if source.scenes[scId].lastsMinutes is not None:
-                target.scenes[scId].lastsMinutes = source.scenes[scId].lastsMinutes
-
-            if source.scenes[scId].lastsHours is not None:
-                target.scenes[scId].lastsHours = source.scenes[scId].lastsHours
-
-            if source.scenes[scId].lastsDays is not None:
-                target.scenes[scId].lastsDays = source.scenes[scId].lastsDays
-
-            if source.scenes[scId].isReactionScene is not None:
-                target.scenes[scId].isReactionScene = source.scenes[scId].isReactionScene
-
-            if source.scenes[scId].isSubPlot is not None:
-                target.scenes[scId].isSubPlot = source.scenes[scId].isSubPlot
-
-            if source.scenes[scId].goal is not None:
-                target.scenes[scId].goal = source.scenes[scId].goal
-
-            if source.scenes[scId].conflict is not None:
-                target.scenes[scId].conflict = source.scenes[scId].conflict
-
-            if source.scenes[scId].outcome is not None:
-                target.scenes[scId].outcome = source.scenes[scId].outcome
-
-            if source.scenes[scId].characters is not None:
-                target.scenes[scId].characters = []
-
-                for crId in source.scenes[scId].characters:
-
-                    if crId in target.characters:
-                        target.scenes[scId].characters.append(crId)
-
-            if source.scenes[scId].locations is not None:
-                target.scenes[scId].locations = []
-
-                for lcId in source.scenes[scId].locations:
-
-                    if lcId in target.locations:
-                        target.scenes[scId].locations.append(lcId)
-
-            if source.scenes[scId].items is not None:
-                target.scenes[scId].items = []
-
-                for itId in source.scenes[scId].items:
-
-                    if itId in target.items:
-                        target.scenes[scId].append(itId)
-
-        # Merge chapters.
-
-        scenesAssigned = []
-
-        for chId in source.chapters:
-
-            if not chId in target.chapters:
-                target.chapters[chId] = Chapter()
-                mismatchCount += 1
-
-            if source.chapters[chId].title:
-                # avoids deleting the title, if it is empty by accident
-                target.chapters[chId].title = source.chapters[chId].title
-
-            if source.chapters[chId].desc is not None:
-                target.chapters[chId].desc = source.chapters[chId].desc
-
-            if source.chapters[chId].chLevel is not None:
-                target.chapters[chId].chLevel = source.chapters[chId].chLevel
-
-            if source.chapters[chId].oldType is not None:
-                target.chapters[chId].oldType = source.chapters[chId].oldType
-
-            if source.chapters[chId].chType is not None:
-                target.chapters[chId].chType = source.chapters[chId].chType
-
-            if source.chapters[chId].isUnused is not None:
-                target.chapters[chId].isUnused = source.chapters[chId].isUnused
-
-            if source.chapters[chId].suppressChapterTitle is not None:
-                target.chapters[chId].suppressChapterTitle = source.chapters[chId].suppressChapterTitle
-
-            if source.chapters[chId].suppressChapterBreak is not None:
-                target.chapters[chId].suppressChapterBreak = source.chapters[chId].suppressChapterBreak
-
-            if source.chapters[chId].isTrash is not None:
-                target.chapters[chId].isTrash = source.chapters[chId].isTrash
-
-            if source.chapters[chId].srtScenes is not None:
-                target.chapters[chId].srtScenes = []
-
-                for scId in source.chapters[chId].srtScenes:
-
-                    if (scId in target.scenes) and not (scId in scenesAssigned):
-                        target.chapters[chId].srtScenes.append(scId)
-                        scenesAssigned.append(scId)
-
-        # Merge attributes at novel level.
-
-        if source.title:
-            # avoids deleting the title, if it is empty by accident
-            target.title = source.title
-
-        if source.desc is not None:
-            target.desc = source.desc
-
-        if source.author is not None:
-            target.author = source.author
-
-        if source.fieldTitle1 is not None:
-            target.fieldTitle1 = source.fieldTitle1
-
-        if source.fieldTitle2 is not None:
-            target.fieldTitle2 = source.fieldTitle2
-
-        if source.fieldTitle3 is not None:
-            target.fieldTitle3 = source.fieldTitle3
-
-        if source.fieldTitle4 is not None:
-            target.fieldTitle4 = source.fieldTitle4
-
-        if source.srtChapters != []:
-            target.srtChapters = []
-
-            for chId in source.srtChapters:
-                target.srtChapters.append(chId)
-
-        if mismatchCount > 0:
-            return 'ERROR: Project structure mismatch.'
-
-        else:
-            return 'SUCCESS'
-
-from abc import ABC
-from abc import abstractmethod
-
-
-class YwTreeWriter(ABC):
-    """Write yWriter 7 xml project file."""
-
-    @abstractmethod
-    def write_element_tree(self, ywProject):
-        """Write back the xml element tree to a yWriter xml file located at filePath.
-        Return a message beginning with SUCCESS or ERROR.
-        To be overwritten by file format specific subclasses.
-        """
-
-
-class Utf8TreeWriter(YwTreeWriter):
-    """Write utf-8 encoded yWriter project file."""
-
-    def write_element_tree(self, ywProject):
-        """Write back the xml element tree to a yWriter xml file located at filePath.
-        Return a message beginning with SUCCESS or ERROR.
-        """
-
-        try:
-            ywProject._tree.write(
-                ywProject.filePath, xml_declaration=False, encoding='utf-8')
-
-        except(PermissionError):
-            return 'ERROR: "' + os.path.normpath(ywProject.filePath) + '" is write protected.'
-
-        return 'SUCCESS'
-
-from abc import ABC
-from abc import abstractmethod
-from html import unescape
-
-
-class YwPostprocessor(ABC):
-
-    @abstractmethod
-    def postprocess_xml_file(self, ywFile):
-        '''Postprocess the xml file created by ElementTree:
-        Put a header on top, insert the missing CDATA tags,
-        and replace xml entities by plain text.
-        Return a message beginning with SUCCESS or ERROR.
-        To be overwritten by file format specific subclasses.
-        '''
-
-    def format_xml(self, text):
-        '''Postprocess the xml file created by ElementTree:
-           Insert the missing CDATA tags,
-           and replace xml entities by plain text.
-        '''
-
-        cdataTags = ['Title', 'AuthorName', 'Bio', 'Desc',
-                     'FieldTitle1', 'FieldTitle2', 'FieldTitle3',
-                     'FieldTitle4', 'LaTeXHeaderFile', 'Tags',
-                     'AKA', 'ImageFile', 'FullName', 'Goals',
-                     'Notes', 'RTFFile', 'SceneContent',
-                     'Outcome', 'Goal', 'Conflict']
-        # Names of yWriter xml elements containing CDATA.
-        # ElementTree.write omits CDATA tags, so they have to be inserted
-        # afterwards.
-
-        lines = text.split('\n')
-        newlines = []
-
-        for line in lines:
-
-            for tag in cdataTags:
-                line = re.sub('\<' + tag + '\>', '<' +
-                              tag + '><![CDATA[', line)
-                line = re.sub('\<\/' + tag + '\>',
-                              ']]></' + tag + '>', line)
-
-            newlines.append(line)
-
-        text = '\n'.join(newlines)
-        text = text.replace('[CDATA[ \n', '[CDATA[')
-        text = text.replace('\n]]', ']]')
-        text = unescape(text)
-
-        return text
-
-
-class Utf8Postprocessor(YwPostprocessor):
-    """Postprocess ANSI encoded yWriter project."""
-
-    def postprocess_xml_file(self, filePath):
-        '''Postprocess the xml file created by ElementTree:
-        Put a header on top, insert the missing CDATA tags,
-        and replace xml entities by plain text.
-        Return a message beginning with SUCCESS or ERROR.
-        '''
-
-        with open(filePath, 'r', encoding='utf-8') as f:
-            text = f.read()
-
-        text = self.format_xml(text)
-        text = '<?xml version="1.0" encoding="utf-8"?>\n' + text
-
-        try:
-
-            with open(filePath, 'w', encoding='utf-8') as f:
-                f.write(text)
-
-        except:
-            return 'ERROR: Can not write "' + os.path.normpath(filePath) + '".'
-
-        return 'SUCCESS: "' + os.path.normpath(filePath) + '" written.'
-
-
-class Yw7File(YwFile):
-    """yWriter 7 project file representation."""
-
-    DESCRIPTION = 'yWriter 7 project'
-    EXTENSION = '.yw7'
-
-    def __init__(self, filePath, **kwargs):
-        YwFile.__init__(self, filePath)
-        self.ywTreeReader = Utf8TreeReader()
-        self.ywProjectMerger = YwProjectMerger()
-        self.ywTreeBuilder = Yw7TreeBuilder()
-        self.ywTreeWriter = Utf8TreeWriter()
-        self.ywPostprocessor = Utf8Postprocessor()
-
-
-
-class Yw7TreeCreator(YwTreeBuilder):
-    """Create a new yWriter 7 project xml tree."""
-
-    def build_element_tree(self, ywProject):
-        """Put the yWriter project attributes to a new xml element tree.
-        Return a message beginning with SUCCESS or ERROR.
-        """
-
-        root = ET.Element('YWRITER7')
-
-        # Write attributes at novel level to the xml element tree.
-
-        prj = ET.SubElement(root, 'PROJECT')
-        ET.SubElement(prj, 'Ver').text = '7'
-
-        if ywProject.title is not None:
-            ET.SubElement(prj, 'Title').text = ywProject.title
-
-        if ywProject.desc is not None:
-            ET.SubElement(prj, 'Desc').text = ywProject.desc
-
-        if ywProject.author is not None:
-            ET.SubElement(prj, 'AuthorName').text = ywProject.author
-
-        if ywProject.fieldTitle1 is not None:
-            ET.SubElement(prj, 'FieldTitle1').text = ywProject.fieldTitle1
-
-        if ywProject.fieldTitle2 is not None:
-            ET.SubElement(prj, 'FieldTitle2').text = ywProject.fieldTitle2
-
-        if ywProject.fieldTitle3 is not None:
-            ET.SubElement(prj, 'FieldTitle3').text = ywProject.fieldTitle3
-
-        if ywProject.fieldTitle4 is not None:
-            ET.SubElement(prj, 'FieldTitle4').text = ywProject.fieldTitle4
-
-        # Write locations to the xml element tree.
-
-        locations = ET.SubElement(root, 'LOCATIONS')
-
-        for lcId in ywProject.srtLocations:
-            loc = ET.SubElement(locations, 'LOCATION')
-            ET.SubElement(loc, 'ID').text = lcId
-
-            if ywProject.locations[lcId].title is not None:
-                ET.SubElement(
-                    loc, 'Title').text = ywProject.locations[lcId].title
-
-            if ywProject.locations[lcId].desc is not None:
-                ET.SubElement(
-                    loc, 'Desc').text = ywProject.locations[lcId].desc
-
-            if ywProject.locations[lcId].aka is not None:
-                ET.SubElement(loc, 'AKA').text = ywProject.locations[lcId].aka
-
-            if ywProject.locations[lcId].tags is not None:
-                ET.SubElement(loc, 'Tags').text = ';'.join(
-                    ywProject.locations[lcId].tags)
-
-        # Write items to the xml element tree.
-
-        items = ET.SubElement(root, 'ITEMS')
-
-        for itId in ywProject.srtItems:
-            itm = ET.SubElement(items, 'ITEM')
-            ET.SubElement(itm, 'ID').text = itId
-
-            if ywProject.items[itId].title is not None:
-                ET.SubElement(itm, 'Title').text = ywProject.items[itId].title
-
-            if ywProject.items[itId].desc is not None:
-                ET.SubElement(itm, 'Desc').text = ywProject.items[itId].desc
-
-            if ywProject.items[itId].aka is not None:
-                ET.SubElement(itm, 'AKA').text = ywProject.items[itId].aka
-
-            if ywProject.items[itId].tags is not None:
-                ET.SubElement(itm, 'Tags').text = ';'.join(
-                    ywProject.items[itId].tags)
-
-        # Write characters to the xml element tree.
-
-        characters = ET.SubElement(root, 'CHARACTERS')
-
-        for crId in ywProject.srtCharacters:
-            crt = ET.SubElement(characters, 'CHARACTER')
-            ET.SubElement(crt, 'ID').text = crId
-
-            if ywProject.characters[crId].title is not None:
-                ET.SubElement(
-                    crt, 'Title').text = ywProject.characters[crId].title
-
-            if ywProject.characters[crId].desc is not None:
-                ET.SubElement(
-                    crt, 'Desc').text = ywProject.characters[crId].desc
-
-            if ywProject.characters[crId].aka is not None:
-                ET.SubElement(crt, 'AKA').text = ywProject.characters[crId].aka
-
-            if ywProject.characters[crId].tags is not None:
-                ET.SubElement(crt, 'Tags').text = ';'.join(
-                    ywProject.characters[crId].tags)
-
-            if ywProject.characters[crId].notes is not None:
-                ET.SubElement(
-                    crt, 'Notes').text = ywProject.characters[crId].notes
-
-            if ywProject.characters[crId].bio is not None:
-                ET.SubElement(crt, 'Bio').text = ywProject.characters[crId].bio
-
-            if ywProject.characters[crId].goals is not None:
-                ET.SubElement(
-                    crt, 'Goals').text = ywProject.characters[crId].goals
-
-            if ywProject.characters[crId].fullName is not None:
-                ET.SubElement(
-                    crt, 'FullName').text = ywProject.characters[crId].fullName
-
-            if ywProject.characters[crId].isMajor:
-                ET.SubElement(crt, 'Major').text = '-1'
-
-        # Write attributes at scene level to the xml element tree.
-
-        scenes = ET.SubElement(root, 'SCENES')
-
-        for scId in ywProject.scenes:
-            scn = ET.SubElement(scenes, 'SCENE')
-            ET.SubElement(scn, 'ID').text = scId
-
-            if ywProject.scenes[scId].title is not None:
-                ET.SubElement(scn, 'Title').text = ywProject.scenes[scId].title
-
-            for chId in ywProject.chapters:
-
-                if scId in ywProject.chapters[chId].srtScenes:
-                    ET.SubElement(scn, 'BelongsToChID').text = chId
-                    break
-
-            if ywProject.scenes[scId].desc is not None:
-                ET.SubElement(scn, 'Desc').text = ywProject.scenes[scId].desc
-
-            if ywProject.scenes[scId].sceneContent is not None:
-                ET.SubElement(scn,
-                              'SceneContent').text = ywProject.scenes[scId].sceneContent
-                ET.SubElement(scn, 'WordCount').text = str(
-                    ywProject.scenes[scId].wordCount)
-                ET.SubElement(scn, 'LetterCount').text = str(
-                    ywProject.scenes[scId].letterCount)
-
-            if ywProject.scenes[scId].isUnused:
-                ET.SubElement(scn, 'Unused').text = '-1'
-
-            scFields = ET.SubElement(scn, 'Fields')
-
-            if ywProject.scenes[scId].isNotesScene:
-                ET.SubElement(scFields, 'Field_SceneType').text = '1'
-
-            elif ywProject.scenes[scId].isTodoScene:
-                ET.SubElement(scFields, 'Field_SceneType').text = '2'
-
-            if ywProject.scenes[scId].status is not None:
-                ET.SubElement(scn, 'Status').text = str(
-                    ywProject.scenes[scId].status)
-
-            if ywProject.scenes[scId].sceneNotes is not None:
-                ET.SubElement(
-                    scn, 'Notes').text = ywProject.scenes[scId].sceneNotes
-
-            if ywProject.scenes[scId].tags is not None:
-                ET.SubElement(scn, 'Tags').text = ';'.join(
-                    ywProject.scenes[scId].tags)
-
-            if ywProject.scenes[scId].field1 is not None:
-                ET.SubElement(
-                    scn, 'Field1').text = ywProject.scenes[scId].field1
-
-            if ywProject.scenes[scId].field2 is not None:
-                ET.SubElement(
-                    scn, 'Field2').text = ywProject.scenes[scId].field2
-
-            if ywProject.scenes[scId].field3 is not None:
-                ET.SubElement(
-                    scn, 'Field3').text = ywProject.scenes[scId].field3
-
-            if ywProject.scenes[scId].field4 is not None:
-                ET.SubElement(
-                    scn, 'Field4').text = ywProject.scenes[scId].field4
-
-            if ywProject.scenes[scId].appendToPrev:
-                ET.SubElement(scn, 'AppendToPrev').text = '-1'
-
-            # Date/time information
-
-            if (ywProject.scenes[scId].date is not None) and (ywProject.scenes[scId].time is not None):
-                dateTime = ' '.join(
-                    ywProject.scenes[scId].date, ywProject.scenes[scId].time)
-                ET.SubElement(scn, 'SpecificDateTime').text = dateTime
-                ET.SubElement(scn, 'SpecificDateMode').text = '-1'
-
-            elif (ywProject.scenes[scId].day is not None) or (ywProject.scenes[scId].hour is not None) or (ywProject.scenes[scId].minute is not None):
-
-                if ywProject.scenes[scId].day is not None:
-                    ET.SubElement(scn, 'Day').text = ywProject.scenes[scId].day
-
-                if ywProject.scenes[scId].hour is not None:
-                    ET.SubElement(
-                        scn, 'Hour').text = ywProject.scenes[scId].hour
-
-                if ywProject.scenes[scId].minute is not None:
-                    ET.SubElement(
-                        scn, 'Minute').text = ywProject.scenes[scId].minute
-
-            if ywProject.scenes[scId].lastsDays is not None:
-                ET.SubElement(
-                    scn, 'LastsDays').text = ywProject.scenes[scId].lastsDays
-
-            if ywProject.scenes[scId].lastsHours is not None:
-                ET.SubElement(
-                    scn, 'LastsHours').text = ywProject.scenes[scId].lastsHours
-
-            if ywProject.scenes[scId].lastsMinutes is not None:
-                ET.SubElement(
-                    scn, 'LastsMinutes').text = ywProject.scenes[scId].lastsMinutes
-
-            # Plot related information
-
-            if ywProject.scenes[scId].isReactionScene:
-                ET.SubElement(scn, 'ReactionScene').text = '-1'
-
-            if ywProject.scenes[scId].isSubPlot:
-                ET.SubElement(scn, 'SubPlot').text = '-1'
-
-            if ywProject.scenes[scId].goal is not None:
-                ET.SubElement(scn, 'Goal').text = ywProject.scenes[scId].goal
-
-            if ywProject.scenes[scId].conflict is not None:
-                ET.SubElement(
-                    scn, 'Conflict').text = ywProject.scenes[scId].conflict
-
-            if ywProject.scenes[scId].outcome is not None:
-                ET.SubElement(
-                    scn, 'Outcome').text = ywProject.scenes[scId].outcome
-
-            if ywProject.scenes[scId].characters is not None:
-                scCharacters = ET.SubElement(scn, 'Characters')
-
-                for crId in ywProject.scenes[scId].characters:
-                    ET.SubElement(scCharacters, 'CharID').text = crId
-
-            if ywProject.scenes[scId].locations is not None:
-                scLocations = ET.SubElement(scn, 'Locations')
-
-                for lcId in ywProject.scenes[scId].locations:
-                    ET.SubElement(scLocations, 'LocID').text = lcId
-
-            if ywProject.scenes[scId].items is not None:
-                scItems = ET.SubElement(scn, 'Items')
-
-                for itId in ywProject.scenes[scId].items:
-                    ET.SubElement(scItems, 'ItemID').text = itId
-
-        # Write attributes at chapter level to the xml element tree.
-
-        chapters = ET.SubElement(root, 'CHAPTERS')
-
-        sortOrder = 0
-
-        for chId in ywProject.srtChapters:
-            sortOrder += 1
-            chp = ET.SubElement(chapters, 'CHAPTER')
-            ET.SubElement(chp, 'ID').text = chId
-            ET.SubElement(chp, 'SortOrder').text = str(sortOrder)
-
-            if ywProject.chapters[chId].title is not None:
-                ET.SubElement(
-                    chp, 'Title').text = ywProject.chapters[chId].title
-
-            if ywProject.chapters[chId].desc is not None:
-                ET.SubElement(chp, 'Desc').text = ywProject.chapters[chId].desc
-
-            if ywProject.chapters[chId].chLevel == 1:
-                ET.SubElement(chp, 'SectionStart').text = '-1'
-
-            if ywProject.chapters[chId].oldType is not None:
-                ET.SubElement(chp, 'Type').text = str(
-                    ywProject.chapters[chId].oldType)
-
-            if ywProject.chapters[chId].chType is not None:
-                ET.SubElement(chp, 'ChapterType').text = str(
-                    ywProject.chapters[chId].chType)
-
-            if ywProject.chapters[chId].isUnused:
-                ET.SubElement(chp, 'Unused').text = '-1'
-
-            sortSc = ET.SubElement(chp, 'Scenes')
-
-            for scId in ywProject.chapters[chId].srtScenes:
-                ET.SubElement(sortSc, 'ScID').text = scId
-
-            chFields = ET.SubElement(chp, 'Fields')
-
-            if ywProject.chapters[chId].title is not None:
-
-                if ywProject.chapters[chId].title.startswith('@'):
-                    ywProject.chapters[chId].suppressChapterTitle = True
-
-            if ywProject.chapters[chId].suppressChapterTitle:
-                ET.SubElement(
-                    chFields, 'Field_SuppressChapterTitle').text = '1'
-
-        self.indent_xml(root)
-        ywProject._tree = ET.ElementTree(root)
-
-        return 'SUCCESS'
-
-
-
-class YwProjectCreator(YwProjectMerger):
-    """Extend the super class by disabling its project structure check."""
-
-    def merge_projects(self, target, source):
-        """Create target attributes with source attributes.
-        Return a message beginning with SUCCESS, even if the source and 
-        target project structures are inconsistent. Thus the source
-        project can be merged with an empty target, creating a new project.
-        """
-        YwProjectMerger.merge_projects(self, target, source)
-        return 'SUCCESS'
-
-
-class Yw7NewFile(Yw7File):
-    """yWriter 7 new project file representation."""
-
-    def __init__(self, filePath, **kwargs):
-        """Extends the superclass constructor."""
-        Yw7File.__init__(self, filePath)
-
-        self.ywProjectMerger = YwProjectCreator()
-        self.ywTreeBuilder = Yw7TreeCreator()
 
 
 from html.parser import HTMLParser
@@ -2907,6 +2743,9 @@ class HtmlFile(Novel, HTMLParser):
     """Generic HTML file representation."""
 
     EXTENSION = '.html'
+    COMMENT_START = '/*'
+    COMMENT_END = '*/'
+    SC_TITLE_BRACKET = '~'
 
     def __init__(self, filePath, **kwargs):
         Novel.__init__(self, filePath)
@@ -2961,10 +2800,6 @@ class HtmlFile(Novel, HTMLParser):
         text = text.replace('[/i][i]', '')
         text = text.replace('[/b][b]', '')
 
-        # Remove scene title annotations.
-
-        text = re.sub('\<\!-- - .*? - -->', '', text)
-
         # Convert author's comments
 
         text = text.replace('<!--', '/*')
@@ -2993,10 +2828,10 @@ class HtmlFile(Novel, HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         """Identify scenes and chapters.
-        Overwrites HTMLparser.handle_starttag().
+        Override HTMLparser.handle_starttag().
         This method is applicable to HTML files that are divided into 
         chapters and scenes. For differently structured HTML files 
-        overwrite this method in a subclass.
+        do override this method in a subclass.
         """
         if tag == 'div':
 
@@ -3042,8 +2877,6 @@ class HtmlImport(HtmlFile):
 
     _SCENE_DIVIDER = '* * *'
     _LOW_WORDCOUNT = 10
-    _COMMENT_START = '/*'
-    _COMMENT_END = '*/'
 
     def __init__(self, filePath, **kwargs):
         HtmlFile.__init__(self, filePath)
@@ -3130,18 +2963,24 @@ class HtmlImport(HtmlFile):
             self._scId = None
 
         else:
-            data = data.rstrip().lstrip()
+            data = data.lstrip().rstrip()
 
             # Convert prefixed comment into scene title.
 
-            if self._lines == [] and data.startswith(self._COMMENT_START):
+            if self._lines == [] and data.startswith(self.COMMENT_START):
 
                 try:
-                    scTitle, scText = data.split(
-                        sep=self._COMMENT_END, maxsplit=1)
-                    self.scenes[self._scId].title = scTitle.lstrip(
-                        self._COMMENT_START).lstrip('- ')
-                    data = scText
+                    scTitle, scContent = data.split(
+                        sep=self.COMMENT_END, maxsplit=1)
+
+                    if self.SC_TITLE_BRACKET in scTitle:
+                        scTitle = scTitle.split(self.SC_TITLE_BRACKET)[1]
+
+                    else:
+                        scTitle = scTitle.lstrip(self.COMMENT_START)
+
+                    self.scenes[self._scId].title = scTitle.lstrip().rstrip()
+                    data = scContent
 
                 except:
                     pass
@@ -3237,23 +3076,32 @@ class HtmlOutline(HtmlFile):
 
 
 class NewProjectFactory(FileFactory):
-    """A factory class that instantiates source and target file objects."""
+    """A factory class that instantiates a document object to read, 
+    and a new yWriter project.
+
+    Class constant:
+        DO_NOT_IMPORT -- list of suffixes from file classes not meant to be imported.    
+    """
 
     DO_NOT_IMPORT = ['_xref']
 
     def make_file_objects(self, sourcePath, **kwargs):
-        """Factory method.
+        """Instantiate a source and a target object for creation of a new yWriter project.
+        Override the superclass method.
+
+        Positional arguments:
+            sourcePath -- string; path to the source file to convert.
+
         Return a tuple with three elements:
         - A message string starting with 'SUCCESS' or 'ERROR'
         - sourceFile: a Novel subclass instance
         - targetFile: a Novel subclass instance
-
         """
         if not self.canImport(sourcePath):
             return 'ERROR: This document is not meant to be written back.', None, None
 
         fileName, fileExtension = os.path.splitext(sourcePath)
-        targetFile = Yw7NewFile(fileName + Yw7NewFile.EXTENSION, **kwargs)
+        targetFile = Yw7File(fileName + Yw7File.EXTENSION, **kwargs)
 
         if sourcePath.endswith('.html'):
 
@@ -3286,6 +3134,9 @@ class NewProjectFactory(FileFactory):
             return 'ERROR: File type of  "' + os.path.normpath(sourcePath) + '" not supported.', None, None
 
     def canImport(self, sourcePath):
+        """Return True, if the file located at sourcepath is of an importable type.
+        Otherwise, return False.
+        """
         fileName, fileExtension = os.path.splitext(sourcePath)
 
         for suffix in self.DO_NOT_IMPORT:
@@ -3299,15 +3150,19 @@ class NewProjectFactory(FileFactory):
 
 
 
-class Yw6TreeBuilder(YwTreeBuilder):
+class Yw6TreeBuilder(Yw7TreeBuilder):
     """Build yWriter 6 project xml tree."""
 
-    def build_element_tree(self, ywProject):
-        """Modify the yWriter project attributes of an existing xml element tree.
+    TAG = 'YWRITER6'
+    VER = '5'
+
+    def put_scene_contents(self, ywProject):
+        """Modify the scene contents of an existing xml element tree.
         Return a message beginning with SUCCESS or ERROR.
+        Override the superclass method.
         """
 
-        root = ywProject._tree.getroot()
+        root = ywProject.tree.getroot()
 
         for scn in root.iter('SCENE'):
             scId = scn.find('ID').text
@@ -3320,26 +3175,23 @@ class Yw6TreeBuilder(YwTreeBuilder):
                 scn.find('LetterCount').text = str(
                     ywProject.scenes[scId].letterCount)
 
-        root.tag = 'YWRITER6'
-        root.find('PROJECT').find('Ver').text = '5'
-        ywProject._tree = ET.ElementTree(root)
-
-        return YwTreeBuilder.build_element_tree(self, ywProject)
+        return 'SUCCESS'
 
 
-class Yw6File(YwFile):
+class Yw6File(Yw7File):
     """yWriter 6 project file representation."""
 
     DESCRIPTION = 'yWriter 6 project'
     EXTENSION = '.yw6'
 
     def __init__(self, filePath, **kwargs):
-        YwFile.__init__(self, filePath)
-        self.ywTreeReader = Utf8TreeReader()
-        self.ywProjectMerger = YwProjectMerger()
+        """Initialize instance variables.
+        Extend the superclass constructor by changing
+        the ywTreeBuilder strategy. 
+        """
+        Yw7File.__init__(self, filePath)
+
         self.ywTreeBuilder = Yw6TreeBuilder()
-        self.ywTreeWriter = Utf8TreeWriter()
-        self.ywPostprocessor = Utf8Postprocessor()
 
 from string import Template
 
@@ -3347,8 +3199,7 @@ from string import Template
 
 class FileExport(Novel):
     """Abstract yWriter project file exporter representation.
-    To be overwritten by subclasses providing file type specific 
-    markup converters and templates.
+    This class is generic and contains no conversion algorithm and no templates.
     """
     SUFFIX = ''
 
@@ -3399,7 +3250,7 @@ class FileExport(Novel):
 
     def convert_from_yw(self, text):
         """Convert yw7 markup to target format.
-        To be overwritten by file format specific subclasses.
+        This is a stub to be overridden by subclass methods.
         """
 
         if text is None:
@@ -3407,73 +3258,73 @@ class FileExport(Novel):
 
         return(text)
 
-    def merge(self, novel):
-        """Copy required attributes of the novel object.
+    def merge(self, source):
+        """Copy required attributes of the source object.
         Return a message beginning with SUCCESS or ERROR.
         """
 
-        if novel.title is not None:
-            self.title = novel.title
+        if source.title is not None:
+            self.title = source.title
 
         else:
             self.title = ''
 
-        if novel.desc is not None:
-            self.desc = novel.desc
+        if source.desc is not None:
+            self.desc = source.desc
 
         else:
             self.desc = ''
 
-        if novel.author is not None:
-            self.author = novel.author
+        if source.author is not None:
+            self.author = source.author
 
         else:
             self.author = ''
 
-        if novel.fieldTitle1 is not None:
-            self.fieldTitle1 = novel.fieldTitle1
+        if source.fieldTitle1 is not None:
+            self.fieldTitle1 = source.fieldTitle1
 
         else:
             self.fieldTitle1 = 'Field 1'
 
-        if novel.fieldTitle2 is not None:
-            self.fieldTitle2 = novel.fieldTitle2
+        if source.fieldTitle2 is not None:
+            self.fieldTitle2 = source.fieldTitle2
 
         else:
             self.fieldTitle2 = 'Field 2'
 
-        if novel.fieldTitle3 is not None:
-            self.fieldTitle3 = novel.fieldTitle3
+        if source.fieldTitle3 is not None:
+            self.fieldTitle3 = source.fieldTitle3
 
         else:
             self.fieldTitle3 = 'Field 3'
 
-        if novel.fieldTitle4 is not None:
-            self.fieldTitle4 = novel.fieldTitle4
+        if source.fieldTitle4 is not None:
+            self.fieldTitle4 = source.fieldTitle4
 
         else:
             self.fieldTitle4 = 'Field 4'
 
-        if novel.srtChapters != []:
-            self.srtChapters = novel.srtChapters
+        if source.srtChapters != []:
+            self.srtChapters = source.srtChapters
 
-        if novel.scenes is not None:
-            self.scenes = novel.scenes
+        if source.scenes is not None:
+            self.scenes = source.scenes
 
-        if novel.chapters is not None:
-            self.chapters = novel.chapters
+        if source.chapters is not None:
+            self.chapters = source.chapters
 
-        if novel.srtCharacters != []:
-            self.srtCharacters = novel.srtCharacters
-            self.characters = novel.characters
+        if source.srtCharacters != []:
+            self.srtCharacters = source.srtCharacters
+            self.characters = source.characters
 
-        if novel.srtLocations != []:
-            self.srtLocations = novel.srtLocations
-            self.locations = novel.locations
+        if source.srtLocations != []:
+            self.srtLocations = source.srtLocations
+            self.locations = source.locations
 
-        if novel.srtItems != []:
-            self.srtItems = novel.srtItems
-            self.items = novel.items
+        if source.srtItems != []:
+            self.srtItems = source.srtItems
+            self.items = source.items
 
         return 'SUCCESS'
 
@@ -3707,9 +3558,8 @@ class FileExport(Novel):
                 else:
                     continue
 
-            elif self.scenes[scId].isNotesScene or self.chapters[chId].oldType == 1:
-                # Scene is "Notes" (new file format) or "Info" (old file
-                # format) scene.
+            elif self.scenes[scId].isNotesScene:
+                # Scene is "Notes" type.
 
                 if self.notesSceneTemplate != '':
                     template = Template(self.notesSceneTemplate)
@@ -3721,6 +3571,15 @@ class FileExport(Novel):
 
                 if self.unusedSceneTemplate != '':
                     template = Template(self.unusedSceneTemplate)
+
+                else:
+                    continue
+
+            elif self.chapters[chId].oldType == 1:
+                # Scene is "Info" type (old file format).
+
+                if self.notesSceneTemplate != '':
+                    template = Template(self.notesSceneTemplate)
 
                 else:
                     continue
@@ -3789,9 +3648,8 @@ class FileExport(Novel):
                 else:
                     continue
 
-            elif self.chapters[chId].chType == 1 or self.chapters[chId].oldType == 1:
-                # Chapter is "Notes" (new file format) or "Info" (old file
-                # format) chapter.
+            elif self.chapters[chId].chType == 1:
+                # Chapter is "Notes" type.
 
                 if self.notesChapterTemplate != '':
                     template = Template(self.notesChapterTemplate)
@@ -3803,6 +3661,15 @@ class FileExport(Novel):
 
                 if self.unusedChapterTemplate != '':
                     template = Template(self.unusedChapterTemplate)
+
+                else:
+                    continue
+
+            elif self.chapters[chId].oldType == 1:
+                # Chapter is "Info" type (old file format).
+
+                if self.notesChapterTemplate != '':
+                    template = Template(self.notesChapterTemplate)
 
                 else:
                     continue
@@ -3836,13 +3703,18 @@ class FileExport(Novel):
             if self.chapters[chId].chType == 2 and self.todoChapterEndTemplate != '':
                 lines.append(self.todoChapterEndTemplate)
 
-            elif self.chapters[chId].chType == 1 or self.chapters[chId].oldType == 1:
+            elif self.chapters[chId].chType == 1:
 
                 if self.notesChapterEndTemplate != '':
                     lines.append(self.notesChapterEndTemplate)
 
             elif self.chapters[chId].isUnused and self.unusedChapterEndTemplate != '':
                 lines.append(self.unusedChapterEndTemplate)
+
+            elif self.chapters[chId].oldType == 1:
+
+                if self.notesChapterEndTemplate != '':
+                    lines.append(self.notesChapterEndTemplate)
 
             elif doNotExport and self.notExportedChapterEndTemplate != '':
                 lines.append(self.notExportedChapterEndTemplate)
@@ -4196,6 +4068,13 @@ class UiTk(Ui):
     def start(self):
         """Start the Tk main loop."""
         self.root.mainloop()
+
+    def show_open_button(self, open_cmd):
+        """Add an 'Open' button to the main window."""
+        self.root.openButton = Button(text="Open", command=open_cmd)
+        self.root.openButton.config(height=1, width=10)
+        self.rowCount += 1
+        self.root.openButton.grid(row=self.rowCount, column=1, pady=10)
 
 from tkinter import *
 from tkinter import messagebox
