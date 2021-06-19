@@ -1,7 +1,7 @@
 [Project homepage](https://peter88213.github.io/yw2md)
 
 
-The yw2md Python script converts yWriter 6/7 projects to Markdown 
+The yw2md Python script converts yWriter 7 projects to Markdown 
 and creates new yWriter 7 projects from Markdown formatted text documents.
 
 There are two variants, which are distinguished by the file extension: 
