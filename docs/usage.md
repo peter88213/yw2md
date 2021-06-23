@@ -1,5 +1,6 @@
 [Project homepage](https://peter88213.github.io/yw2md)
 
+---
 
 The yw2md Python script converts yWriter 7 projects to Markdown 
 and creates new yWriter 7 projects from Markdown formatted text documents.
@@ -12,7 +13,7 @@ _yw2md.pyw_  has a graphical user interface, and  _yw2md.py_  is for the command
 
 ## Usage
 
-it is recommended to create a link on the desktop.
+It is recommended to create a link on the desktop.
 
 You can either
 
