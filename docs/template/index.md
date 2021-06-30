@@ -17,6 +17,10 @@ and creates new yWriter 7 projects from Markdown formatted text documents.
 
 See the [instructions for use](usage)
 
+## Credits
+
+- Frederik Lundh published the [xml pretty print algorithm](http://effbot.org/zone/element-lib.htm#prettyprint).
+
 ## License
 
 yw2md is distributed under the [MIT
