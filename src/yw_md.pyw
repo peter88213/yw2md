@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Export yWriter project to markdown. 
 
-GUI version using tkinter
+GUI variant using tkinter
+Version @release
 
 Copyright (c) 2021 Peter Triesberger
 For further information see https://github.com/peter88213/yw2md
@@ -124,8 +125,6 @@ class MyGui(UiTk):
         self.successInfo.config(
             bg=self.root.cget("background"))
 
-        options = [False, True]
-
         if self.sourcePath:
             kwargs = {'suffix': '', 'markdownMode': self.markdownMode.get(),
                       'noSceneTitles': self.SceneTitles.get()}
@@ -134,7 +133,7 @@ class MyGui(UiTk):
 
 def run(sourcePath):
 
-    ui = MyGui('Markdown converter for yWriter projects')
+    ui = MyGui('Markdown converter for yWriter projects @release')
     # instantiate a user interface object
 
     if sourcePath is not None:

@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v1.4.2 Optional update
+
+- Fix docstrings and add version number.
+
+Based on PyWriter v3.12.5
+
 ### v1.4.1 Optional update
 
 - Major refactoring of the yw7 file processing.
