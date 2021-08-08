@@ -51,6 +51,7 @@
 	<target name="clean" description="clean up">
 		
 		<delete file="${test}/yw2md.py" />
+		<delete file="${test}/yw2md.pyw" />
 		
 	</target>
 

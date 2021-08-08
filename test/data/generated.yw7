@@ -31,7 +31,6 @@ A flock of pigeons burst from the basket, leaving a tumbling cloud of feathers w
 ]]></SceneContent>
       <WordCount>379</WordCount>
       <LetterCount>2213</LetterCount>
-      <Fields />
       <Status>2</Status>
     </SCENE>
     <SCENE>
@@ -42,7 +41,6 @@ A flock of pigeons burst from the basket, leaving a tumbling cloud of feathers w
 . . .]]></SceneContent>
       <WordCount>63</WordCount>
       <LetterCount>385</LetterCount>
-      <Fields />
       <Status>2</Status>
     </SCENE>
     <SCENE>
@@ -59,7 +57,6 @@ A flock of pigeons burst from the basket, leaving a tumbling cloud of feathers w
 . . .]]></SceneContent>
       <WordCount>85</WordCount>
       <LetterCount>475</LetterCount>
-      <Fields />
       <Status>2</Status>
     </SCENE>
     <SCENE>
@@ -73,7 +70,6 @@ A flock of pigeons burst from the basket, leaving a tumbling cloud of feathers w
 . . .]]></SceneContent>
       <WordCount>64</WordCount>
       <LetterCount>375</LetterCount>
-      <Fields />
       <Status>2</Status>
     </SCENE>
     <SCENE>
@@ -86,7 +82,6 @@ Hal's ship was somewhat further down the alphabet, and was therefore sitting in 
 . . .]]></SceneContent>
       <WordCount>172</WordCount>
       <LetterCount>1042</LetterCount>
-      <Fields />
       <Status>2</Status>
     </SCENE>
     <SCENE>
@@ -103,7 +98,6 @@ Clunk looked relieved. "So that's what Mr. Jerling has in store for me. When I q
 . . .]]></SceneContent>
       <WordCount>122</WordCount>
       <LetterCount>722</LetterCount>
-      <Fields />
       <Status>2</Status>
     </SCENE>
     <SCENE>
@@ -116,7 +110,6 @@ Hal watched the floor numbers changing as he dropped further and further undergr
 . . .]]></SceneContent>
       <WordCount>86</WordCount>
       <LetterCount>532</LetterCount>
-      <Fields />
       <Status>2</Status>
     </SCENE>
     <SCENE>
@@ -136,7 +129,6 @@ Clunk sat up straight. "Please open the connection."
 . . .]]></SceneContent>
       <WordCount>71</WordCount>
       <LetterCount>431</LetterCount>
-      <Fields />
       <Status>2</Status>
     </SCENE>
     <SCENE>
@@ -158,7 +150,6 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
 . . .]]></SceneContent>
       <WordCount>158</WordCount>
       <LetterCount>873</LetterCount>
-      <Fields />
       <Status>2</Status>
     </SCENE>
     <SCENE>
@@ -173,475 +164,7 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
 . . .]]></SceneContent>
       <WordCount>31</WordCount>
       <LetterCount>187</LetterCount>
-      <Fields />
       <Status>2</Status>
-    </SCENE>
-    <SCENE>
-      <ID>11</ID>
-      <Title><![CDATA[Scene 11]]></Title>
-      <BelongsToChID>6</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>12</ID>
-      <Title><![CDATA[Scene 12]]></Title>
-      <BelongsToChID>7</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>13</ID>
-      <Title><![CDATA[Scene 13]]></Title>
-      <BelongsToChID>8</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>14</ID>
-      <Title><![CDATA[Scene 14]]></Title>
-      <BelongsToChID>9</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>15</ID>
-      <Title><![CDATA[Scene 15]]></Title>
-      <BelongsToChID>10</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>16</ID>
-      <Title><![CDATA[Scene 16]]></Title>
-      <BelongsToChID>11</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>17</ID>
-      <Title><![CDATA[Scene 17]]></Title>
-      <BelongsToChID>11</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>18</ID>
-      <Title><![CDATA[Scene 18]]></Title>
-      <BelongsToChID>12</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>19</ID>
-      <Title><![CDATA[Scene 19]]></Title>
-      <BelongsToChID>12</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>20</ID>
-      <Title><![CDATA[Scene 20]]></Title>
-      <BelongsToChID>13</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>21</ID>
-      <Title><![CDATA[Scene 21]]></Title>
-      <BelongsToChID>14</BelongsToChID>
-      <SceneContent />
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>22</ID>
-      <Title><![CDATA[Scene 22]]></Title>
-      <BelongsToChID>15</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>23</ID>
-      <Title><![CDATA[Scene 23]]></Title>
-      <BelongsToChID>15</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>24</ID>
-      <Title><![CDATA[Scene 24]]></Title>
-      <BelongsToChID>16</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>25</ID>
-      <Title><![CDATA[Scene 25]]></Title>
-      <BelongsToChID>16</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>26</ID>
-      <Title><![CDATA[Scene 26]]></Title>
-      <BelongsToChID>17</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>27</ID>
-      <Title><![CDATA[Scene 27]]></Title>
-      <BelongsToChID>17</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>28</ID>
-      <Title><![CDATA[Scene 28]]></Title>
-      <BelongsToChID>18</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>29</ID>
-      <Title><![CDATA[Scene 29]]></Title>
-      <BelongsToChID>18</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>30</ID>
-      <Title><![CDATA[Scene 30]]></Title>
-      <BelongsToChID>19</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>31</ID>
-      <Title><![CDATA[Scene 31]]></Title>
-      <BelongsToChID>19</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>32</ID>
-      <Title><![CDATA[Scene 32]]></Title>
-      <BelongsToChID>20</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>33</ID>
-      <Title><![CDATA[Scene 33]]></Title>
-      <BelongsToChID>20</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>34</ID>
-      <Title><![CDATA[Scene 34]]></Title>
-      <BelongsToChID>20</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>35</ID>
-      <Title><![CDATA[Scene 35]]></Title>
-      <BelongsToChID>21</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>36</ID>
-      <Title><![CDATA[Scene 36]]></Title>
-      <BelongsToChID>21</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>37</ID>
-      <Title><![CDATA[Scene 37]]></Title>
-      <BelongsToChID>22</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>38</ID>
-      <Title><![CDATA[Scene 38]]></Title>
-      <BelongsToChID>23</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>39</ID>
-      <Title><![CDATA[Scene 39]]></Title>
-      <BelongsToChID>24</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>40</ID>
-      <Title><![CDATA[Scene 40]]></Title>
-      <BelongsToChID>24</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>41</ID>
-      <Title><![CDATA[Scene 41]]></Title>
-      <BelongsToChID>24</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>42</ID>
-      <Title><![CDATA[Scene 42]]></Title>
-      <BelongsToChID>25</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>43</ID>
-      <Title><![CDATA[Scene 43]]></Title>
-      <BelongsToChID>25</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>44</ID>
-      <Title><![CDATA[Scene 44]]></Title>
-      <BelongsToChID>26</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>45</ID>
-      <Title><![CDATA[Scene 45]]></Title>
-      <BelongsToChID>27</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>46</ID>
-      <Title><![CDATA[Scene 46]]></Title>
-      <BelongsToChID>27</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>47</ID>
-      <Title><![CDATA[Scene 47]]></Title>
-      <BelongsToChID>28</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>48</ID>
-      <Title><![CDATA[Scene 48]]></Title>
-      <BelongsToChID>28</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>49</ID>
-      <Title><![CDATA[Scene 49]]></Title>
-      <BelongsToChID>29</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>50</ID>
-      <Title><![CDATA[Scene 50]]></Title>
-      <BelongsToChID>29</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>51</ID>
-      <Title><![CDATA[Scene 51]]></Title>
-      <BelongsToChID>29</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>52</ID>
-      <Title><![CDATA[Scene 52]]></Title>
-      <BelongsToChID>30</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>53</ID>
-      <Title><![CDATA[Scene 53]]></Title>
-      <BelongsToChID>30</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>54</ID>
-      <Title><![CDATA[Scene 54]]></Title>
-      <BelongsToChID>30</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>55</ID>
-      <Title><![CDATA[Scene 55]]></Title>
-      <BelongsToChID>31</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>56</ID>
-      <Title><![CDATA[Scene 56]]></Title>
-      <BelongsToChID>31</BelongsToChID>
-      <SceneContent><![CDATA[]]></SceneContent>
-      <WordCount>0</WordCount>
-      <LetterCount>0</LetterCount>
-      <Fields />
-      <Status>1</Status>
-    </SCENE>
-    <SCENE>
-      <ID>57</ID>
-      <Title><![CDATA[Scene 57]]></Title>
-      <BelongsToChID>32</BelongsToChID>
-      <Fields />
-      <Status>1</Status>
     </SCENE>
   </SCENES>
   <CHAPTERS>
@@ -653,7 +176,6 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
       <Scenes>
         <ScID>1</ScID>
       </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>2</ID>
@@ -664,7 +186,6 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
         <ScID>2</ScID>
         <ScID>3</ScID>
       </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>3</ID>
@@ -674,7 +195,6 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
       <Scenes>
         <ScID>4</ScID>
       </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>4</ID>
@@ -687,7 +207,6 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
         <ScID>7</ScID>
         <ScID>8</ScID>
       </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>5</ID>
@@ -698,297 +217,168 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
         <ScID>9</ScID>
         <ScID>10</ScID>
       </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>6</ID>
       <SortOrder>6</SortOrder>
       <Title><![CDATA[Chapter 6]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>11</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>7</ID>
       <SortOrder>7</SortOrder>
       <Title><![CDATA[Chapter 7]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>12</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>8</ID>
       <SortOrder>8</SortOrder>
       <Title><![CDATA[Chapter 8]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>13</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>9</ID>
       <SortOrder>9</SortOrder>
       <Title><![CDATA[Chapter 9]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>14</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>10</ID>
       <SortOrder>10</SortOrder>
       <Title><![CDATA[Chapter 10]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>15</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>11</ID>
       <SortOrder>11</SortOrder>
       <Title><![CDATA[Chapter 11]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>16</ScID>
-        <ScID>17</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>12</ID>
       <SortOrder>12</SortOrder>
       <Title><![CDATA[Chapter 12]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>18</ScID>
-        <ScID>19</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>13</ID>
       <SortOrder>13</SortOrder>
       <Title><![CDATA[Chapter 13]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>20</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>14</ID>
       <SortOrder>14</SortOrder>
       <Title><![CDATA[Chapter 14]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>21</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>15</ID>
       <SortOrder>15</SortOrder>
       <Title><![CDATA[Chapter 15]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>22</ScID>
-        <ScID>23</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>16</ID>
       <SortOrder>16</SortOrder>
       <Title><![CDATA[Chapter 16]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>24</ScID>
-        <ScID>25</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>17</ID>
       <SortOrder>17</SortOrder>
       <Title><![CDATA[Chapter 17]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>26</ScID>
-        <ScID>27</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>18</ID>
       <SortOrder>18</SortOrder>
       <Title><![CDATA[Chapter 18]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>28</ScID>
-        <ScID>29</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>19</ID>
       <SortOrder>19</SortOrder>
       <Title><![CDATA[Chapter 19]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>30</ScID>
-        <ScID>31</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>20</ID>
       <SortOrder>20</SortOrder>
       <Title><![CDATA[Chapter 20]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>32</ScID>
-        <ScID>33</ScID>
-        <ScID>34</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>21</ID>
       <SortOrder>21</SortOrder>
       <Title><![CDATA[Chapter 21]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>35</ScID>
-        <ScID>36</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>22</ID>
       <SortOrder>22</SortOrder>
       <Title><![CDATA[Chapter 22]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>37</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>23</ID>
       <SortOrder>23</SortOrder>
       <Title><![CDATA[Chapter 23]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>38</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>24</ID>
       <SortOrder>24</SortOrder>
       <Title><![CDATA[Chapter 24]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>39</ScID>
-        <ScID>40</ScID>
-        <ScID>41</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>25</ID>
       <SortOrder>25</SortOrder>
       <Title><![CDATA[Chapter 25]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>42</ScID>
-        <ScID>43</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>26</ID>
       <SortOrder>26</SortOrder>
       <Title><![CDATA[Chapter 26]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>44</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>27</ID>
       <SortOrder>27</SortOrder>
       <Title><![CDATA[Chapter 27]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>45</ScID>
-        <ScID>46</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>28</ID>
       <SortOrder>28</SortOrder>
       <Title><![CDATA[Chapter 28]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>47</ScID>
-        <ScID>48</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>29</ID>
       <SortOrder>29</SortOrder>
       <Title><![CDATA[Chapter 29]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>49</ScID>
-        <ScID>50</ScID>
-        <ScID>51</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>30</ID>
       <SortOrder>30</SortOrder>
       <Title><![CDATA[Chapter 30]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>52</ScID>
-        <ScID>53</ScID>
-        <ScID>54</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>31</ID>
       <SortOrder>31</SortOrder>
       <Title><![CDATA[Chapter 31]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>55</ScID>
-        <ScID>56</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
     <CHAPTER>
       <ID>32</ID>
       <SortOrder>32</SortOrder>
       <Title><![CDATA[Chapter 32]]></Title>
       <Type>0</Type>
-      <Scenes>
-        <ScID>57</ScID>
-      </Scenes>
-      <Fields />
     </CHAPTER>
   </CHAPTERS>
 </YWRITER7>

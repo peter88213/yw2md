@@ -8,6 +8,7 @@ Published under the MIT License (https://opensource.org/licenses/mit-license.php
 import os
 import unittest
 import yw2md
+from shutil import copyfile
 
 
 # Test environment
@@ -41,14 +42,6 @@ def read_file(inputFile):
             return f.read()
 
 
-def copy_file(inputFile, outputFile):
-    with open(inputFile, 'rb') as f:
-        myData = f.read()
-    with open(outputFile, 'wb') as f:
-        f.write(myData)
-    return()
-
-
 def remove_all_testfiles():
 
     try:
@@ -75,29 +68,29 @@ class NormalOperation(unittest.TestCase):
         remove_all_testfiles()
 
     def test_normal_yw7_to_md(self):
-        copy_file(TEST_DATA_PATH + YW7, TEST_EXEC_PATH + PROJECT + '.yw7')
+        copyfile(TEST_DATA_PATH + YW7, TEST_EXEC_PATH + PROJECT + '.yw7')
         os.chdir(TEST_EXEC_PATH)
 
-        yw2md.run(TEST_EXEC_PATH + PROJECT + '.yw7', True)
+        yw2md.run(TEST_EXEC_PATH + PROJECT + '.yw7', markdownMode=False, noSceneTitles=True)
 
         self.assertEqual(read_file(TEST_EXEC_PATH + PROJECT + '.md'),
                          read_file(TEST_DATA_PATH + FROM_NORMAL_FORMATTED))
 
     def test_markdown_yw7_to_md(self):
-        copy_file(TEST_DATA_PATH + YW7, TEST_EXEC_PATH + PROJECT + '.yw7')
+        copyfile(TEST_DATA_PATH + YW7, TEST_EXEC_PATH + PROJECT + '.yw7')
         os.chdir(TEST_EXEC_PATH)
 
-        yw2md.run(TEST_EXEC_PATH + PROJECT + '.yw7', True)
+        yw2md.run(TEST_EXEC_PATH + PROJECT + '.yw7', markdownMode=False, noSceneTitles=True)
 
         self.assertEqual(read_file(TEST_EXEC_PATH + PROJECT + '.md'),
                          read_file(TEST_DATA_PATH + FROM_NORMAL_FORMATTED))
 
     def test_md_to_yw7(self):
-        copy_file(TEST_DATA_PATH + FROM_NORMAL_FORMATTED,
-                  TEST_EXEC_PATH + PROJECT + '.md')
+        copyfile(TEST_DATA_PATH + FROM_NORMAL_FORMATTED,
+                 TEST_EXEC_PATH + PROJECT + '.md')
         os.chdir(TEST_EXEC_PATH)
 
-        yw2md.run(TEST_EXEC_PATH + PROJECT + '.md', True)
+        yw2md.run(TEST_EXEC_PATH + PROJECT + '.md', markdownMode=False, noSceneTitles=True)
 
         self.assertEqual(read_file(TEST_EXEC_PATH + PROJECT + '.yw7'),
                          read_file(TEST_DATA_PATH + YW7_CONVERTED))
