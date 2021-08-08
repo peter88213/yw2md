@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v1.4.3 Optional update
+
+- Refactor the code for better maintainability.
+
+Based on PyWriter v3.16.0
+
 ### v1.4.2 Optional update
 
 - Fix docstrings and add version number.
