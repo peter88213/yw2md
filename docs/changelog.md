@@ -4,6 +4,14 @@
 
 ## Changelog
 
+### v1.4.4 Bugfix release
+
+This release is strongly recommended.
+Fix a regression from PyWriter v3.12.5. causing a crash if a scene has an 
+hour, but no minute set.
+
+Based on PyWriter v3.16.4
+
 ### v1.4.3 Optional update
 
 - Refactor the code for better maintainability.
