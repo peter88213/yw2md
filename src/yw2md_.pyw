@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export yWriter project to markdown. 
+"""Markdown converter for yWriter projects.
 
 GUI variant using tkinter
 Version @release
