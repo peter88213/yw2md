@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### v1.4.5 Installation script
+
+- Add a Python installation script for the GUI variant.
+- Make the installed script executable under Linux.
+
+Based on PyWriter v3.28.1
+
 ### v1.4.4 Bugfix release
 
 This release is strongly recommended.

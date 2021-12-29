@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="yw2md" basedir=".">
-	<property name="release" value="1.4.4" />
+	<property name="release" value="1.4.5" />
 	<property name="src" location="../src" />
 	<property name="test" location="../test" />
 	<property name="build" location="../build" />
@@ -15,7 +15,6 @@
 		<exec executable="python" failonerror="true">
 		    <arg value="${src}/build_yw2md.py"/>
 		</exec>
-		<fixcrlf encoding="utf-8" eol="lf" srcdir="${test}" includes="**/*.py" />
 	</target>
 
 	<target name="test" description="inline all library modules">
@@ -26,8 +25,7 @@
 		</exec>
 	</target>
 
-	<target name="dist" description="generate the distribution">
-		
+	<target name="dist" description="generate the distribution">		
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
 		<mkdir dir="${build}" />
@@ -40,23 +38,24 @@
 		<copy file="${test}/yw2md.py" todir="${build}/yw2md_v${release}" />
 		<replace encoding="utf-8" file="${build}/yw2md_v${release}/yw2md.py" token="@release" value="${release}" />
 
+		<copy file="${src}/setup.pyw" todir="${build}/${release-name}" />		
+		<replace encoding="utf-8" file="${build}/${release-name}/setup.pyw" token="@release" value="${release}" />
 
 		<copy file="../LICENSE" todir="${build}/yw2md_v${release}" />
 		<copy file="${docs}/usage.md" tofile="${build}/yw2md_v${release}/README.md" />
 
+		<fixcrlf encoding="utf-8" eol="lf" srcdir="${build}/${release-name}" includes="**/*.*" />
+		
 		<zip destfile="${dist}/yw2md_v${release}.zip" basedir="${build}/yw2md_v${release}" />
 
 		<copy file="${docs}/template/index.md" overwrite="True" todir="${docs}" />
 		<replace encoding="utf-8" file="${docs}/index.md" token="0.99.0" value="${release}" />
-
 	</target>
 
-	<target name="clean" description="clean up">
-		
+	<target name="clean" description="clean up">		
 		<delete file="${test}/yw2md.py" />
 		<delete file="${test}/yw2md.pyw" />
-		<delete file="${test}/test_yw2md.py" />
-		
+		<delete file="${test}/test_yw2md.py" />		
 	</target>
 
 </project>

@@ -13,12 +13,16 @@ _yw2md.pyw_  has a graphical user interface, and  _yw2md.py_  is for the command
 
 ## Usage
 
-It is recommended to create a link on the desktop.
+### Intended usage
 
-You can either
+The included installation script prompts you to create a shortcut on the desktop. You can launch the program by dragging a yWriter project file and dropping it on the shortcut icon. 
 
-- launch the program by double-clicking on the program/link icon, or
-- launch the program by dragging a source file and dropping it on the program/link icon.
+### Command line usage
+
+Alternatively, you can
+
+- launch the program on the command line passing the yWriter project file as an argument, or
+- launch the program via a batch file.
 
 ### Options
 
