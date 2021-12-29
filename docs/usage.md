@@ -76,7 +76,7 @@ it to the link icon. For optional arguments, edit the link's properties.
 
 
 ## Usage
-usage: `yw2md.py [-h][--silent][--md] Sourcefile`
+usage: `yw2md.py [-h] [--silent] [--md] [--notitles] Sourcefile`
 
 #### positional arguments:
 
