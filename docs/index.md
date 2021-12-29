@@ -10,7 +10,7 @@ and creates new yWriter 7 projects from Markdown formatted text documents.
 [Download the latest release (version 1.4.5)](https://raw.githubusercontent.com/peter88213/yw2md/main/dist/yw2md_v1.4.5.zip)
 
 - Unzip the downloaded zipfile "yw2md_v1.4.5.zip" into a new folders.
-- Move into this new folder and launch **setup.pyw** to install the GUI variant*yw2md.pyw* for the local user.
+- Move into this new folder and launch **setup.pyw** to install the GUI variant *yw2md.pyw* for the local user.
 - Create a shortcut on the desktop when asked.
 - Open "README.md" for usage instructions.
 - Optionally, you can move the command line variant *yw2md.py* to a folder specified in the PATH environment variable. 
