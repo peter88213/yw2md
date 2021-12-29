@@ -6,7 +6,7 @@ The yw2md Python script converts yWriter 7 projects to Markdown
 and creates new yWriter 7 projects from Markdown formatted text documents.
 
 There are two variants, which are distinguished by the file extension: 
-_yw2md.pyw_  has a graphical user interface, and  _yw2md.py_  is for the command line. 
+*yw2md.pyw* has a graphical user interface, and *yw2md.py* is for the command line. 
 
 
 # 1. The GUI variant yw2md.pyw
@@ -28,13 +28,13 @@ Alternatively, you can
 
 #### Comments at the beginning of the scene are scene titles
 
-_When checked:_
+*When checked:*
 
 - When converting from yw7 to md, prefix scene titles as comments.
 - When converting from md to yw, convert comments at scene start to scene titles.
 
 
-_When unchecked:_
+*When unchecked:*
 
 - When converting from yw7 to md, do not prefix scene titles as comments.
 - When converting from md to yw, do not convert comments at scene start to scene titles.
@@ -42,13 +42,13 @@ _When unchecked:_
 
 #### The scenes in the yWriter project are Markdown formatted
 
-_When checked:_
+*When checked:*
 
 - When converting scenes from yw7 to md, do not double the linefeeds.
 - When converting scenes from md to yw, use Markdown.
 
 
-_When unchecked:_ 
+*When unchecked:* 
 
 - When converting scenes from yw7 to md, double the linefeeds.
 - When converting scenes from md to yw, use yWriter's genuine bold/italic markup.
@@ -56,7 +56,7 @@ _When unchecked:_
 
 ### Select file
 
-If no file is selected, you first have to select a file. Click on the  __Select file__ 
+If no file is selected, you first have to select a file. Click on the **Select file** 
 button and choose a yWriter or Markdown file with the file picker dialog.
 
 You can change the selection at any time.
@@ -64,7 +64,7 @@ You can change the selection at any time.
 
 #### Convert
 
-Start file conversion by clicking on the  __Convert__  button. The result will be indicated.
+Start file conversion by clicking on the **Convert** button. The result will be indicated.
 
 
 # 2. The command line variant yw2md.py
@@ -97,16 +97,16 @@ to be converted to a new yWriter 7 project.
 
 #### optional arguments:
 
-`-h, --help`  show this help message and exit
+`-h, --help` show this help message and exit
 
-`--silent`  suppress error messages and the request to confirm overwriting
+`--silent` suppress error messages and the request to confirm overwriting
 
-`--md`  the scenes in the yWriter project are Markdown formatted
+`--md` the scenes in the yWriter project are Markdown formatted
 
 - When converting scenes from yw7 to md, do not double the linefeeds.
 - When converting scenes from md to yw, use Markdown.
 
-`--notitles`  do not associate comments at the beginning of the scene with scene titles
+`--notitles` do not associate comments at the beginning of the scene with scene titles
 
 - When converting from yw7 to md, do not prefix scene titles as comments.
 - When converting from md to yw, do not convert comments at scene start to scene titles.
@@ -115,7 +115,7 @@ to be converted to a new yWriter 7 project.
 
 # Markdown reference
 
-By default,  _yw2md_  converts a Markdown subset according to the following specificatiions:
+By default, *yw2md* converts a Markdown subset according to the following specificatiions:
 
 ### Paragraphs
 
@@ -124,7 +124,7 @@ Single blank lines in yWriter scenes are Markdown-encoded by three blank lines.
 
 ### Headings
 
-#### Level 1 heading used for parts (chapters marked as  beginning of a new section in yWriter)
+#### Level 1 heading used for parts (chapters marked as beginning of a new section in yWriter)
 `# One hash character at the start of the line`
 
 #### Level 2 heading used for chapters
@@ -135,7 +135,7 @@ Single blank lines in yWriter scenes are Markdown-encoded by three blank lines.
 #### Italic 
 `*single asterisks*`
 
-__Note__ : A `*` surrounded with spaces will be treated as a literal asterisk.
+**Note** : A `*` surrounded with spaces will be treated as a literal asterisk.
 
 #### Bold 
 `**double asterisks**`
