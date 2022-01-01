@@ -21,7 +21,6 @@ from yw2md import Ui
 from yw2md import UiCmd
 from yw2md import MdConverter
 from yw2md import MdFile
-from yw2md import Yw6File
 from yw2md import Yw7File
 
 

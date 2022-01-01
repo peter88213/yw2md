@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v1.6.0 Drop the support of the .yw6 file format.
+
+Since yWriter5, yWriter6 and yWriter7 all use .yw7 now, the .yw6 conversion is dispensable.
+
+Based on PyWriter v3.28.2
+
 ### v1.4.5 Installation script
 
 - Add a Python installation script for the GUI variant.

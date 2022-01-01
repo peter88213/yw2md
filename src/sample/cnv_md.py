@@ -13,7 +13,6 @@ import sys
 from pywriter.ui.ui_tk import UiTk
 from pywriter.converter.yw_cnv_ui import YwCnvUi
 
-from pywriter.yw.yw6_file import Yw6File
 from pywriter.yw.yw7_file import Yw7File
 from pywmd.md_file import MdFile
 from pywriter.converter.new_project_factory import NewProjectFactory
@@ -21,7 +20,7 @@ from pywriter.converter.new_project_factory import NewProjectFactory
 
 class MdConverter(YwCnvUi):
     """A converter class for html export."""
-    EXPORT_SOURCE_CLASSES = [Yw7File, Yw6File]
+    EXPORT_SOURCE_CLASSES = [Yw7File]
     EXPORT_TARGET_CLASSES = [MdFile]
 
     def __init__(self):
