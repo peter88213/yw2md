@@ -84,7 +84,7 @@ usage: `yw2md.py [-h] [--silent] [--md] [--notitles] Sourcefile`
 
 The path of the source file for the conversion. 
 
-- If it's a yWriter project file with extension 'yw6' or 'yw7', 
+- If it's a yWriter project file with extension '.yw7', 
 a new Markdown formatted text document will be created.
 - Otherwise, the source file will be considered a Markdown formatted file 
 to be converted to a new yWriter 7 project. 
