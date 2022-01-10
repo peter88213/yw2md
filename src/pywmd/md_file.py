@@ -61,6 +61,9 @@ class MdFile(FileExport):
         """
 
         MD_REPLACEMENTS = [
+            ['[i] ', ' [i]'],
+            ['[b] ', ' [b]'],
+            ['[s] ', ' [s]'],
             ['[i]', '*'],
             ['[/i]', '*'],
             ['[b]', '**'],
@@ -71,22 +74,20 @@ class MdFile(FileExport):
         ]
 
         if not self.markdownMode:
-            MD_REPLACEMENTS[:0] = [['\n', '\n\n']]
+            MD_REPLACEMENTS.insert(0, ['\n', '\n\n'])
 
         try:
 
             for r in MD_REPLACEMENTS:
                 text = text.replace(r[0], r[1])
 
-            # Remove highlighting, alignment,
-            # strikethrough, and underline tags.
-
             text = re.sub('\[\/*[h|c|r|s|u]\d*\]', '', text)
+            # Remove highlighting, alignment, and underline tags
 
         except AttributeError:
             text = ''
 
-        return(text)
+        return text
 
     def convert_to_yw(self, text):
         """Convert Markdown to yw7 markup.
@@ -109,7 +110,7 @@ class MdFile(FileExport):
             except AttributeError:
                 text = ''
 
-        return(text)
+        return text
 
     def read(self):
         """Parse the Markdown file located at filePath

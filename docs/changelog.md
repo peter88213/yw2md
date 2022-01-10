@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v1.6.1 Bugfix release
+
+- Fix misplaced formatting tags before converting them to Markdown.
+
+Based on PyWriter v3.32.1
+
 ### v1.6.0 Drop the support of the .yw6 file format.
 
 Since yWriter5, yWriter6 and yWriter7 all use .yw7 now, the .yw6 conversion is dispensable.
