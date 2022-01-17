@@ -1,6 +1,6 @@
-"""Class for Markdown file processing. 
+"""Provide a class for Markdown file representation. 
 
-Copyright (c) 2021 Peter Triesberger
+Copyright (c) 2022 Peter Triesberger
 For further information see https://github.com/peter88213/yw2md
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
@@ -13,7 +13,7 @@ from pywriter.model.scene import Scene
 
 
 class MdFile(FileExport):
-    """Markdown file representation
+    """Markdown file representation.
     """
 
     DESCRIPTION = 'Markdown file'
@@ -37,7 +37,7 @@ class MdFile(FileExport):
     sceneDivider = '\n\n' + SCENE_DIVIDER + '\n\n'
 
     def __init__(self, filePath, **kwargs):
-        FileExport.__init__(self, filePath)
+        super().__init__(filePath)
         self.markdownMode = kwargs['markdownMode']
         self.noSceneTitles = kwargs['noSceneTitles']
 
@@ -48,8 +48,7 @@ class MdFile(FileExport):
     def get_chapterMapping(self, chId, chapterNumber):
         """Return a mapping dictionary for a chapter section. 
         """
-        chapterMapping = FileExport.get_chapterMapping(
-            self, chId, chapterNumber)
+        chapterMapping = super().get_chapterMapping(chId, chapterNumber)
 
         if self.chapters[chId].suppressChapterTitle:
             chapterMapping['Title'] = ''
