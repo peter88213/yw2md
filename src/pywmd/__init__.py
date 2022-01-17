@@ -1,4 +1,4 @@
-'''Modules for reading and writing Markdown formatted documents.
+'''Package for reading and writing Markdown formatted documents.
 
 Modules:
 
