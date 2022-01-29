@@ -28,7 +28,7 @@ def run(sourcePath):
 
         if os.path.isfile(sourcePath):
             ui.sourcePath = sourcePath
-            ui.set_info_what('File: "{}"'.format(os.path.normpath(sourcePath)))
+            ui.set_info_what(f'File: "{os.path.normpath(sourcePath)}"')
             ui.root.runButton.config(state='normal')
 
         else:

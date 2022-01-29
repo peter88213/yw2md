@@ -104,8 +104,7 @@ class MdUi(UiTk):
             self.sourcePath = file.name
 
         if self.sourcePath:
-            self.set_info_what(
-                'File: ' + os.path.normpath(self.sourcePath))
+            self.set_info_what(f'File: {os.path.normpath(self.sourcePath)}')
             self.root.runButton.config(state='normal')
 
         else:
