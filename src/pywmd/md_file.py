@@ -7,6 +7,7 @@ Published under the MIT License (https://opensource.org/licenses/mit-license.php
 import os
 import re
 
+from pywriter.pywriter_globals import ERROR
 from pywriter.file.file_export import FileExport
 from pywriter.model.chapter import Chapter
 from pywriter.model.scene import Scene
@@ -141,10 +142,10 @@ class MdFile(FileExport):
                 mdLines = (cnvText).split('\n')
 
         except(FileNotFoundError):
-            return f'ERROR: "{os.path.normpath(self.filePath)}" not found.'
+            return f'{ERROR}: "{os.path.normpath(self.filePath)}" not found.'
 
         except:
-            return f'ERROR: Can not parse "{os.path.normpath(self.filePath)}".'
+            return f'{ERROR}: Can not parse "{os.path.normpath(self.filePath)}".'
 
         if self.markdownMode:
             commentStart = '<!---'
@@ -203,7 +204,7 @@ class MdFile(FileExport):
                 self.scenes[scId] = Scene()
                 self.chapters[chId].srtScenes.append(scId)
                 self.scenes[scId].status = '1'
-                self.scenes[scId].title = 'Scene {:d}'.format(scCount)
+                self.scenes[scId].title = f'Scene {scCount}'
 
                 if not self.noSceneTitles and mdLine.startswith(commentStart):
 
