@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### v1.8.0 Optional update
+
+- Rework the error messaging system.
+- Refactor.
+
+Based on PyWriter v5.0.0
+
 ### v1.6.1 Bugfix release
 
 - Fix misplaced formatting tags before converting them to Markdown.

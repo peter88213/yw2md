@@ -113,7 +113,7 @@ class MdFile(FileExport):
 
     def read(self):
         """Parse the Markdown file located at filePath
-        Return a message beginning with SUCCESS or ERROR.
+        Return a message beginning with the ERROR constant in case of error.
         """
         LOW_WORDCOUNT = 10
 
@@ -142,10 +142,10 @@ class MdFile(FileExport):
                 mdLines = (cnvText).split('\n')
 
         except(FileNotFoundError):
-            return f'{ERROR}: "{os.path.normpath(self.filePath)}" not found.'
+            return f'{ERROR}"{os.path.normpath(self.filePath)}" not found.'
 
         except:
-            return f'{ERROR}: Can not parse "{os.path.normpath(self.filePath)}".'
+            return f'{ERROR}Can not parse "{os.path.normpath(self.filePath)}".'
 
         if self.markdownMode:
             commentStart = '<!---'
@@ -222,4 +222,4 @@ class MdFile(FileExport):
                 else:
                     lines = [mdLine]
 
-        return 'SUCCESS'
+        return 'Markdown formatted text converted to novel structure.'

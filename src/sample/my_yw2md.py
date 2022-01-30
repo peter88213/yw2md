@@ -17,6 +17,7 @@ import re
 import os
 import argparse
 
+from yw2md import ERROR
 from yw2md import Ui
 from yw2md import UiCmd
 from yw2md import MdConverter
@@ -187,4 +188,4 @@ if __name__ == '__main__':
         run(args.sourcePath, silentMode, markdownMode, noSceneTitles)
 
     else:
-        print('ERROR: File not found.')
+        print(f'{ERROR} File not found.')

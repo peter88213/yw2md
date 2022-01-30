@@ -10,6 +10,7 @@ Published under the MIT License (https://opensource.org/licenses/mit-license.php
 import os
 import argparse
 
+from pywriter.pywriter_globals import ERROR
 from pywriter.ui.ui import Ui
 from pywriter.ui.ui_cmd import UiCmd
 
@@ -76,4 +77,4 @@ if __name__ == '__main__':
         run(args.sourcePath, silentMode, markdownMode, noSceneTitles)
 
     else:
-        print('ERROR: File not found.')
+        print(f'{ERROR}File not found.')
