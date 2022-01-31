@@ -12,9 +12,6 @@ from tkinter import ttk
 
 from pywriter.ui.ui_tk import UiTk
 
-SCT_DESCRIPTION = 'Comments at the beginning of a scene are scene titles.'
-MDM_DESCRIPTION = 'The scenes in the yWriter project are Markdown formatted.'
-
 
 class MdUi(UiTk):
     """Extend the Tkinter GUI, 
@@ -35,47 +32,40 @@ class MdUi(UiTk):
         self.root.title(title)
 
         self.header = Label(self.root, text='Options')
-        self.appInfo = Label(self.root, text='')
-        self.appInfo.config(height=2, width=60)
+        self.header.grid(row=1, column=1, sticky=W, padx=20, columnspan=3)
 
-        self.successInfo = Label(self.root)
-        self.successInfo.config(height=1, width=50)
-
-        self.processInfo = Label(self.root, text='')
-
-        self.SceneTitles = BooleanVar()
-        self.SceneTitles.set(False)
-        self.root.SceneTitlesCheckbox = ttk.Checkbutton(
-            text=SCT_DESCRIPTION, variable=self.SceneTitles, onvalue=False, offvalue=True)
+        self.SceneTitles = BooleanVar(value=False)
+        self.SceneTitlesCheckbox = ttk.Checkbutton(self.root,
+                                                   text='Comments at the beginning of a scene are scene titles.', variable=self.SceneTitles, onvalue=False, offvalue=True)
+        self.SceneTitlesCheckbox.grid(row=2, column=1, sticky=W, padx=20, columnspan=3)
 
         self.markdownMode = BooleanVar()
-        self.root.markdownModeCheckbox = ttk.Checkbutton(
-            text=MDM_DESCRIPTION, variable=self.markdownMode, onvalue=True, offvalue=False)
+        self.markdownModeCheckbox = ttk.Checkbutton(self.root,
+                                                    text='The scenes in the yWriter project are Markdown formatted.', variable=self.markdownMode, onvalue=True, offvalue=False)
+        self.markdownModeCheckbox.grid(row=3, column=1, sticky=W, padx=20, columnspan=3)
 
-        self.root.selectButton = Button(
-            text="Select file", command=self.select_file)
+        self.appInfo = Label(self.root, text='')
+        self.appInfo.config(height=2, width=60)
+        self.appInfo.grid(row=5, column=1, pady=10, columnspan=3)
+
+        self.root.selectButton = Button(text="Select file", command=self.select_file)
         self.root.selectButton.config(height=1, width=10)
+        self.root.selectButton.grid(row=6, column=1, pady=10)
 
         self.root.runButton = Button(text='Convert', command=self.convert_file)
         self.root.runButton.config(height=1, width=10)
         self.root.runButton.config(state='disabled')
+        self.root.runButton.grid(row=6, column=2, pady=10)
 
         self.root.quitButton = Button(text='Quit', command=quit)
         self.root.quitButton.config(height=1, width=10)
-
-        self.header.grid(row=1, column=1, sticky=W, padx=20, columnspan=3)
-        self.root.SceneTitlesCheckbox.grid(
-            row=2, column=1, sticky=W, padx=20, columnspan=3)
-        self.root.markdownModeCheckbox.grid(
-            row=3, column=1, sticky=W, padx=20, columnspan=3)
-        self.appInfo.grid(row=5, column=1, pady=10, columnspan=3)
-
-        self.root.selectButton.grid(
-            row=6, column=1, pady=10)
-        self.root.runButton.grid(row=6, column=2, pady=10)
         self.root.quitButton.grid(row=6, column=3, pady=10)
 
+        self.successInfo = Label(self.root)
+        self.successInfo.config(height=1, width=50)
         self.successInfo.grid(row=7, column=1, columnspan=3)
+
+        self.processInfo = Label(self.root, text='')
         self.processInfo.grid(row=8, column=1, columnspan=3, pady=10)
 
         self.sourcePath = None

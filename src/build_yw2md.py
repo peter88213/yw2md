@@ -15,9 +15,9 @@ import inliner
 SRC = '../src/'
 BUILD = '../test/'
 SOURCE_FILE_GUI = 'yw2md_.pyw'
-TARGET_FILE_GUI = BUILD + 'yw2md.pyw'
+TARGET_FILE_GUI = f'{BUILD}yw2md.pyw'
 SOURCE_FILE_CMD = 'yw2md_.py'
-TARGET_FILE_CMD = BUILD + 'yw2md.py'
+TARGET_FILE_CMD = f'{BUILD}yw2md.py'
 
 
 def main():

@@ -35,7 +35,7 @@ class MdFile(FileExport):
 
     sceneTemplate = '<!---${Title}--->${SceneContent}\n\n'
 
-    sceneDivider = '\n\n' + SCENE_DIVIDER + '\n\n'
+    sceneDivider = f'\n\n{SCENE_DIVIDER}\n\n'
 
     def __init__(self, filePath, **kwargs):
         super().__init__(filePath)
