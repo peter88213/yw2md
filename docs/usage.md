@@ -9,20 +9,18 @@ There are two variants, which are distinguished by the file extension:
 *yw2md.pyw* has a graphical user interface, and *yw2md.py* is for the command line. 
 
 
-# 1. The GUI variant yw2md.pyw
 
 ## Usage
 
 ### Intended usage
 
-The included installation script prompts you to create a shortcut on the desktop. You can launch the program by dragging a yWriter project file and dropping it on the shortcut icon. 
+The included installation script prompts you to create a shortcut on the desktop. 
 
-### Command line usage
-
-Alternatively, you can
-
-- launch the program on the command line passing the yWriter project file as an argument, or
-- launch the program via a batch file.
+- You can launch the program by double-clicking on the shortcut icon. Then the program loads the
+  last opened file on start, if any, or shows a file picker dialog.   
+- You can launch the program by dragging a yWriter project file and dropping it on the shortcut icon. 
+- You can launch the program on the command line passing the yWriter project file as an argument.
+- You can launch the program via a batch file.
 
 ### Options
 
@@ -67,51 +65,6 @@ You can change the selection at any time.
 Start file conversion by clicking on the **Convert** button. The result will be indicated.
 
 
-# 2. The command line variant yw2md.py
-
-This script is meant to be launched from the command line. However, 
-if you prefer to use the mouse, you can create a link on the Windows 
-desktop, and launch yw2md by dragging the source file and dropping 
-it to the link icon. For optional arguments, edit the link's properties.
-
-
-## Usage
-usage: `yw2md.py [-h] [--silent] [--md] [--notitles] Sourcefile`
-
-#### positional arguments:
-
-`Sourcefile` 
-
-The path of the source file for the conversion. 
-
-- If it's a yWriter project file with extension '.yw7', 
-a new Markdown formatted text document will be created.
-- Otherwise, the source file will be considered a Markdown formatted file 
-to be converted to a new yWriter 7 project. 
-- Existing yWriter projects are not overwritten.
-- Headings are considered chapter titles. 
-- Scenes within chapters are separated by `* * *`. 
-- In exported md documents, the scene title is prefixed as a comment by default.
-- In generated yWriter projects, comments at scene start are converted to scene titles by default.
-
-
-#### optional arguments:
-
-`-h, --help` show this help message and exit
-
-`--silent` suppress error messages and the request to confirm overwriting
-
-`--md` the scenes in the yWriter project are Markdown formatted
-
-- When converting scenes from yw7 to md, do not double the linefeeds.
-- When converting scenes from md to yw, use Markdown.
-
-`--notitles` do not associate comments at the beginning of the scene with scene titles
-
-- When converting from yw7 to md, do not prefix scene titles as comments.
-- When converting from md to yw, do not convert comments at scene start to scene titles.
-
----
 
 # Markdown reference
 

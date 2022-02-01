@@ -4,10 +4,10 @@
 
 ## Changelog
 
-### v1.8.0 Optional update
+### v1.8.0 New user interface
 
-- Rework the error messaging system.
-- Refactor.
+- Change the GUI.
+- Write options back to the configuration file.
 
 Based on PyWriter v5.0.0
 

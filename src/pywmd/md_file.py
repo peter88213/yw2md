@@ -28,21 +28,17 @@ class MdFile(FileExport):
 *${AuthorName}*  
   
 '''
-
     partTemplate = '\n# ${Title}\n\n'
-
     chapterTemplate = '\n## ${Title}\n\n'
-
     sceneTemplate = '<!---${Title}--->${SceneContent}\n\n'
-
     sceneDivider = f'\n\n{SCENE_DIVIDER}\n\n'
 
     def __init__(self, filePath, **kwargs):
         super().__init__(filePath)
-        self.markdownMode = kwargs['markdownMode']
-        self.noSceneTitles = kwargs['noSceneTitles']
+        self._markdownMode = kwargs['markdown_mode']
+        self._sceneTitles = kwargs['scene_titles']
 
-        if self.noSceneTitles:
+        if not self._sceneTitles:
             self.sceneTemplate = self.sceneTemplate.replace('<!---${Title}--->', '')
 
     def get_chapterMapping(self, chId, chapterNumber):
@@ -72,7 +68,7 @@ class MdFile(FileExport):
             ['  ', ' '],
         ]
 
-        if not self.markdownMode:
+        if not self._markdownMode:
             MD_REPLACEMENTS.insert(0, ['\n', '\n\n'])
 
         try:
@@ -91,7 +87,7 @@ class MdFile(FileExport):
     def convert_to_yw(self, text):
         """Convert Markdown to yw7 markup.
         """
-        if not self.markdownMode:
+        if not self._markdownMode:
             text = re.sub('\*\*(.+?)\*\*', '[b]\\1[/b]', text)
             text = re.sub('\*([^ ].+?[^ ])\*', '[i]\\1[/i]', text)
 
@@ -147,7 +143,7 @@ class MdFile(FileExport):
         except:
             return f'{ERROR}Can not parse "{os.path.normpath(self.filePath)}".'
 
-        if self.markdownMode:
+        if self._markdownMode:
             commentStart = '<!---'
             commentEnd = '--->'
 
@@ -206,7 +202,7 @@ class MdFile(FileExport):
                 self.scenes[scId].status = '1'
                 self.scenes[scId].title = f'Scene {scCount}'
 
-                if not self.noSceneTitles and mdLine.startswith(commentStart):
+                if self._sceneTitles and mdLine.startswith(commentStart):
 
                     # The scene title is prefixed as a comment.
 

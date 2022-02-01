@@ -9,52 +9,127 @@ For further information see https://github.com/peter88213/yw2md
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
 import os
+import sys
+import argparse
+from pathlib import Path
+
+from pywriter.config.configuration import Configuration
+from pywriter.ui.ui import Ui
 
 from pywmd.md_converter import MdConverter
-from pywmd.md_ui import MdUi
+from pywmd.yw2md_tk import Yw2mdTk
 
-from tkinter import *
-from tkinter import messagebox
-from tkinter import filedialog
-from tkinter import ttk
+SUFFIX = ''
+APPNAME = 'yw2md'
 
+SETTINGS = dict(
+    yw_last_open='',
+)
 
-def run(sourcePath):
+OPTIONS = dict(
+    markdown_mode=False,
+    scene_titles=True,
+)
+FILE_TYPES = [
+    ('yWriter 7 project', '.yw7'),
+    ('Markdown file', '.md'),
+]
 
-    ui = MdUi('Markdown converter for yWriter projects @release')
-    # instantiate a user interface object
+def run(sourcePath, silentMode=True, installDir='', markdownMode=None, noTitles=None):
 
-    if sourcePath is not None:
+    #--- Load configuration
 
-        if os.path.isfile(sourcePath):
-            ui.sourcePath = sourcePath
-            ui.set_info_what(f'File: "{os.path.normpath(sourcePath)}"')
-            ui.root.runButton.config(state='normal')
+    sourceDir = os.path.dirname(sourcePath)
 
-        else:
-            sourcePath = None
+    if sourceDir == '':
+        sourceDir = './'
+
+    else:
+        sourceDir += '/'
+
+    iniFile = f'{installDir}{APPNAME}.ini'
+    configuration = Configuration(SETTINGS, OPTIONS)
+    configuration.read(iniFile)
+    kwargs = dict(
+        suffix=SUFFIX,
+        file_types=FILE_TYPES,
+    )
+    kwargs.update(configuration.settings)
+    kwargs.update(configuration.options)
+    
+    if markdownMode is not None:
+        kwargs['markdown_mode'] = markdownMode
+
+    if noTitles is not None:
+        kwargs['scene_titles'] = not noTitles
 
     converter = MdConverter()
-    # instantiate a converter object
 
-    # Create a bidirectional association between the
-    # user interface object and the converter object.
+    if silentMode:
+        converter.ui = Ui('')
+        converter.run(sourcePath, **kwargs)
 
-    converter.ui = ui
-    # make the user interface's methods visible to the converter
+    else:
+        converter.ui = Yw2mdTk('yWriter Markdown converter @release', **kwargs)
+        converter.ui.converter = converter
 
-    ui.converter = converter
-    # make the converter's methods visible to the user interface
+        #--- Get initial project path.
 
-    ui.start()
+        if not sourcePath or not os.path.isfile(sourcePath):
+            sourcePath = kwargs['yw_last_open']
+
+        #--- Instantiate the viewer object.
+
+        converter.ui.open_project(sourcePath)
+        converter.ui.start()
+
+        #--- Save project specific configuration
+
+        for keyword in converter.ui.kwargs:
+
+            if keyword in configuration.options:
+                configuration.options[keyword] = converter.ui.kwargs[keyword]
+
+            elif keyword in configuration.settings:
+                configuration.settings[keyword] = converter.ui.kwargs[keyword]
+
+            configuration.write(iniFile)
 
 
 if __name__ == '__main__':
 
     try:
-        sourcePath = sys.argv[1].replace('\\', '/')
+        homeDir = str(Path.home()).replace('\\', '/')
+        installDir = f'{homeDir}/.pywriter/{APPNAME}/config/'
 
     except:
-        sourcePath = None
+        installDir = ''
 
-    run(sourcePath)
+    os.makedirs(installDir, exist_ok=True)
+
+    if len(sys.argv) == 1:
+        run('', False, installDir, markdownMode=None, noTitles=None)
+
+    else:
+        parser = argparse.ArgumentParser(
+            description='Markdown converter for yWriter projects.',
+            epilog='')
+        parser.add_argument('sourcePath', metavar='Sourcefile',
+                            help="The path of the source file for the conversion. "
+                            "If it's a yWriter project file with extension 'yw6' or 'yw7', "
+                            "a new Markdown formatted text document will be created. "
+                            "Otherwise, the source file will be considered a Markdown "
+                            "formatted file to be converted to a new yWriter 7 project. "
+                            "Existing yWriter projects are not overwritten.")
+    
+        parser.add_argument('--silent',
+                            action="store_true",
+                            help='suppress error messages and the request to confirm overwriting')
+        parser.add_argument('--md',
+                            action="store_true",
+                            help='the scenes in the yWriter project are Markdown formatted')
+        parser.add_argument('--notitles',
+                            action="store_true",
+                            help='do not associate comments at the beginning of the scene with scene titles')
+        args = parser.parse_args()
+        run(args.sourcePath, args.silent, installDir, args.md, args.notitles)

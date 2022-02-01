@@ -71,7 +71,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + YW7, TEST_EXEC_PATH + PROJECT + '.yw7')
         os.chdir(TEST_EXEC_PATH)
 
-        yw2md_.run(TEST_EXEC_PATH + PROJECT + '.yw7', markdownMode=False, noSceneTitles=True)
+        yw2md_.run(TEST_EXEC_PATH + PROJECT + '.yw7', markdownMode=False, noTitles=True)
 
         self.assertEqual(read_file(TEST_EXEC_PATH + PROJECT + '.md'),
                          read_file(TEST_DATA_PATH + FROM_NORMAL_FORMATTED))
@@ -80,7 +80,7 @@ class NormalOperation(unittest.TestCase):
         copyfile(TEST_DATA_PATH + YW7, TEST_EXEC_PATH + PROJECT + '.yw7')
         os.chdir(TEST_EXEC_PATH)
 
-        yw2md_.run(TEST_EXEC_PATH + PROJECT + '.yw7', markdownMode=False, noSceneTitles=True)
+        yw2md_.run(TEST_EXEC_PATH + PROJECT + '.yw7', markdownMode=False, noTitles=True)
 
         self.assertEqual(read_file(TEST_EXEC_PATH + PROJECT + '.md'),
                          read_file(TEST_DATA_PATH + FROM_NORMAL_FORMATTED))
@@ -90,7 +90,7 @@ class NormalOperation(unittest.TestCase):
                  TEST_EXEC_PATH + PROJECT + '.md')
         os.chdir(TEST_EXEC_PATH)
 
-        yw2md_.run(TEST_EXEC_PATH + PROJECT + '.md', markdownMode=False, noSceneTitles=True)
+        yw2md_.run(TEST_EXEC_PATH + PROJECT + '.md', markdownMode=False, noTitles=True)
 
         self.assertEqual(read_file(TEST_EXEC_PATH + PROJECT + '.yw7'),
                          read_file(TEST_DATA_PATH + YW7_CONVERTED))
