@@ -3,7 +3,7 @@
 Modules:
 
 md_file -- Provide a class for Markdown file representation. 
-md_ui -- Provide a Tkinter Ui facade class for the Markdown converter.
+yw2md_tk -- Provide a tkinter GUI class for the yWriter/Markdown converter.
 md_converter -- Provide a Markdown converter class for yWriter projects. 
 
 Copyright (c) 2022 Peter Triesberger
