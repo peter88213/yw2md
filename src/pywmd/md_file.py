@@ -23,15 +23,15 @@ class MdFile(FileExport):
 
     SCENE_DIVIDER = '* * *'
 
-    fileHeader = '''**${Title}**  
+    _fileHeader = '''**${Title}**  
   
 *${AuthorName}*  
   
 '''
-    partTemplate = '\n# ${Title}\n\n'
-    chapterTemplate = '\n## ${Title}\n\n'
-    sceneTemplate = '<!---${Title}--->${SceneContent}\n\n'
-    sceneDivider = f'\n\n{SCENE_DIVIDER}\n\n'
+    _partTemplate = '\n# ${Title}\n\n'
+    _chapterTemplate = '\n## ${Title}\n\n'
+    _sceneTemplate = '<!---${Title}--->${SceneContent}\n\n'
+    _sceneDivider = f'\n\n{SCENE_DIVIDER}\n\n'
 
     def __init__(self, filePath, **kwargs):
         super().__init__(filePath)
@@ -39,19 +39,19 @@ class MdFile(FileExport):
         self._sceneTitles = kwargs['scene_titles']
 
         if not self._sceneTitles:
-            self.sceneTemplate = self.sceneTemplate.replace('<!---${Title}--->', '')
+            self._sceneTemplate = self._sceneTemplate.replace('<!---${Title}--->', '')
 
-    def get_chapterMapping(self, chId, chapterNumber):
+    def _get_chapterMapping(self, chId, chapterNumber):
         """Return a mapping dictionary for a chapter section. 
         """
-        chapterMapping = super().get_chapterMapping(chId, chapterNumber)
+        chapterMapping = super()._get_chapterMapping(chId, chapterNumber)
 
         if self.chapters[chId].suppressChapterTitle:
             chapterMapping['Title'] = ''
 
         return chapterMapping
 
-    def convert_from_yw(self, text):
+    def _convert_from_yw(self, text):
         """Convert yw7 markup to Markdown.
         """
 
@@ -84,7 +84,7 @@ class MdFile(FileExport):
 
         return text
 
-    def convert_to_yw(self, text):
+    def _convert_to_yw(self, text):
         """Convert Markdown to yw7 markup.
         """
         if not self._markdownMode:
@@ -134,7 +134,7 @@ class MdFile(FileExport):
         try:
             with open(self.filePath, encoding='utf-8') as f:
                 mdText = f.read()
-                cnvText = self.convert_to_yw(mdText)
+                cnvText = self._convert_to_yw(mdText)
                 mdLines = (cnvText).split('\n')
 
         except(FileNotFoundError):
