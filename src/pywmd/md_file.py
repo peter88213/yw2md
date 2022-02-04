@@ -51,25 +51,34 @@ class MdFile(FileExport):
 
         return chapterMapping
 
-    def _convert_from_yw(self, text):
+    def _convert_from_yw(self, text, quick=False):
         """Convert yw7 markup to Markdown.
         """
+        
+        if quick:
+            # Just clean up a one-liner without sophisticated formatting.
+            
+            if text is None:
+                return ''
+            
+            else:
+                return text
 
         MD_REPLACEMENTS = [
-            ['[i] ', ' [i]'],
-            ['[b] ', ' [b]'],
-            ['[s] ', ' [s]'],
-            ['[i]', '*'],
-            ['[/i]', '*'],
-            ['[b]', '**'],
-            ['[/b]', '**'],
-            ['/*', '<!---'],
-            ['*/', '--->'],
-            ['  ', ' '],
+            ('[i] ', ' [i]'),
+            ('[b] ', ' [b]'),
+            ('[s] ', ' [s]'),
+            ('[i]', '*'),
+            ('[/i]', '*'),
+            ('[b]', '**'),
+            ('[/b]', '**'),
+            ('/*', '<!---'),
+            ('*/', '--->'),
+            ('  ', ' '),
         ]
 
         if not self._markdownMode:
-            MD_REPLACEMENTS.insert(0, ['\n', '\n\n'])
+            MD_REPLACEMENTS.insert(0, ('\n', '\n\n'))
 
         try:
 
@@ -92,9 +101,9 @@ class MdFile(FileExport):
             text = re.sub('\*([^ ].+?[^ ])\*', '[i]\\1[/i]', text)
 
             MD_REPLACEMENTS = [
-                ['\n\n', '\n'],
-                ['<!---', '/*'],
-                ['--->', '*/'],
+                ('\n\n', '\n'),
+                ('<!---', '/*'),
+                ('--->', '*/'),
             ]
 
             try:
