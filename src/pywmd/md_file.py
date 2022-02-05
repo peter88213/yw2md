@@ -82,8 +82,8 @@ class MdFile(FileExport):
 
         try:
 
-            for r in MD_REPLACEMENTS:
-                text = text.replace(r[0], r[1])
+            for yw, md in MD_REPLACEMENTS:
+                text = text.replace(yw, md)
 
             text = re.sub('\[\/*[h|c|r|s|u]\d*\]', '', text)
             # Remove highlighting, alignment, and underline tags
@@ -108,8 +108,8 @@ class MdFile(FileExport):
 
             try:
 
-                for r in MD_REPLACEMENTS:
-                    text = text.replace(r[0], r[1])
+                for md, yw in MD_REPLACEMENTS:
+                    text = text.replace(md, yw)
 
             except AttributeError:
                 text = ''
