@@ -40,7 +40,7 @@ def run(sourcePath, silentMode=True, installDir='', markdownMode=None, noTitles=
 
     sourceDir = os.path.dirname(sourcePath)
 
-    if sourceDir == '':
+    if not sourceDir:
         sourceDir = './'
 
     else:
