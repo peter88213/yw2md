@@ -17,8 +17,8 @@ class Yw2mdTk(MainTkCnv):
     Extend the superclass by redefining class constants and instance variables
     and processing application-specific keyword arguments.
     """    
-    EXPORT_DESC = 'Export yWriter chapters and scenes to a Markdown document.'
-    IMPORT_DESC = 'Create a yWriter project from a Markdown document.'
+    _EXPORT_DESC = 'Export yWriter chapters and scenes to a Markdown document.'
+    _IMPORT_DESC = 'Create a yWriter project from a Markdown document.'
 
     def __init__(self, title, **kwargs):
         """Put a text box to the GUI main window.
