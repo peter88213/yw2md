@@ -14,7 +14,7 @@ from pywriter.ui.ui_tk import UiTk
 from pywriter.converter.yw_cnv_ui import YwCnvUi
 
 from pywriter.yw.yw7_file import Yw7File
-from pywmd.md_file import MdFile
+from yw2mdlib.md_file import MdFile
 from pywriter.converter.new_project_factory import NewProjectFactory
 
 

@@ -16,4 +16,4 @@ with a bunch of dependencies that might be quite time-consuming to resolve.
 ## A sample Markdown converter application 
 
 The  *cnv_md.py*  script shows the simplest way to create a Markdown converter 
-script using the  _pywmd_  and  _pywriter_  libraries.
+script using the  _yw2mdlib_  and  _pywriter_  libraries.

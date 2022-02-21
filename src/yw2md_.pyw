@@ -15,8 +15,8 @@ from pathlib import Path
 from pywriter.config.configuration import Configuration
 from pywriter.ui.ui import Ui
 
-from pywmd.md_converter import MdConverter
-from pywmd.yw2md_tk import Yw2mdTk
+from yw2mdlib.md_converter import MdConverter
+from yw2mdlib.yw2md_tk import Yw2mdTk
 
 SUFFIX = ''
 APPNAME = 'yw2md'

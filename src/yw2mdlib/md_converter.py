@@ -8,7 +8,7 @@ from pywriter.converter.yw_cnv_ff import YwCnvFf
 from pywriter.converter.new_project_factory import NewProjectFactory
 
 from pywriter.yw.yw7_file import Yw7File
-from pywmd.md_file import MdFile
+from yw2mdlib.md_file import MdFile
 
 
 class MdConverter(YwCnvFf):

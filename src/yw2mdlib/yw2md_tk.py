@@ -9,7 +9,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from pywriter.ui.main_tk_cnv import MainTkCnv
-from pywmd.md_file import MdFile
+from yw2mdlib.md_file import MdFile
 
 
 class Yw2mdTk(MainTkCnv):
