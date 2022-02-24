@@ -4,9 +4,10 @@
 
 ## Changelog
 
-### v1.8.0 New user interface
+### v2.0.0 New user interface
 
-- Change the GUI.
+- Fix a bug where "To do" chapters cause an exception.
+- Rework the user interface. 
 - Write options back to the configuration file.
 
 Based on PyWriter v5.0.0
