@@ -2,44 +2,43 @@
 
 This is a yw2md sample application.
 
-Copyright (c) 2021 Peter Triesberger
+Copyright (c) 2022 Peter Triesberger
 For further information see https://github.com/peter88213/yw2md
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
-SUFFIX = ''
-
 import sys
-
 from pywriter.ui.ui_tk import UiTk
-from pywriter.converter.yw_cnv_ui import YwCnvUi
-
+from pywriter.converter.yw_cnv_ff import YwCnvFf
 from pywriter.yw.yw7_file import Yw7File
 from yw2mdlib.md_file import MdFile
 from pywriter.converter.new_project_factory import NewProjectFactory
 
+SUFFIX = ''
 
-class MdConverter(YwCnvUi):
+
+class MdConverter(YwCnvFf):
     """A converter class for html export."""
     EXPORT_SOURCE_CLASSES = [Yw7File]
     EXPORT_TARGET_CLASSES = [MdFile]
 
     def __init__(self):
-        """Extend the superclass constructor.
+        """Extends the superclass constructor.
 
-        Override newProjectFactory by a project
+        Delegate the newProjectFactory to a project
         specific implementation that accepts the
-        .md file extension. 
+        .md file extension.
+        Extends the super class constructor.
         """
-        YwCnvUi.__init__(self)
+        super().__init__()
         self.newProjectFactory = NewProjectFactory()
 
 
-def run(sourcePath, suffix=None, markdownMode=False, noSceneTitles=False):
+def run(sourcePath, suffix=None, markdownMode=False, noTitles=False):
     ui = UiTk('yWriter import/export')
     converter = MdConverter()
     converter.ui = ui
-    kwargs = {'suffix': suffix, 'markdownMode': markdownMode,
-              'noSceneTitles': noSceneTitles}
+    kwargs = {'suffix': suffix, 'markdown_mode': markdownMode,
+              'scene_titles': not noTitles}
     converter.run(sourcePath, **kwargs)
     ui.start()
 
