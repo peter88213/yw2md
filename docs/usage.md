@@ -22,6 +22,29 @@ The included installation script prompts you to create a shortcut on the desktop
 - You can launch the program on the command line passing the yWriter project file as an argument.
 - You can launch the program via a batch file.
 
+### Operation
+
+#### Open a yWriter project
+
+- If no yWriter project is specified by dragging and dropping on the program icon, the latest project selected is preset. You can change it with **File > Open** or **Ctrl-o***.
+
+#### Convert
+
+Start file conversion by clicking on the **Run** menu entry. The result will be indicated.
+
+#### Reverse direction
+
+You can reverse the conversion direction by clicking on the **Swap** menu entry. The project name is the same, but the target file type changes.
+
+#### Close the ywriter project
+
+- You can close the project without exiting the program with **File > Close**.
+- If you open another project, the current project is automatically closed.
+
+#### Exit 
+
+- You can exit with **File > Exit** of **Ctrl-q**.
+
 ### Options
 
 #### Comments at the beginning of the scene are scene titles
@@ -51,18 +74,6 @@ The included installation script prompts you to create a shortcut on the desktop
 - When converting scenes from yw7 to md, double the linefeeds.
 - When converting scenes from md to yw, use yWriter's genuine bold/italic markup.
 
-
-### Select file
-
-If no file is selected, you first have to select a file. Click on the **Select file** 
-button and choose a yWriter or Markdown file with the file picker dialog.
-
-You can change the selection at any time.
-
-
-#### Convert
-
-Start file conversion by clicking on the **Convert** button. The result will be indicated.
 
 
 

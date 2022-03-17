@@ -16,9 +16,9 @@ class Yw2mdTk(MainTkCnv):
     
     Extends the superclass by redefining class constants and instance variables
     and processing application-specific keyword arguments.
-    """    
-    _EXPORT_DESC = 'Export yWriter chapters and scenes to a Markdown document.'
-    _IMPORT_DESC = 'Create a yWriter project from a Markdown document.'
+    """
+    _EXPORT_DESC = 'Export yWriter chapters and scenes to a Markdown document'
+    _IMPORT_DESC = 'Create a yWriter project from a Markdown document'
 
     def __init__(self, title, **kwargs):
         """Add 'Options' checkboxes to the GUI main window.
@@ -42,13 +42,13 @@ class Yw2mdTk(MainTkCnv):
         row1Cnt += 1
         self._sceneTitles = tk.BooleanVar(value=self.kwargs['scene_titles'])
         self._sceneTitlesCheckbox = ttk.Checkbutton(self._mainWindow,
-                                                   text='Comments at the beginning of a scene are scene titles.', 
+                                                   text='Comments at the beginning of a scene are scene titles.',
                                                    variable=self._sceneTitles, onvalue=True, offvalue=False)
         self._sceneTitlesCheckbox.grid(row=row1Cnt, column=1, sticky=tk.W, padx=20, columnspan=3)
         row1Cnt += 1
         self._markdownMode = tk.BooleanVar(value=self.kwargs['markdown_mode'])
         self._markdownModeCheckbox = ttk.Checkbutton(self._mainWindow,
-                                                    text='The scenes in the yWriter project are Markdown formatted.', 
+                                                    text='The scenes in the yWriter project are Markdown formatted.',
                                                     variable=self._markdownMode, onvalue=True, offvalue=False)
         self._markdownModeCheckbox.grid(row=row1Cnt, column=1, sticky=tk.W, padx=20, columnspan=3)
 

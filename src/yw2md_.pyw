@@ -20,6 +20,10 @@ SUFFIX = ''
 APPNAME = 'yw2md'
 SETTINGS = dict(
     yw_last_open='',
+    root_geometry='730x200',
+    key_restore_status='<Escape>',
+    key_open_project='<Control_L>o',
+    key_on_quit='<Control_L>q',
 )
 OPTIONS = dict(
     markdown_mode=False,
@@ -29,6 +33,7 @@ FILE_TYPES = [
     ('yWriter 7 project', '.yw7'),
     ('Markdown file', '.md'),
 ]
+
 
 def run(sourcePath, silentMode=True, installDir='.', markdownMode=None, noTitles=None):
 
