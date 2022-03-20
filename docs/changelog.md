@@ -4,6 +4,17 @@
 
 ## Changelog
 
+### v2.2.0
+
+- Add shortcuts:
+    - Ctrl-o to open.
+    - Ctrl-q to exit.
+- Enable menu shortcuts.
+- Display document title on the window frame.
+- Save and restore window size and position.
+
+Based on PyWriter v5.2.0
+
 ### v2.0.1
 
 - Improve code and documentation quality.

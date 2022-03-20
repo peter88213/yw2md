@@ -30,11 +30,11 @@ The included installation script prompts you to create a shortcut on the desktop
 
 #### Convert
 
-Start file conversion by clicking on the **Run** menu entry. The result will be indicated.
+Start file conversion by clicking on the **Run** *(Alt-R)*menu entry. The result will be indicated.
 
 #### Reverse direction
 
-You can reverse the conversion direction by clicking on the **Swap** menu entry. The project name is the same, but the target file type changes.
+You can reverse the conversion direction by clicking on the **Swap** *(Alt-S)*menu entry. The project name is the same, but the target file type changes.
 
 #### Close the ywriter project
 
