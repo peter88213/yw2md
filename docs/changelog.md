@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v2.2.1 Optional update
+
+- Refactor the code.
+
+Based on PyWriter v5.6.0
+
 ### v2.2.0
 
 - Add shortcuts:

@@ -37,22 +37,22 @@ class Yw2mdTk(MainTkCnv):
         super().__init__(title, **kwargs)
         self._docExtension = MdFile.EXTENSION
         row1Cnt = 1
-        self._header = tk.Label(self._mainWindow, text='Options')
+        self._header = tk.Label(self.mainWindow, text='Options')
         self._header.grid(row=row1Cnt, column=1, sticky=tk.W, padx=20, columnspan=3)
         row1Cnt += 1
         self._sceneTitles = tk.BooleanVar(value=self.kwargs['scene_titles'])
-        self._sceneTitlesCheckbox = ttk.Checkbutton(self._mainWindow,
+        self._sceneTitlesCheckbox = ttk.Checkbutton(self.mainWindow,
                                                    text='Comments at the beginning of a scene are scene titles.',
                                                    variable=self._sceneTitles, onvalue=True, offvalue=False)
         self._sceneTitlesCheckbox.grid(row=row1Cnt, column=1, sticky=tk.W, padx=20, columnspan=3)
         row1Cnt += 1
         self._markdownMode = tk.BooleanVar(value=self.kwargs['markdown_mode'])
-        self._markdownModeCheckbox = ttk.Checkbutton(self._mainWindow,
+        self._markdownModeCheckbox = ttk.Checkbutton(self.mainWindow,
                                                     text='The scenes in the yWriter project are Markdown formatted.',
                                                     variable=self._markdownMode, onvalue=True, offvalue=False)
         self._markdownModeCheckbox.grid(row=row1Cnt, column=1, sticky=tk.W, padx=20, columnspan=3)
 
-    def _convert_file(self):
+    def convert_file(self):
         """Call the converter's conversion method, if a source file is selected.
         
         Write selected options to the keyword arguments.
@@ -60,5 +60,5 @@ class Yw2mdTk(MainTkCnv):
         """
         self.kwargs['markdown_mode'] = self._markdownMode.get()
         self.kwargs['scene_titles'] = self._sceneTitles.get()
-        super()._convert_file()
+        super().convert_file()
 
