@@ -4,6 +4,13 @@
 
 ## Changelog
 
+
+### v2.2.2 Optional update
+
+When generating chapters from Markdown import, add chapter type as yWriter version 7.0.7.2+
+
+Based on PyWriter v5.10.1
+
 ### v2.2.1 Optional update
 
 - Refactor the code.

@@ -173,6 +173,7 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
       <SortOrder>1</SortOrder>
       <Title><![CDATA[Chapter 1]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
       <Scenes>
         <ScID>1</ScID>
       </Scenes>
@@ -182,6 +183,7 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
       <SortOrder>2</SortOrder>
       <Title><![CDATA[Chapter 2]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
       <Scenes>
         <ScID>2</ScID>
         <ScID>3</ScID>
@@ -192,6 +194,7 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
       <SortOrder>3</SortOrder>
       <Title><![CDATA[Chapter 3]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
       <Scenes>
         <ScID>4</ScID>
       </Scenes>
@@ -201,6 +204,7 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
       <SortOrder>4</SortOrder>
       <Title><![CDATA[Chapter 4]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
       <Scenes>
         <ScID>5</ScID>
         <ScID>6</ScID>
@@ -213,6 +217,7 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
       <SortOrder>5</SortOrder>
       <Title><![CDATA[Chapter 5]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
       <Scenes>
         <ScID>9</ScID>
         <ScID>10</ScID>
@@ -223,162 +228,189 @@ There was a crackling sound. "Help! Fire!" said a voice over the noise.
       <SortOrder>6</SortOrder>
       <Title><![CDATA[Chapter 6]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>7</ID>
       <SortOrder>7</SortOrder>
       <Title><![CDATA[Chapter 7]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>8</ID>
       <SortOrder>8</SortOrder>
       <Title><![CDATA[Chapter 8]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>9</ID>
       <SortOrder>9</SortOrder>
       <Title><![CDATA[Chapter 9]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>10</ID>
       <SortOrder>10</SortOrder>
       <Title><![CDATA[Chapter 10]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>11</ID>
       <SortOrder>11</SortOrder>
       <Title><![CDATA[Chapter 11]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>12</ID>
       <SortOrder>12</SortOrder>
       <Title><![CDATA[Chapter 12]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>13</ID>
       <SortOrder>13</SortOrder>
       <Title><![CDATA[Chapter 13]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>14</ID>
       <SortOrder>14</SortOrder>
       <Title><![CDATA[Chapter 14]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>15</ID>
       <SortOrder>15</SortOrder>
       <Title><![CDATA[Chapter 15]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>16</ID>
       <SortOrder>16</SortOrder>
       <Title><![CDATA[Chapter 16]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>17</ID>
       <SortOrder>17</SortOrder>
       <Title><![CDATA[Chapter 17]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>18</ID>
       <SortOrder>18</SortOrder>
       <Title><![CDATA[Chapter 18]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>19</ID>
       <SortOrder>19</SortOrder>
       <Title><![CDATA[Chapter 19]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>20</ID>
       <SortOrder>20</SortOrder>
       <Title><![CDATA[Chapter 20]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>21</ID>
       <SortOrder>21</SortOrder>
       <Title><![CDATA[Chapter 21]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>22</ID>
       <SortOrder>22</SortOrder>
       <Title><![CDATA[Chapter 22]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>23</ID>
       <SortOrder>23</SortOrder>
       <Title><![CDATA[Chapter 23]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>24</ID>
       <SortOrder>24</SortOrder>
       <Title><![CDATA[Chapter 24]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>25</ID>
       <SortOrder>25</SortOrder>
       <Title><![CDATA[Chapter 25]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>26</ID>
       <SortOrder>26</SortOrder>
       <Title><![CDATA[Chapter 26]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>27</ID>
       <SortOrder>27</SortOrder>
       <Title><![CDATA[Chapter 27]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>28</ID>
       <SortOrder>28</SortOrder>
       <Title><![CDATA[Chapter 28]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>29</ID>
       <SortOrder>29</SortOrder>
       <Title><![CDATA[Chapter 29]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>30</ID>
       <SortOrder>30</SortOrder>
       <Title><![CDATA[Chapter 30]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>31</ID>
       <SortOrder>31</SortOrder>
       <Title><![CDATA[Chapter 31]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
     <CHAPTER>
       <ID>32</ID>
       <SortOrder>32</SortOrder>
       <Title><![CDATA[Chapter 32]]></Title>
       <Type>0</Type>
+      <ChapterType>0</ChapterType>
     </CHAPTER>
   </CHAPTERS>
 </YWRITER7>

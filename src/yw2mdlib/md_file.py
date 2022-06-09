@@ -137,7 +137,8 @@ class MdFile(FileExport):
         Return a message beginning with the ERROR constant in case of error.
         """
         LOW_WORDCOUNT = 10
-        # Defines the difference between "Outline" and "Draft" 
+        # Defines the difference between "Outline" and "Draft"
+
         def write_scene_content(scId, lines):
             if scId is not None:
                 text = '\n'.join(lines)
@@ -146,6 +147,7 @@ class MdFile(FileExport):
                     self.scenes[scId].status = Scene.STATUS.index('Outline')
                 else:
                     self.scenes[scId].status = Scene.STATUS.index('Draft')
+
         chCount = 0
         scCount = 0
         lines = []
@@ -183,6 +185,7 @@ class MdFile(FileExport):
                 self.chapters[chId].title = title
                 self.srtChapters.append(chId)
                 self.chapters[chId].oldType = '0'
+                self.chapters[chId].chType = '0'
                 if mdLine.startswith('# '):
                     self.chapters[chId].chLevel = 1
                 else:
