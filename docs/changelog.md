@@ -5,6 +5,12 @@
 ## Changelog
 
 
+### v2.2.3 Improved word counting
+
+- Fix word counting considering comments, hyphens, and dashes.
+
+Based on PyWriter v5.12.3
+
 ### v2.2.2 Optional update
 
 When generating chapters from Markdown import, add chapter type as yWriter version 7.0.7.2+
