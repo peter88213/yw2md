@@ -97,7 +97,6 @@ class NormalOperation(unittest.TestCase):
                          read_file(TEST_DATA_PATH + YW7_CONVERTED))
 
     def tearDown(self):
-        return
         remove_all_testfiles()
 
 
