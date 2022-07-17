@@ -5,6 +5,12 @@
 ## Changelog
 
 
+### v2.2.5 Improved setup
+
+- Catch exceptions in the setup script.
+
+Based on PyWriter v5.18.0
+
 ### v2.2.4 Improved word counting
 
 - Fix word counting considering ellipses.
