@@ -4,6 +4,11 @@
 
 ## Changelog
 
+### v2.2.7 Bugfix release
+
+- Fix problems that may occur with projects created by a yWriter version prior to 7.0.7.2.
+
+Based on PyWriter v6.0.0
 
 ### v2.2.6 Update setup script
 

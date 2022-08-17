@@ -184,8 +184,7 @@ class MdFile(FileExport):
                 title = mdLine.split('# ')[1]
                 self.chapters[chId].title = title
                 self.srtChapters.append(chId)
-                self.chapters[chId].oldType = '0'
-                self.chapters[chId].chType = '0'
+                self.chapters[chId].chType = 0
                 if mdLine.startswith('# '):
                     self.chapters[chId].chLevel = 1
                 else:
