@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="yw2md" basedir=".">
-	<property name="version" value="2.2.7" />
+	<property name="version" value="2.2.8" />
 	<property name="test-app" value="yw2md" />
 	<!-- This is a project-specific build script -->
 	
@@ -45,10 +45,6 @@
 		
 		<fixcrlf encoding="utf-8" eol="lf" srcdir="${build-path}/${release}" includes="**/*.*" />
 		
-		<copy todir="${build-path}/${release}/sample" failonerror="false"> 
-			<fileset dir="../sample" />
-		</copy>		
-			
 		<zip destfile="${dist-path}/${release}.zip" basedir="${build-path}/${release}" />
 		
 		<copy file="${docs-path}/template/index.md" overwrite="True" todir="${docs-path}" />

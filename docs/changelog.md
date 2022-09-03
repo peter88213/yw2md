@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v2.2.8 Optional release
+
+- Code refactoring and library update.
+
+Based on PyWriter v7.2.1
+
 ### v2.2.7 Bugfix release
 
 - Fix problems that may occur with projects created by a yWriter version prior to 7.0.7.2.
