@@ -70,7 +70,7 @@ def run(sourcePath, silentMode=True, installDir='.', markdownMode=None, noTitles
                 configuration.options[keyword] = converter.ui.kwargs[keyword]
             elif keyword in configuration.settings:
                 configuration.settings[keyword] = converter.ui.kwargs[keyword]
-            configuration.write(iniFile)
+        configuration.write(iniFile)
 
 
 if __name__ == '__main__':
