@@ -69,7 +69,7 @@ class MainTk(Ui):
         """
         super().__init__(title)
         self._fileTypes = [(_('yWriter 7 project'), '.yw7')]
-        self._title = title
+        self.title = title
         self._statusText = ''
         self.kwargs = kwargs
         self.ywPrj = None
@@ -180,17 +180,24 @@ class MainTk(Ui):
             return False
 
         self.show_path(f'{os.path.normpath(self.ywPrj.filePath)}')
+        self.set_title()
+        self.enable_menu()
+        return True
+
+    def set_title(self):
+        """Set the main window title. 
+        
+        'Document title by author - application'
+        """
         if self.ywPrj.title:
             titleView = self.ywPrj.title
         else:
-            titleView = _('Untitled yWriter project')
+            titleView = _('Untitled project')
         if self.ywPrj.authorName:
             authorView = self.ywPrj.authorName
         else:
             authorView = _('Unknown author')
-        self.root.title(f'{titleView} {_("by")} {authorView} - {self._title}')
-        self.enable_menu()
-        return True
+        self.root.title(f'{titleView} {_("by")} {authorView} - {self.title}')
 
     def _open_project(self, event=None):
         """Create a yWriter project instance and read the file.
@@ -205,7 +212,7 @@ class MainTk(Ui):
         To be extended by subclasses.
         """
         self.ywPrj = None
-        self.root.title(self._title)
+        self.root.title(self.title)
         self.show_status('')
         self.show_path('')
         self.disable_menu()
@@ -218,7 +225,7 @@ class MainTk(Ui):
             
         Overrides the superclass method.       
         """
-        return messagebox.askyesno(self._title, text)
+        return messagebox.askyesno(self.title, text)
 
     def set_info_how(self, message):
         """Show how the converter is doing.
@@ -262,4 +269,4 @@ class MainTk(Ui):
 
     def show_warning(self, message):
         """Display a warning message box."""
-        messagebox.showwarning(self._title, message)
+        messagebox.showwarning(self.title, message)

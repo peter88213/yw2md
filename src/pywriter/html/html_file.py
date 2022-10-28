@@ -46,6 +46,9 @@ class HtmlFile(Novel, HTMLParser):
         self._lines = []
         self._scId = None
         self._chId = None
+        self._newline = False
+        self._language = ''
+        self._doNothing = False
 
     def _convert_to_yw(self, text):
         """Convert html formatting tags to yWriter 7 raw markup.
@@ -56,13 +59,6 @@ class HtmlFile(Novel, HTMLParser):
         Return a yw7 markup string.
         Overrides the superclass method.
         """
-
-        #--- Clean up polluted HTML code.
-        text = re.sub('</*font.*?>', '', text)
-        text = re.sub('</*span.*?>', '', text)
-        text = re.sub('</*FONT.*?>', '', text)
-        text = re.sub('</*SPAN.*?>', '', text)
-
         #--- Put everything in one line.
         text = text.replace('\n', ' ')
         text = text.replace('\r', ' ')
@@ -70,45 +66,15 @@ class HtmlFile(Novel, HTMLParser):
         while '  ' in text:
             text = text.replace('  ', ' ')
 
-        #--- Replace HTML tags by yWriter markup.
-        text = text.replace('<i>', '[i]')
-        text = text.replace('<I>', '[i]')
-        text = text.replace('</i>', '[/i]')
-        text = text.replace('</I>', '[/i]')
-        text = text.replace('</em>', '[/i]')
-        text = text.replace('</EM>', '[/i]')
-        text = text.replace('<b>', '[b]')
-        text = text.replace('<B>', '[b]')
-        text = text.replace('</b>', '[/b]')
-        text = text.replace('</B>', '[/b]')
-        text = text.replace('</strong>', '[/b]')
-        text = text.replace('</STRONG>', '[/b]')
-        text = re.sub('<em.*?>', '[i]', text)
-        text = re.sub('<EM.*?>', '[i]', text)
-        text = re.sub('<strong.*?>', '[b]', text)
-        text = re.sub('<STRONG.*?>', '[b]', text)
-
-        #--- Remove orphaned tags.
-        text = text.replace('[/b][b]', '')
-        text = text.replace('[/i][i]', '')
-        text = text.replace('[/b][b]', '')
         return text
 
     def _preprocess(self, text):
-        """Clean up the HTML code and strip yWriter 7 raw markup.
+        """Process HTML text before parsing.
         
         Positional arguments:
             text -- str: HTML text to be processed.
-        
-        This prevents accidentally applied formatting from being transferred to the yWriter metadata.
-        If rich text is applicable, such as in scenes, overwrite this method in a subclass.
-        Return a string.
         """
-        text = self._convert_to_yw(text)
-
-        #--- Remove misplaced formatting tags.
-        text = re.sub('\[\/*[b|i]\]', '', text)
-        return text
+        return self._convert_to_yw(text)
 
     def _postprocess(self):
         """Process the plain text after parsing.

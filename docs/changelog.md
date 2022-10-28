@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### v2.2.9
+
+- Update the PyWriter library for future Python versions.
+- Count words like in LibreOffice. See: https://help.libreoffice.org/latest/en-GB/text/swriter/guide/words_count.html.
+
+Based on PyWriter v7.14.2
+
 ### v2.2.8 Optional release
 
 - Code refactoring and library update.
