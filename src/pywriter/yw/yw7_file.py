@@ -69,7 +69,7 @@ class Yw7File(Novel):
     def read(self):
         """Parse the yWriter xml file and get the instance variables.
         
-        Return a message beginning with the ERROR constant in case of error.
+        Raise the "Error" exception in case of error. 
         Overrides the superclass method.
         """
 
@@ -555,11 +555,11 @@ class Yw7File(Novel):
 
         #--- Begin reading.
         if self.is_locked():
-            return f'{ERROR}{_("yWriter seems to be open. Please close first")}.'
+            raise Error(f'{_("yWriter seems to be open. Please close first")}.')
         try:
             self.tree = ET.parse(self.filePath)
         except:
-            return f'{ERROR}{_("Can not process file")}: "{os.path.normpath(self.filePath)}".'
+            raise Error(f'{_("Can not process file")}: "{norm_path(self.filePath)}".')
 
         root = self.tree.getroot()
         read_project(root)
@@ -571,7 +571,6 @@ class Yw7File(Novel):
         read_scenes(root)
         read_chapters(root)
         self.adjust_scene_types()
-        return 'yWriter project data read in.'
 
     def merge(self, source):
         """Update instance variables from a source instance.
@@ -579,7 +578,6 @@ class Yw7File(Novel):
         Positional arguments:
             source -- Novel subclass instance to merge.
         
-        Return a message beginning with the ERROR constant in case of error.
         Overrides the superclass method.
         """
 
@@ -595,10 +593,8 @@ class Yw7File(Novel):
                     j = tgtLst.index(item) + 1
 
         if os.path.isfile(self.filePath):
-            message = self.read()
+            self.read()
             # initialize data
-            if message.startswith(ERROR):
-                return message
 
         #--- Merge and re-order locations.
         if source.srtLocations:
@@ -978,27 +974,23 @@ class Yw7File(Novel):
             sceneSplitter = Splitter()
             self.scenesSplit = sceneSplitter.split_scenes(self)
         self.adjust_scene_types()
-        return 'yWriter project data updated or created.'
 
     def write(self):
         """Write instance variables to the yWriter xml file.
         
         Open the yWriter xml file located at filePath and replace the instance variables 
         not being None. Create new XML elements if necessary.
-        Return a message beginning with the ERROR constant in case of error.
+        Raise the "Error" exception in case of error. 
         Overrides the superclass method.
         """
         if self.is_locked():
-            return f'{ERROR}{_("yWriter seems to be open. Please close first")}.'
+            raise Error(f'{_("yWriter seems to be open. Please close first")}.')
 
         if self.languages is None:
             self.get_languages()
         self._build_element_tree()
-        message = self._write_element_tree(self)
-        if message.startswith(ERROR):
-            return message
-
-        return self._postprocess_xml_file(self.filePath)
+        self._write_element_tree(self)
+        self._postprocess_xml_file(self.filePath)
 
     def is_locked(self):
         """Check whether the yw7 file is locked by yWriter.
@@ -1807,21 +1799,22 @@ class Yw7File(Novel):
     def _write_element_tree(self, ywProject):
         """Write back the xml element tree to a .yw7 xml file located at filePath.
         
-        Return a message beginning with the ERROR constant in case of error.
+        Raise the "Error" exception in case of error. 
         """
+        backedUp = False
         if os.path.isfile(ywProject.filePath):
-            os.replace(ywProject.filePath, f'{ywProject.filePath}.bak')
-            backedUp = True
-        else:
-            backedUp = False
+            try:
+                os.replace(ywProject.filePath, f'{ywProject.filePath}.bak')
+            except:
+                raise Error(f'{_("Cannot overwrite file")}: "{norm_path(ywProject.filePath)}".')
+            else:
+                backedUp = True
         try:
             ywProject.tree.write(ywProject.filePath, xml_declaration=False, encoding='utf-8')
         except:
             if backedUp:
                 os.replace(f'{ywProject.filePath}.bak', ywProject.filePath)
-            return f'{ERROR}{_("Cannot write file")}: "{os.path.normpath(ywProject.filePath)}".'
-
-        return 'yWriter XML tree written.'
+            raise Error(f'{_("Cannot write file")}: "{norm_path(ywProject.filePath)}".')
 
     def _postprocess_xml_file(self, filePath):
         '''Postprocess an xml file created by ElementTree.
@@ -1831,7 +1824,7 @@ class Yw7File(Novel):
         
         Read the xml file, put a header on top, insert the missing CDATA tags,
         and replace xml entities by plain text (unescape). Overwrite the .yw7 xml file.
-        Return a message beginning with the ERROR constant in case of error.
+        Raise the "Error" exception in case of error. 
         
         Note: The path is given as an argument rather than using self.filePath. 
         So this routine can be used for yWriter-generated xml files other than .yw7 as well. 
@@ -1853,9 +1846,7 @@ class Yw7File(Novel):
             with open(filePath, 'w', encoding='utf-8') as f:
                 f.write(text)
         except:
-            return f'{ERROR}{_("Cannot write file")}: "{os.path.normpath(filePath)}".'
-
-        return f'{_("File written")}: "{os.path.normpath(filePath)}".'
+            raise Error(f'{_("Cannot write file")}: "{norm_path(filePath)}".')
 
     def _strip_spaces(self, lines):
         """Local helper method.

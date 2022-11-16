@@ -7,7 +7,7 @@ Published under the MIT License (https://opensource.org/licenses/mit-license.php
 import os
 import re
 
-from pywriter.pywriter_globals import ERROR
+from pywriter.pywriter_globals import *
 from pywriter.file.file_export import FileExport
 from pywriter.model.chapter import Chapter
 from pywriter.model.scene import Scene

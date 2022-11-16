@@ -83,7 +83,6 @@ class FileExport(Novel):
         Positional arguments:
             source -- Novel subclass instance to merge.
         
-        Return a message beginning with the ERROR constant in case of error.
         Overrides the superclass method.
         """
         if source.title is not None:
@@ -163,7 +162,7 @@ class FileExport(Novel):
         if source.languages is not None:
             self.languages = source.languages
 
-        return 'Export data updated from novel.'
+        return ''
 
     def _get_fileHeaderMapping(self):
         """Return a mapping dictionary for the project section.
@@ -179,6 +178,8 @@ class FileExport(Novel):
             FieldTitle2=self._convert_from_yw(self.fieldTitle2, True),
             FieldTitle3=self._convert_from_yw(self.fieldTitle3, True),
             FieldTitle4=self._convert_from_yw(self.fieldTitle4, True),
+            Language=self.languageCode,
+            Country=self.countryCode,
         )
         return projectTemplateMapping
 
@@ -201,6 +202,8 @@ class FileExport(Novel):
             Desc=self._convert_from_yw(self.chapters[chId].desc),
             ProjectName=self._convert_from_yw(self.projectName, True),
             ProjectPath=self.projectPath,
+            Language=self.languageCode,
+            Country=self.countryCode,
         )
         return chapterMapping
 
@@ -362,6 +365,8 @@ class FileExport(Novel):
             Notes=self._convert_from_yw(self.scenes[scId].notes),
             ProjectName=self._convert_from_yw(self.projectName, True),
             ProjectPath=self.projectPath,
+            Language=self.languageCode,
+            Country=self.countryCode,
         )
         return sceneMapping
 
@@ -745,26 +750,25 @@ class FileExport(Novel):
         """Write instance variables to the export file.
         
         Create a template-based output file. 
-        Return a message beginning with the ERROR constant in case of error.
+        Return a message in case of success.
+        Raise the "Error" exception in case of error. 
         """
         text = self._get_text()
         backedUp = False
         if os.path.isfile(self.filePath):
             try:
                 os.replace(self.filePath, f'{self.filePath}.bak')
-                backedUp = True
             except:
-                return f'{ERROR}{_("Cannot overwrite file")}: "{os.path.normpath(self.filePath)}".'
-
+                raise Error(f'{_("Cannot overwrite file")}: "{norm_path(self.filePath)}".')
+            else:
+                backedUp = True
         try:
             with open(self.filePath, 'w', encoding='utf-8') as f:
                 f.write(text)
         except:
             if backedUp:
                 os.replace(f'{self.filePath}.bak', self.filePath)
-            return f'{ERROR}{_("Cannot write file")}: "{os.path.normpath(self.filePath)}".'
-
-        return f'{_("File written")}: "{os.path.normpath(self.filePath)}".'
+            raise Error(f'{_("Cannot write file")}: "{norm_path(self.filePath)}".')
 
     def _convert_from_yw(self, text, quick=False):
         """Return text, converted from yw7 markup to target format.

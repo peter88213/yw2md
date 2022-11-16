@@ -92,10 +92,10 @@ class MainTkCnv(MainTk):
         self._sourcePath = fileName
         self.enable_menu()
         if fileName.endswith(self._ywExtension):
-            self.root.title(f'{self._EXPORT_DESC} - {self._title}')
+            self.root.title(f'{self._EXPORT_DESC} - {self.title}')
         elif fileName.endswith(self._docExtension):
-            self.root.title(f'{self._IMPORT_DESC} - {self._title}')
-        self.show_path(f'{os.path.normpath(fileName)}')
+            self.root.title(f'{self._IMPORT_DESC} - {self.title}')
+        self.show_path(f'{norm_path(fileName)}')
         return True
 
     def reverse_direction(self):
@@ -103,13 +103,13 @@ class MainTkCnv(MainTk):
         fileName, fileExtension = os.path.splitext(self._sourcePath)
         if fileExtension == self._ywExtension:
             self._sourcePath = f'{fileName}{self._docExtension}'
-            self.show_path(os.path.normpath(self._sourcePath))
-            self.root.title(f'{self._IMPORT_DESC} - {self._title}')
+            self.show_path(norm_path(self._sourcePath))
+            self.root.title(f'{self._IMPORT_DESC} - {self.title}')
             self.show_status('')
         elif fileExtension == self._docExtension:
             self._sourcePath = f'{fileName}{self._ywExtension}'
-            self.show_path(os.path.normpath(self._sourcePath))
-            self.root.title(f'{self._EXPORT_DESC} - {self._title}')
+            self.show_path(norm_path(self._sourcePath))
+            self.root.title(f'{self._EXPORT_DESC} - {self.title}')
             self.show_status('')
 
     def convert_file(self):
