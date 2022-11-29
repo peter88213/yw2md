@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v2.2.10
+
+- Fix a regression from v2.2.9 where file errors are not handled correctly.
+
+Based on PyWriter v8.0.9
+
 ### v2.2.9
 
 - Update the PyWriter library for future Python versions.

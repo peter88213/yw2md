@@ -159,10 +159,9 @@ class MdFile(FileExport):
                 cnvText = self._convert_to_yw(mdText)
                 mdLines = (cnvText).split('\n')
         except(FileNotFoundError):
-            return f'{ERROR}"{os.path.normpath(self.filePath)}" not found.'
-
+            raise Error(f'{_("File not found")}: "{norm_path(self.filePath)}".')
         except:
-            return f'{ERROR}Can not parse "{os.path.normpath(self.filePath)}".'
+            raise Error(f'{_("Cannot parse File")}: "{norm_path(self.filePath)}".')
 
         if self._markdownMode:
             commentStart = '<!---'
