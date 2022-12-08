@@ -3,7 +3,7 @@ and creates new yWriter 7 projects from Markdown formatted text documents.
 
 ## Requirements
 
-- [Python](https://www.python.org/) from version 3.6 to 3.10. Beware: Version 3.11 is not recommended.
+- [Python](https://www.python.org/) version 3.6+.
 
 ## Download and install
 
