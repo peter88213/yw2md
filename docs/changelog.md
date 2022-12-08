@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v2.2.11
+
+- Modify "shebang" line to make the script run with Python 3.11 under Windows.
+
+Based on PyWriter v8.0.9
+
 ### v2.2.10
 
 - Fix a regression from v2.2.9 where file errors are not handled correctly.

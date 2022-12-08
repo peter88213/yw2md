@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """"Provide a tkinter GUI class for the yWriter/Markdown converter.
 
 Copyright (c) 2022 Peter Triesberger
