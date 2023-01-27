@@ -5,10 +5,6 @@
 The yw2md Python script converts yWriter 7 projects to Markdown 
 and creates new yWriter 7 projects from Markdown formatted text documents.
 
-There are two variants, which are distinguished by the file extension: 
-*yw2md.pyw* has a graphical user interface, and *yw2md.py* is for the command line. 
-
-
 
 ## Usage
 
