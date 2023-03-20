@@ -2,7 +2,7 @@
 
 ---
 
-The yw2md Python script converts yWriter 7 projects to Markdown 
+The *yw2md* Python script converts yWriter 7 projects to Markdown 
 and creates new yWriter 7 projects from Markdown formatted text documents.
 
 
@@ -22,15 +22,15 @@ The included installation script prompts you to create a shortcut on the desktop
 
 #### Open a yWriter project
 
-- If no yWriter project is specified by dragging and dropping on the program icon, the latest project selected is preset. You can change it with **File > Open** or **Ctrl-o**.
+- If no yWriter project is specified by dragging and dropping on the program icon, the latest project selected is preset. You can change it with **File > Open** or **Ctrl-O**.
 
 #### Convert
 
-Start file conversion by clicking on the **Run** *(Alt-R)*menu entry. The result will be indicated.
+Start file conversion by clicking on the **Run** *(Alt-R)* menu entry. The result will be indicated.
 
 #### Reverse direction
 
-You can reverse the conversion direction by clicking on the **Swap** *(Alt-S)*menu entry. The project name is the same, but the target file type changes.
+You can reverse the conversion direction by clicking on the **Swap** *(Alt-S)* menu entry. The project name is the same, but the target file type changes.
 
 #### Close the ywriter project
 
@@ -39,7 +39,7 @@ You can reverse the conversion direction by clicking on the **Swap** *(Alt-S)*me
 
 #### Exit 
 
-- You can exit with **File > Exit** of **Ctrl-q**.
+- You can exit with **File > Exit** of **Ctrl-Q**.
 
 ### Options
 
