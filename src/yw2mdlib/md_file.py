@@ -1,6 +1,6 @@
 """Provide a class for Markdown file representation. 
 
-Copyright (c) 2022 Peter Triesberger
+Copyright (c) 2023 Peter Triesberger
 For further information see https://github.com/peter88213/yw2md
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
@@ -62,7 +62,7 @@ class MdFile(FileExport):
         Extends the superclass method.
         """
         chapterMapping = super()._get_chapterMapping(chId, chapterNumber)
-        if self.chapters[chId].suppressChapterTitle:
+        if self.novel.chapters[chId].suppressChapterTitle:
             chapterMapping['Title'] = ''
         return chapterMapping
 
@@ -142,11 +142,11 @@ class MdFile(FileExport):
         def write_scene_content(scId, lines):
             if scId is not None:
                 text = '\n'.join(lines)
-                self.scenes[scId].sceneContent = text
-                if self.scenes[scId].wordCount < LOW_WORDCOUNT:
-                    self.scenes[scId].status = Scene.STATUS.index('Outline')
+                self.novel.scenes[scId].sceneContent = text
+                if self.novel.scenes[scId].wordCount < LOW_WORDCOUNT:
+                    self.novel.scenes[scId].status = Scene.STATUS.index('Outline')
                 else:
-                    self.scenes[scId].status = Scene.STATUS.index('Draft')
+                    self.novel.scenes[scId].status = Scene.STATUS.index('Draft')
 
         chCount = 0
         scCount = 0
@@ -179,16 +179,16 @@ class MdFile(FileExport):
                 # Add a chapter.
                 chCount += 1
                 chId = str(chCount)
-                self.chapters[chId] = Chapter()
+                self.novel.chapters[chId] = Chapter()
                 title = mdLine.split('# ')[1]
-                self.chapters[chId].title = title
-                self.srtChapters.append(chId)
-                self.chapters[chId].chType = 0
+                self.novel.chapters[chId].title = title
+                self.novel.srtChapters.append(chId)
+                self.novel.chapters[chId].chType = 0
                 if mdLine.startswith('# '):
-                    self.chapters[chId].chLevel = 1
+                    self.novel.chapters[chId].chLevel = 1
                 else:
-                    self.chapters[chId].chLevel = 0
-                self.chapters[chId].srtScenes = []
+                    self.novel.chapters[chId].chLevel = 0
+                self.novel.chapters[chId].srtScenes = []
             elif self.SCENE_DIVIDER in mdLine:
                 # Write previous scene.
                 write_scene_content(scId, lines)
@@ -199,16 +199,16 @@ class MdFile(FileExport):
                 # Add a scene; drop the first line if empty.
                 scCount += 1
                 scId = str(scCount)
-                self.scenes[scId] = Scene()
-                self.chapters[chId].srtScenes.append(scId)
-                self.scenes[scId].status = '1'
-                self.scenes[scId].title = f'Scene {scCount}'
+                self.novel.scenes[scId] = Scene()
+                self.novel.chapters[chId].srtScenes.append(scId)
+                self.novel.scenes[scId].status = '1'
+                self.novel.scenes[scId].title = f'Scene {scCount}'
                 if self._sceneTitles and mdLine.startswith(commentStart):
                     # The scene title is prefixed as a comment.
                     try:
                         scTitle, scContent = mdLine.split(
                             sep=commentEnd, maxsplit=1)
-                        self.scenes[scId].title = scTitle.lstrip(commentStart)
+                        self.novel.scenes[scId].title = scTitle.lstrip(commentStart)
                         lines = [scContent]
                     except:
                         lines = [mdLine]

@@ -1,6 +1,6 @@
 """Provide a Configuration class for reading and writing INI files.
 
-Copyright (c) 2022 Peter Triesberger
+Copyright (c) 2023 Peter Triesberger
 For further information see https://github.com/peter88213/PyWriter
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
@@ -53,7 +53,7 @@ class Configuration:
         """Read a configuration file.
         
         Positional arguments:
-            iniFile -- str: path configuration file path.
+            iniFile: str -- path configuration file path.
             
         Settings and options that can not be read in, remain unchanged.
         """
@@ -74,7 +74,7 @@ class Configuration:
         """Save the configuration to iniFile.
 
         Positional arguments:
-            iniFile -- str: path configuration file path.
+            iniFile: str -- path configuration file path.
         """
         config = ConfigParser()
         if self.settings:

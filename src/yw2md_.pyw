@@ -3,7 +3,7 @@
 
 Version @release
 Requires Python 3.6+
-Copyright (c) 2022 Peter Triesberger
+Copyright (c) 2023 Peter Triesberger
 For further information see https://github.com/peter88213/yw2md
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
@@ -32,7 +32,7 @@ FILE_TYPES = [
 ]
 
 
-def run(sourcePath, silentMode=True, installDir='.', markdownMode=None, noTitles=None):
+def main(sourcePath, silentMode=True, installDir='.', markdownMode=None, noTitles=None):
 
     #--- Load configuration
     iniFile = f'{installDir}/{APPNAME}.ini'
@@ -81,7 +81,7 @@ if __name__ == '__main__':
         installDir = '.'
     os.makedirs(installDir, exist_ok=True)
     if len(sys.argv) == 1:
-        run('', False, installDir, markdownMode=None, noTitles=None)
+        main('', False, installDir, markdownMode=None, noTitles=None)
     else:
         parser = argparse.ArgumentParser(
             description='Markdown converter for yWriter projects.',
@@ -103,4 +103,4 @@ if __name__ == '__main__':
                             action="store_true",
                             help='do not associate comments at the beginning of the scene with scene titles')
         args = parser.parse_args()
-        run(args.sourcePath, args.silent, installDir, args.md, args.notitles)
+        main(args.sourcePath, args.silent, installDir, args.md, args.notitles)

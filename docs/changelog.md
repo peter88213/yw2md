@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v2.2.13
+
+- Library update.
+
+Based on PyWriter v12.1.4
+
 ### v2.2.12
 
 - Make it run with old Windows versions.

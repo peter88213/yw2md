@@ -2,7 +2,7 @@
 
 This is a yw2md sample application.
 
-Copyright (c) 2022 Peter Triesberger
+Copyright (c) 2023 Peter Triesberger
 For further information see https://github.com/peter88213/yw2md
 Published under the MIT License (https://opensource.org/licenses/mit-license.php)
 """
@@ -11,7 +11,7 @@ from pywriter.ui.ui_tk import UiTk
 from pywriter.converter.yw_cnv_ff import YwCnvFf
 from pywriter.yw.yw7_file import Yw7File
 from yw2mdlib.md_file import MdFile
-from pywriter.converter.new_project_factory import NewProjectFactory
+from yw2mdlib.new_project_factory import NewProjectFactory
 
 SUFFIX = ''
 
