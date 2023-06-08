@@ -4,6 +4,12 @@
 
 ## Changelog
 
+### v2.3.0
+
+- Read ANSI encoded Markdown files as well.
+
+Based on PyWriter v12.1.4
+
 ### v2.2.13
 
 - Library update.

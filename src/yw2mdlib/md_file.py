@@ -154,15 +154,21 @@ class MdFile(FileExport):
         chId = None
         scId = None
         try:
-            with open(self.filePath, encoding='utf-8') as f:
+            with open(self.filePath, 'r', encoding='utf-8') as f:
                 mdText = f.read()
-                cnvText = self._convert_to_yw(mdText)
-                mdLines = (cnvText).split('\n')
         except(FileNotFoundError):
             raise Error(f'{_("File not found")}: "{norm_path(self.filePath)}".')
-        except:
-            raise Error(f'{_("Cannot parse File")}: "{norm_path(self.filePath)}".')
 
+        except:
+            try:
+                # the file may be ANSI encoded.
+                with open(self.filePath, 'r') as f:
+                    mdText = f.read()
+            except:
+                raise Error(f'{_("Cannot read file")}: "{norm_path(self.filePath)}".')
+
+        cnvText = self._convert_to_yw(mdText)
+        mdLines = cnvText.split('\n')
         if self._markdownMode:
             commentStart = '<!---'
             commentEnd = '--->'
