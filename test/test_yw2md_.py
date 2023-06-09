@@ -1,4 +1,4 @@
-""" Python unit tests for the yw2md project.
+""" Regression test for the yw2md project.
 
 Test suite for yw2md.pyw.
 
