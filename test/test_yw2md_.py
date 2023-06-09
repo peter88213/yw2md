@@ -18,7 +18,7 @@ UPDATE = False
 
 TEST_PATH = os.getcwd() + '/../test'
 TEST_DATA_PATH = TEST_PATH + '/data/'
-TEST_EXEC_PATH = TEST_PATH + '/yw7/'
+TEST_EXEC_PATH = TEST_PATH + '/'
 TEMPLATE_PATH = '../../template/'
 
 # To be placed in TEST_DATA_PATH:
