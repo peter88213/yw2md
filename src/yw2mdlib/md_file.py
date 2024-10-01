@@ -101,7 +101,7 @@ class MdFile(FileExport):
         try:
             for yw, md in MD_REPLACEMENTS:
                 text = text.replace(yw, md)
-            text = re.sub('\[\/*[h|c|r|s|u]\d*\]', '', text)
+            text = re.sub(r'\[\/*[h|c|r|s|u]\d*\]', '', text)
             # Remove highlighting, alignment, and underline tags
         except AttributeError:
             text = ''
@@ -117,8 +117,8 @@ class MdFile(FileExport):
         Overrides the superclass method.
         """
         if not self._markdownMode:
-            text = re.sub('\*\*(.+?)\*\*', '[b]\\1[/b]', text)
-            text = re.sub('\*([^ ].+?[^ ])\*', '[i]\\1[/i]', text)
+            text = re.sub(r'\*\*(.+?)\*\*', '[b]\\1[/b]', text)
+            text = re.sub(r'\*([^ ].+?[^ ])\*', '[i]\\1[/i]', text)
             MD_REPLACEMENTS = [
                 ('\n\n', '\n'),
                 ('<!---', '/*'),
