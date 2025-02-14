@@ -5,6 +5,12 @@
 The *yw2md* Python script converts yWriter 7 projects to Markdown 
 and creates new yWriter 7 projects from Markdown formatted text documents.
 
+## Installation
+
+- Make sure that Python is installed.
+- Move into the folder with the unzipped release and launch **setup.pyw** to install *yw2md.pyw* for the local user.
+- Create a shortcut on the desktop when asked.
+
 
 ## Usage
 
