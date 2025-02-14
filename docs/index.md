@@ -7,9 +7,9 @@ and creates new yWriter 7 projects from Markdown formatted text documents.
 
 ## Download and install
 
-[Download the latest release (version 2.3.1)](https://raw.githubusercontent.com/peter88213/yw2md/main/dist/yw2md_v2.3.1.zip)
+[Download the latest release (version 2.3.2)](https://raw.githubusercontent.com/peter88213/yw2md/main/dist/yw2md_v2.3.2.zip)
 
-- Unzip the downloaded zipfile "yw2md_v2.3.1.zip" into a new folders.
+- Unzip the downloaded zipfile "yw2md_v2.3.2.zip" into a new folders.
 - Move into this new folder and launch **setup.pyw** to install *yw2md.pyw* for the local user.
 - Create a shortcut on the desktop when asked.
 - Open "README.md" for usage instructions.

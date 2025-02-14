@@ -4,12 +4,34 @@
 
 ## Changelog
 
+### Version 2.3.2
+
+Updated with PyWriter 12.19.7
+
+- (12.16.7) Removed all type hints to be compatible with old Python versions.
+- (12.17.0) Simplify the yw7 file export, dropping redundant data that is not needed by yWriter 7.
+   - Drop the sort order.
+   - Drop word count.
+   - Drop letter count.
+   - Drop "scene belongs to chapter" information.
+   - Do not write empty scene Characters/Locations/Items elements.
+   - Remove yWriter version information.
+- (12.17.1) Characters/Locations/Items references are placed at the end of the SCENE section.
+- (12.19.0) Reading and parsing utf-16 encoded .yw7 files where the XML header doesn't 
+  indicate the right encoding (iOS yWriter issue).
+- (12.19.1) Providing a meaningful error message on XML parser error.
+- (12.19.2) Provide a workaround to avoid unicode error with "C:\Users\...".
+- (12.19.4) Generally use raw string notation for regular expression patterns.
+- (12.19.5) Refactor for future Python versions: No longer test truth value of
+  xml.etree.ElementTree.Element.
+- (12.19.6) Strip illegal characters before invoking the xml parser.
+
+
 ### Version 2.3.1
 
 - Refactored regular expressions for Python 3.12+.
 - Added instructions for installation to the readme file that is
 included with the release package.
-
 
 ### v2.3.0
 
