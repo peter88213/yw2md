@@ -4,6 +4,13 @@
 
 ## Changelog
 
+### Version 2.3.1
+
+- Refactored regular expressions for Python 3.12+.
+- Added instructions for installation to the readme file that is
+included with the release package.
+
+
 ### v2.3.0
 
 - Read ANSI encoded Markdown files as well.
